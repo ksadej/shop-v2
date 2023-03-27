@@ -1,12 +1,8 @@
 package com.example.shopv2.controller;
-
 import com.example.shopv2.controller.dto.BasketResponse;
-import com.example.shopv2.model.Basket;
 import com.example.shopv2.service.BasketService;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class BasketController {
@@ -23,9 +19,11 @@ public class BasketController {
         basketService.saveProductByName(name);
     }
 
-    @GetMapping(path = "/api/basket/nutrition")
-    public BasketResponse sumAllNutrition(){
-        return basketService.sumAllNutrition();
+    @GetMapping(path = "/api/v1/basket")
+    public BasketResponse sumAllNutrition(@RequestParam Long id){
+        return basketService.sumAllNutrition(id);
     }
+
+
 
 }

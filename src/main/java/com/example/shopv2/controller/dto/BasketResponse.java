@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class BasketResponse {
 
-    public String name;
     public double calories;
     public double serving_size_g;
     public double fat_total_g;

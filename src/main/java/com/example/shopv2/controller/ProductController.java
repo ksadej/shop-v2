@@ -8,7 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Arrays;
 
 @RestController
 public class ProductController {
@@ -26,8 +25,5 @@ public class ProductController {
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
-    //utworzyć klasę która wyświetla zawartość Basket na podstawie id użytkownika
-    //utworzyć metodę która sumuje kilka produktów pod względem wartości odzywczych
-
-
+    //funkcja do usuwania produktu z koszyka
 }

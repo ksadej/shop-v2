@@ -33,7 +33,4 @@ public class Basket {
     public double fiber_g;
     public double sugar_g;
 
-    public Basket(double calories) {
-        this.calories = calories;
-    }
 }

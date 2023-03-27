@@ -43,8 +43,9 @@ public class BasketService {
         }
     }
 
-    public BasketResponse sumAllNutrition(){
-        List<Basket> basket = basketRepository.findAll();
+    //List of sum all nutrition product of user id
+    public BasketResponse sumAllNutrition(Long id){
+        List<Basket> basket = basketRepository.findByUserId(id);
 
         BasketResponse build = BasketResponse
                 .builder()
@@ -62,5 +63,10 @@ public class BasketService {
                 .build();
 
         return build;
+    }
+
+    //list of products in basket by user id
+    public List<Basket> getBasketByUserId(Long id){
+        return basketRepository.findByUserId(id);
     }
 }

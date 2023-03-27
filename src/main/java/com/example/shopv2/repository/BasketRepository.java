@@ -12,5 +12,7 @@ import java.util.Optional;
 public interface BasketRepository extends JpaRepository<Basket, Long> {
 
 //    @Query("SELECT sum(c.calories) FROM Basket as c")
-    List<Basket> sumAllNutritionByUserId();
+//    List<Basket> sumAllNutritionByUserId();
+
+    public List<Basket> findByUserId(Long id);
 }
