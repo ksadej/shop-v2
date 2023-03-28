@@ -1,6 +1,8 @@
 package com.example.shopv2.controller;
 import com.example.shopv2.controller.dto.BasketResponse;
+import com.example.shopv2.model.Basket;
 import com.example.shopv2.service.BasketService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -24,6 +26,10 @@ public class BasketController {
         return basketService.sumAllNutrition(id);
     }
 
+    @DeleteMapping(path = "/api/basket")
+    public void removeProductFromBasket(@RequestParam Long id){
+        basketService.deleteProductInBasket(id);
+    }
 
 
 }

@@ -38,4 +38,8 @@ class BasketServiceTest {
         //then
         Mockito.verify(basketRepository).findByUserId(userId);
     }
+
+    public void deleteProductInBasket_checkIfProductAlreadyIsDeleted_throwIllegalArgumentException(){
+
+    }
 }

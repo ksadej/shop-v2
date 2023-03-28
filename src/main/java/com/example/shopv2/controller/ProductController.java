@@ -25,5 +25,9 @@ public class ProductController {
         return new ResponseEntity<>(productResponse, HttpStatus.OK);
     }
 
-    //funkcja do usuwania produktu z koszyka
+
+    //testy BasketService
+    //uwtorzyc branch dla security
+    //wykonac security aplikacji outh2
+    //dodać do funkcji ResponseEntity
 }

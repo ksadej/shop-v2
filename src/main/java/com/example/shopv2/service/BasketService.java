@@ -69,4 +69,8 @@ public class BasketService {
     public List<Basket> getBasketByUserId(Long id){
         return basketRepository.findByUserId(id);
     }
+
+    public void deleteProductInBasket(Long id){
+        basketRepository.deleteById(id);
+    }
 }
