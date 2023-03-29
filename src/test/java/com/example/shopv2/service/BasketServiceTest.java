@@ -2,6 +2,7 @@ package com.example.shopv2.service;
 
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.repository.BasketRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -39,7 +40,12 @@ class BasketServiceTest {
         Mockito.verify(basketRepository).findByUserId(userId);
     }
 
+    @Test
     public void deleteProductInBasket_checkIfProductAlreadyIsDeleted_throwIllegalArgumentException(){
+        //given
+        final Long deletedIdBasket = 2l;
 
+        //when//then
+        Assertions.assertThrows(IllegalArgumentException.class, () -> basketRepository.deleteById(deletedIdBasket));
     }
 }
