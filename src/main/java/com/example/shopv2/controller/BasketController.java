@@ -2,6 +2,7 @@ package com.example.shopv2.controller;
 import com.example.shopv2.controller.dto.BasketResponse;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.service.BasketService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,8 +18,9 @@ public class BasketController {
     }
 
     @GetMapping(path = "/api/basket")
-    public void saveProductInBasketByName(@RequestParam String name){
+    public ResponseEntity<?> saveProductInBasketByName(@RequestParam String name){
         basketService.saveProductByName(name);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @GetMapping(path = "/api/v1/basket")

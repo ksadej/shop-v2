@@ -21,8 +21,8 @@ public class ProductController {
 
     @GetMapping("/api/product")
     public ResponseEntity<String> getProductByName(@RequestParam String name){
-        String productResponse = productService.getProductByName(name);
-        return new ResponseEntity<>(productResponse, HttpStatus.OK);
+        String productName = productService.getProductByName(name);
+        return new ResponseEntity<>(productName, HttpStatus.OK);
     }
 
 

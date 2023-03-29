@@ -71,6 +71,10 @@ public class BasketService {
     }
 
     public void deleteProductInBasket(Long id){
+        if(!basketRepository.existsById(id)){
+            throw new IllegalArgumentException("Product does not exist in basket");
+        }
+
         basketRepository.deleteById(id);
     }
 }

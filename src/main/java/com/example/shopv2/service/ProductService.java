@@ -20,12 +20,21 @@ public class ProductService {
     }
 
     public String getProductByName(String name){
+
+        if(name.isEmpty()){
+            throw new IllegalArgumentException("Name is empty");
+        }
+
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> entity = restTemplate
                 .exchange("https://nutrition-by-api-ninjas.p.rapidapi.com/v1/nutrition?query=" + name,
                         HttpMethod.GET,
                         httpEntity,
                         String.class);
+
+        if(entity.getBody().equals("[]")){
+            throw new IllegalArgumentException("Product with this name does not exist");
+        }
 
         return entity.getBody();
     }
