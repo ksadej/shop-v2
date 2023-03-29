@@ -22,7 +22,7 @@ public class ProductService {
     public String getProductByName(String name){
 
         if(name.isEmpty()){
-            throw new IllegalArgumentException("Name is empty");
+            throw new IllegalArgumentException("Name is empty!");
         }
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> entity = restTemplate
