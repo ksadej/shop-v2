@@ -24,6 +24,7 @@ public class ProductService {
         if(name.isEmpty()){
             throw new IllegalArgumentException("Name is empty!");
         }
+
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         ResponseEntity<String> entity = restTemplate
                 .exchange("https://nutrition-by-api-ninjas.p.rapidapi.com/v1/nutrition?query=" + name,

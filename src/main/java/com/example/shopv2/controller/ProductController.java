@@ -25,9 +25,4 @@ public class ProductController {
         return new ResponseEntity<>(productName, HttpStatus.OK);
     }
 
-
-    //testy BasketService
-    //uwtorzyc branch dla security
-    //wykonac security aplikacji outh2
-    //dodać do funkcji ResponseEntity
 }
