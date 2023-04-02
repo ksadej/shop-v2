@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 public class BasketController {
@@ -33,5 +35,8 @@ public class BasketController {
         basketService.deleteProductInBasket(id);
     }
 
-
+    @GetMapping(path = "/api/v1/test/basket")
+    public List<String> listOfProductNames(@RequestParam Long id){
+        return basketService.getListOfProductNames(id);
+    }
 }

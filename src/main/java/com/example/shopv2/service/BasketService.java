@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 @Service
@@ -74,7 +75,16 @@ public class BasketService {
         if(!basketRepository.existsById(id)){
             throw new IllegalArgumentException("Product does not exist in basket");
         }
-
         basketRepository.deleteById(id);
+    }
+
+    public List<String> getListOfProductNames(Long id){
+        List<Basket> basket = basketRepository.findByUserId(id);
+
+        List<String> listOfNames = basket.stream()
+                .map(basket1 -> basket1.getName())
+                .collect(Collectors.toList());
+
+        return listOfNames;
     }
 }

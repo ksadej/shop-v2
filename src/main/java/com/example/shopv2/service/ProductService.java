@@ -2,6 +2,8 @@ package com.example.shopv2.service;
 
 import com.example.shopv2.model.Product;
 import com.example.shopv2.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -13,7 +15,8 @@ public class ProductService {
     private final HttpHeaders httpHeaders;
     private final ProductRepository productRepository;
 
-    public ProductService(RestTemplate restTemplate, HttpHeaders httpHeaders, ProductRepository productRepository) {
+    @Autowired
+    public ProductService(RestTemplate restTemplate, @Qualifier("productHeaders") HttpHeaders httpHeaders, ProductRepository productRepository) {
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
         this.productRepository = productRepository;

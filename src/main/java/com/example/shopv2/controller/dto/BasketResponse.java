@@ -22,4 +22,5 @@ public class BasketResponse {
     public double carbohydrates_total_g;
     public double fiber_g;
     public double sugar_g;
+
 }
