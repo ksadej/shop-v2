@@ -1,12 +1,17 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.service.dto.RecipesResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipesService {
@@ -23,35 +28,23 @@ public class RecipesService {
         this.basketService = basketService;
     }
 
+    //getting list of product by User Id Basket and finding on this list of product proposed recipes
 
-    public String getRecipesByIngredients(String ingredients){
-
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<String> entity = restTemplate
-                .exchange("https://api.spoonacular.com/recipes/findByIngredients?ingredients=" + ingredients,
-                        HttpMethod.GET,
-                        httpEntity,
-                        String.class);
-
-        System.out.println(entity.getBody());
-        return entity.getBody();
-    }
-
-    //test
-    public String getRecipesByIngredients1(Long id){
-
+    public List<RecipesResponse> getRecipesByIngredients(Long id){
         List<String> products = basketService.getListOfProductNames(id);
-
         String ingredients = products.toString();
 
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<String> entity = restTemplate
+
+        ResponseEntity<RecipesResponse[]> entity = restTemplate
                 .exchange("https://api.spoonacular.com/recipes/findByIngredients?ingredients=" + ingredients,
                         HttpMethod.GET,
                         httpEntity,
-                        String.class);
+                        RecipesResponse[].class);
 
-        System.out.println(entity.getBody());
-        return entity.getBody();
+        List<RecipesResponse> recipesResponses = Arrays.stream(Objects.requireNonNull(entity.getBody())).toList();
+
+        return recipesResponses;
+
     }
 }
