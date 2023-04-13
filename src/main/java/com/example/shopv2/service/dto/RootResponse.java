@@ -1,18 +1,6 @@
 package com.example.shopv2.service.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
-@Data
-public class RecipesResponse {
-
+public class RootResponse {
     public int id;
     public boolean vegetarian;
     public boolean vegan;
@@ -45,6 +33,4 @@ public class RecipesResponse {
     public String instructions;
     public Object originalId;
     public String spoonacularSourceUrl;
-
-    public ArrayList<RecipesResponse> recipesResponses;
 }

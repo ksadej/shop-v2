@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 public class BasketController {
 
@@ -38,5 +38,10 @@ public class BasketController {
     @GetMapping(path = "/api/v1/test/basket")
     public List<String> listOfProductNames(@RequestParam Long id){
         return basketService.getListOfProductNames(id);
+    }
+
+    @GetMapping(path = "/api/v1/basket/user")
+    public List<Basket> getBasketByUserId(@RequestParam Long id){
+        return basketService.getBasketByUserId(id);
     }
 }

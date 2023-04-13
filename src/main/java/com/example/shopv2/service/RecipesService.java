@@ -1,13 +1,18 @@
 package com.example.shopv2.service;
 
+
+
+import com.example.shopv2.service.dto.RecipesIngredientResponse;
 import com.example.shopv2.service.dto.RecipesResponse;
+import com.example.shopv2.service.dto.ResultResponse;
+import com.example.shopv2.service.dto.RootResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -45,6 +50,49 @@ public class RecipesService {
         List<RecipesResponse> recipesResponses = Arrays.stream(Objects.requireNonNull(entity.getBody())).toList();
 
         return recipesResponses;
+    }
 
+    public List<RecipesResponse> getRecipesByType(String type){
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+
+        ResponseEntity<ResultResponse> entity = restTemplate
+                .exchange("https://api.spoonacular.com/recipes/complexSearch?type="+type ,
+                        HttpMethod.GET,
+                        httpEntity,
+                        ResultResponse.class);
+
+        List<RecipesResponse> recipesResponses = entity.getBody().getResults();
+
+        return recipesResponses;
+    }
+
+
+    public List<RecipesIngredientResponse> getIngredientByRecipesId(Integer id){
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+        System.out.println("Identyfikator: "+id);
+        ResponseEntity<RecipesIngredientResponse> entity = restTemplate
+                .exchange("https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false",
+                        HttpMethod.GET,
+                        httpEntity,
+                        RecipesIngredientResponse.class);
+        System.out.println(entity.getBody().getExtendedIngredients());
+        ArrayList<RecipesIngredientResponse> recipesIngredientResponses = entity.getBody().getExtendedIngredients();
+
+        return recipesIngredientResponses;
+    }
+
+
+    public RecipesResponse getRecipesById(Integer id){
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+        System.out.println("Identyfikator: "+id);
+        ResponseEntity<RecipesResponse> entity = restTemplate
+                .exchange("https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false",
+                        HttpMethod.GET,
+                        httpEntity,
+                        RecipesResponse.class);
+        System.out.println(entity.getBody());
+        RecipesResponse rootResponses = entity.getBody();
+
+        return rootResponses;
     }
 }

@@ -9,16 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Data
-public class MissedIngredientResponse {
-
+public class RecipesIngredientMeasuresMetricResponse {
     public double amount;
-    public String unit;
-    public String unitLong;
     public String unitShort;
-    public String aisle;
-    public String name;
-    public String original;
-    public String originalName;
-    public String extendedName;
-    public String image;
+    public String unitLong;
 }
