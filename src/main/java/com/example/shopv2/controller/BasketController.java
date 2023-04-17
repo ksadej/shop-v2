@@ -19,13 +19,15 @@ public class BasketController {
         this.basketService = basketService;
     }
 
+    //zapisuje produkt po nazwie w bazie danych
     @GetMapping(path = "/api/basket")
     public ResponseEntity<?> saveProductInBasketByName(@RequestParam String name){
         basketService.saveProductByName(name);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    @GetMapping(path = "/api/v1/basket")
+    //sumuje wszystkie wartości w produktach na podstawie id użytkownika
+    @GetMapping(path = "/api/basket/v1")
     public BasketResponse sumAllNutrition(@RequestParam Long id){
         return basketService.sumAllNutrition(id);
     }
@@ -35,12 +37,13 @@ public class BasketController {
         basketService.deleteProductInBasket(id);
     }
 
-    @GetMapping(path = "/api/v1/test/basket")
-    public List<String> listOfProductNames(@RequestParam Long id){
+    //lista nazw produktów w koszyku na podstawie numeru id użytkownika
+    @GetMapping(path = "/api/basket/v1/list")
+    public List<String> listOfNameProductsInBasket(@RequestParam Long id){
         return basketService.getListOfProductNames(id);
     }
 
-    @GetMapping(path = "/api/v1/basket/user")
+    @GetMapping(path = "/api/basket/v1/user")
     public List<Basket> getBasketByUserId(@RequestParam Long id){
         return basketService.getBasketByUserId(id);
     }

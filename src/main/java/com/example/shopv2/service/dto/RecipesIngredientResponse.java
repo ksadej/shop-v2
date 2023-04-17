@@ -24,6 +24,7 @@ public class RecipesIngredientResponse {
     public String unit;
     public ArrayList<String> meta;
     public RecipesIngredientMeasures measures;
+    public NutritionResponse nutrition;
     public ArrayList<RecipesIngredientResponse> extendedIngredients;
 
 }

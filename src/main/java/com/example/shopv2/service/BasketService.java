@@ -7,12 +7,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
 @Service
 public class BasketService {
@@ -43,6 +39,8 @@ public class BasketService {
             throw new RuntimeException(e);
         }
     }
+
+
 
     //List of sum all nutrition product of user id
     public BasketResponse sumAllNutrition(Long id){
