@@ -6,14 +6,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
 @Entity
 @Builder
-@Table(name = "CARD")
+@Table(name = "Card")
 public class Card {
 
     @Id
@@ -21,16 +22,8 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private int idRecipes;
-    private int idIngredient;
-    private int idUser;
-    private String aisle;
-    private String image;
-    private String consistency;
-    private String name;
-    private String nameClean;
-    private String original;
-    private String originalName;
-    private double amount;
-    private String unit;
+    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
+    private List<Ingredient> ingredients = new ArrayList<>();
+
+    private Long idUser;
 }

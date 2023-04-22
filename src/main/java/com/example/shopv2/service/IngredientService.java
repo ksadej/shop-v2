@@ -1,6 +1,8 @@
 package com.example.shopv2.service;
 
 
+import com.example.shopv2.model.Ingredient;
+import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.service.dto.NutritionNutrientResponse;
 import com.example.shopv2.service.dto.RecipesIngredientResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,15 +14,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class IngredientService {
 
+    private  final IngredientRepository ingredientRepository;
     private final RestTemplate restTemplate;
 
     private final HttpHeaders httpHeaders;
 
-    public IngredientService(RestTemplate restTemplate, @Qualifier("recipesHeaders") HttpHeaders httpHeaders) {
+    public IngredientService(IngredientRepository ingredientRepository, RestTemplate restTemplate, @Qualifier("recipesHeaders") HttpHeaders httpHeaders) {
+        this.ingredientRepository = ingredientRepository;
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
     }
@@ -40,15 +45,18 @@ public class IngredientService {
         return nutrient;
     }
 
-    public NutritionNutrientResponse sumAllNutrientsByIngredientId(Long id){
+//    public NutritionNutrientResponse sumAllNutrientsByIngredientId(Long id){
+//
+//        ArrayList<NutritionNutrientResponse> nutrient = getNutritionByIngredientId(id);
+//
+//        NutritionNutrientResponse nutrientResponse = NutritionNutrientResponse
+//                .builder()
+//
+//                .build();
+//        return null;
+//    }
 
-        ArrayList<NutritionNutrientResponse> nutrient = getNutritionByIngredientId(id);
-
-        NutritionNutrientResponse nutrientResponse = NutritionNutrientResponse
-                .builder()
-
-                .build();
-        return null;
-
-    }
+//    public List<Ingredient> getAllIngredients(){
+//        return ingredientRepository.findAll();
+//    }
 }
