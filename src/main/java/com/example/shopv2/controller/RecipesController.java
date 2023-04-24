@@ -30,11 +30,7 @@ public class RecipesController {
         return recipesService.getRecipesByType(type);
     }
 
-    //pobiera składniki z przepisu na podstawie id przepisu
-    @GetMapping("/api/recipes/ingredient/{id}")
-    public List<RecipesIngredientResponse> getRecipesIngredientsByRecipesId(@PathVariable(value = "id")Integer id){
-        return recipesService.getIngredientByRecipesId(id);
-    }
+
 
     //pobiera recepte na podstawie jej nr id
     @GetMapping("/api/recipes/v1/{id}")

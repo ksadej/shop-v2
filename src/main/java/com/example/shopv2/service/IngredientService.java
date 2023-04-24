@@ -5,6 +5,7 @@ import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.service.dto.NutritionNutrientResponse;
 import com.example.shopv2.service.dto.RecipesIngredientResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,26 +25,29 @@ public class IngredientService {
 
     private final HttpHeaders httpHeaders;
 
+    @Autowired
     public IngredientService(IngredientRepository ingredientRepository, RestTemplate restTemplate, @Qualifier("recipesHeaders") HttpHeaders httpHeaders) {
         this.ingredientRepository = ingredientRepository;
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
     }
 
-    //pobiera listę wartości odzywszczych składników na podstawie id składników
-    public  ArrayList<NutritionNutrientResponse> getNutritionByIngredientId(Long id){
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
+    //pobiera składniki z przepisu na podstawie id przepisu
+    public List<RecipesIngredientResponse> getIngredientByRecipesId(Integer id){
+        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
+        System.out.println("Identyfikator: "+id);
         ResponseEntity<RecipesIngredientResponse> entity = restTemplate
-                .exchange("https://api.spoonacular.com/food/ingredients/"+id+"/information?amount=1",
+                .exchange("https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false",
                         HttpMethod.GET,
                         httpEntity,
                         RecipesIngredientResponse.class);
+        System.out.println(entity.getBody().getExtendedIngredients());
+        ArrayList<RecipesIngredientResponse> recipesIngredientResponses = entity.getBody().getExtendedIngredients();
 
-        ArrayList<NutritionNutrientResponse> nutrient = entity.getBody().getNutrition().getNutrients();
-
-        return nutrient;
+        return recipesIngredientResponses;
     }
+
 
 //    public NutritionNutrientResponse sumAllNutrientsByIngredientId(Long id){
 //
@@ -56,7 +60,7 @@ public class IngredientService {
 //        return null;
 //    }
 
-//    public List<Ingredient> getAllIngredients(){
-//        return ingredientRepository.findAll();
-//    }
+    public List<Ingredient> getAllIngredients(){
+        return ingredientRepository.findAll();
+    }
 }

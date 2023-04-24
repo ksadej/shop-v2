@@ -46,5 +46,6 @@ public class RecipesResponse {
     public Object originalId;
     public String spoonacularSourceUrl;
 
+    public RecipesIngredientResponse recipesIngredientResponses;
     public ArrayList<RecipesResponse> recipesResponses;
 }

@@ -3,6 +3,7 @@ package com.example.shopv2.service;
 import com.example.shopv2.service.dto.RecipesIngredientResponse;
 import com.example.shopv2.service.dto.RecipesResponse;
 import com.example.shopv2.service.dto.ResultResponse;
+import com.example.shopv2.wastes.BasketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
@@ -60,22 +61,6 @@ public class RecipesService {
 
         return recipesResponses;
     }
-
-
-    public List<RecipesIngredientResponse> getIngredientByRecipesId(Integer id){
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-        System.out.println("Identyfikator: "+id);
-        ResponseEntity<RecipesIngredientResponse> entity = restTemplate
-                .exchange("https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false",
-                        HttpMethod.GET,
-                        httpEntity,
-                        RecipesIngredientResponse.class);
-        System.out.println(entity.getBody().getExtendedIngredients());
-        ArrayList<RecipesIngredientResponse> recipesIngredientResponses = entity.getBody().getExtendedIngredients();
-
-        return recipesIngredientResponses;
-    }
-
 
     public RecipesResponse getRecipesById(Integer id){
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);

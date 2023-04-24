@@ -1,8 +1,6 @@
-package com.example.shopv2.service;
+package com.example.shopv2.wastes;
 
 import com.example.shopv2.controller.dto.BasketResponse;
-import com.example.shopv2.model.Basket;
-import com.example.shopv2.repository.BasketRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;

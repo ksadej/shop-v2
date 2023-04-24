@@ -1,6 +1,7 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.repository.ProductRepository;
+import com.example.shopv2.wastes.ProductRepository;
+import com.example.shopv2.wastes.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -8,8 +9,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ProductServiceTest {
 

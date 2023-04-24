@@ -1,8 +1,6 @@
-package com.example.shopv2.service;
+package com.example.shopv2.wastes;
 
 import com.example.shopv2.controller.dto.ProductResponse;
-import com.example.shopv2.model.Product;
-import com.example.shopv2.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;

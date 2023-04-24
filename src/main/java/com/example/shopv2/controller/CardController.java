@@ -18,6 +18,7 @@ public class CardController {
         this.cardService = cardService;
     }
 
+    // zapisuje w tabeli Ingredient składnikie na podstawie id przepisu
     @GetMapping(path = "/api/card/{id}")
     public void saveIngredientByRecipesId(@PathVariable(value = "id")Integer id){
         cardService.saveRecipesIngredientsByRecipesId(id);
@@ -27,5 +28,18 @@ public class CardController {
     public List<Ingredient> getAllIngredientsByUserId(@PathVariable(value = "id")Long id){
         return cardService.getCardByUserId(id);
     }
+
+
+    ///test
+    @GetMapping(path = "/api/card/test/{id}")
+    public void saveIngredientByRecipesIdTEST(@PathVariable(value = "id")Integer id){
+        cardService.saveRecipesIngredientsByRecipesIdTEST(id);
+    }
+
+    @GetMapping(path = "/api/card/test2/{id}")
+    public void saveIngredientByRecipesIdTEST2(@PathVariable(value = "id")Integer id){
+        cardService.saveNutritionByIngredientIdTEST(id);
+    }
+
 
 }

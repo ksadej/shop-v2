@@ -32,6 +32,8 @@ public class Ingredient {
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL)
     private List<Nutrition> nutrition = new ArrayList<>();
 
+
+    private Integer idIngredientAPI;
     private String aisle;
     private String image;
     private String consistency;

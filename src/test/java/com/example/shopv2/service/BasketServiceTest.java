@@ -1,16 +1,15 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.model.Basket;
-import com.example.shopv2.repository.BasketRepository;
+import com.example.shopv2.wastes.Basket;
+import com.example.shopv2.wastes.BasketRepository;
+import com.example.shopv2.wastes.BasketService;
+import com.example.shopv2.wastes.ProductService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class BasketServiceTest {
 

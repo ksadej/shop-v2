@@ -1,7 +1,7 @@
-package com.example.shopv2.controller;
+package com.example.shopv2.wastes;
 import com.example.shopv2.controller.dto.BasketResponse;
-import com.example.shopv2.model.Basket;
-import com.example.shopv2.service.BasketService;
+import com.example.shopv2.wastes.Basket;
+import com.example.shopv2.wastes.BasketService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
