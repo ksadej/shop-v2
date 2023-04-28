@@ -1,4 +1,4 @@
-package com.example.shopv2.service.dto;
+package com.example.shopv2.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,8 +11,8 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @Builder
 @Data
-public class ResultResponse {
-    public ArrayList<RecipesResponse> results;
+public class ResultPojo {
+    public ArrayList<RecipesPojo> results;
     public int offset;
     public int number;
     public int totalResults;

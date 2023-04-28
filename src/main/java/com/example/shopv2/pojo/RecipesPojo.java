@@ -1,4 +1,4 @@
-package com.example.shopv2.service.dto;
+package com.example.shopv2.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @Builder
 @Data
-public class RecipesResponse {
+public class RecipesPojo {
 
     public int id;
     public boolean vegetarian;
@@ -46,6 +46,6 @@ public class RecipesResponse {
     public Object originalId;
     public String spoonacularSourceUrl;
 
-    public RecipesIngredientResponse recipesIngredientResponses;
-    public ArrayList<RecipesResponse> recipesResponses;
+    public RecipesIngredientPojo recipesIngredientPojo;
+    public ArrayList<RecipesPojo> recipesPojo;
 }

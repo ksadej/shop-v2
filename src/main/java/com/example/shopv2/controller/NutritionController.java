@@ -1,8 +1,7 @@
 package com.example.shopv2.controller;
 
+import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.service.NutritionService;
-import com.example.shopv2.service.dto.NutritionNutrientResponse;
-import com.example.shopv2.service.dto.RecipesIngredientResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +22,7 @@ public class NutritionController {
 
     //pobiera listę wartości odzywczych składnika na podstawie id składnika
     @GetMapping("/nutrition/{id}")
-    public ArrayList<NutritionNutrientResponse> getNutritionByIngredientId(@PathVariable Long id){
+    public ArrayList<NutritionNutrientPojo> getNutritionByIngredientId(@PathVariable Long id){
         return nutritionService.getNutritionByIngredientId(id);
     }
 

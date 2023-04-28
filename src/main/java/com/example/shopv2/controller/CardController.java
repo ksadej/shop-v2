@@ -1,6 +1,8 @@
 package com.example.shopv2.controller;
 
+import com.example.shopv2.model.Card;
 import com.example.shopv2.model.Ingredient;
+import com.example.shopv2.repository.CardRepository;
 import com.example.shopv2.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,10 +14,12 @@ import java.util.List;
 public class CardController {
 
     private final CardService cardService;
+    private final CardRepository cardRepository;
 
     @Autowired
-    public CardController(CardService cardService) {
+    public CardController(CardService cardService, CardRepository cardRepository) {
         this.cardService = cardService;
+        this.cardRepository = cardRepository;
     }
 
     // zapisuje w tabeli Ingredient składnikie na podstawie id przepisu
@@ -30,10 +34,11 @@ public class CardController {
     }
 
 
-    ///test
-    @GetMapping(path = "/api/card/test/{id}")
-    public void saveIngredientByRecipesIdTEST(@PathVariable(value = "id")Integer id){
-        cardService.saveRecipesIngredientsByRecipesIdTEST(id);
+    //zapisuje składniki oraz wartości odzywcze na podstawie id przepisu
+//    @GetMapping(path = "/api/card/nutrition/{id}")
+    @PostMapping(path = "/api/card")
+    public void saveIngredientAndNutritionByRecipesId(@RequestBody Card card){
+        cardService.saveIngredientsAndNutritionByRecipesId(Math.toIntExact(card.getId()));
     }
 
     @GetMapping(path = "/api/card/test2/{id}")

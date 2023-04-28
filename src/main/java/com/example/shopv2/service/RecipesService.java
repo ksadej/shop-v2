@@ -1,15 +1,14 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.service.dto.RecipesIngredientResponse;
-import com.example.shopv2.service.dto.RecipesResponse;
-import com.example.shopv2.service.dto.ResultResponse;
+import com.example.shopv2.pojo.RecipesPojo;
+import com.example.shopv2.pojo.ResultPojo;
 import com.example.shopv2.wastes.BasketService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -31,47 +30,47 @@ public class RecipesService {
 
     //getting list of product by User Id Basket and finding on this list of product proposed recipes
 
-    public List<RecipesResponse> getRecipesByIngredients(Long id){
+    public List<RecipesPojo> getRecipesByIngredients(Long id){
         List<String> products = basketService.getListOfProductNames(id);
         String ingredients = products.toString();
 
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<RecipesResponse[]> entity = restTemplate
+        ResponseEntity<RecipesPojo[]> entity = restTemplate
                 .exchange("https://api.spoonacular.com/recipes/findByIngredients?ingredients=" + ingredients,
                         HttpMethod.GET,
                         httpEntity,
-                        RecipesResponse[].class);
+                        RecipesPojo[].class);
 
-        List<RecipesResponse> recipesResponses = Arrays.stream(Objects.requireNonNull(entity.getBody())).toList();
+        List<RecipesPojo> recipesPojo = Arrays.stream(Objects.requireNonNull(entity.getBody())).toList();
 
-        return recipesResponses;
+        return recipesPojo;
     }
 
-    public List<RecipesResponse> getRecipesByType(String type){
+    public List<RecipesPojo> getRecipesByType(String type){
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<ResultResponse> entity = restTemplate
+        ResponseEntity<ResultPojo> entity = restTemplate
                 .exchange("https://api.spoonacular.com/recipes/complexSearch?type="+type ,
                         HttpMethod.GET,
                         httpEntity,
-                        ResultResponse.class);
+                        ResultPojo.class);
 
-        List<RecipesResponse> recipesResponses = entity.getBody().getResults();
+        List<RecipesPojo> recipesResponses = entity.getBody().getResults();
 
         return recipesResponses;
     }
 
-    public RecipesResponse getRecipesById(Integer id){
+    public RecipesPojo getRecipesById(Integer id){
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         System.out.println("Identyfikator: "+id);
-        ResponseEntity<RecipesResponse> entity = restTemplate
+        ResponseEntity<RecipesPojo> entity = restTemplate
                 .exchange("https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false",
                         HttpMethod.GET,
                         httpEntity,
-                        RecipesResponse.class);
+                        RecipesPojo.class);
         System.out.println(entity.getBody());
-        RecipesResponse rootResponses = entity.getBody();
+        RecipesPojo rootResponses = entity.getBody();
 
         return rootResponses;
     }

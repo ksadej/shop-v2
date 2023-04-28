@@ -1,4 +1,4 @@
-package com.example.shopv2.service.dto;
+package com.example.shopv2.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,11 +11,11 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Data
-public class NutritionNutrientResponse {
+public class NutritionNutrientPojo {
     public String name;
     public double amount;
     public String unit;
     public double percentOfDailyNeeds;
 
-    public List<NutritionNutrientResponse> nutrient;
+    public List<NutritionNutrientPojo> nutrient;
 }

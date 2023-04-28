@@ -1,6 +1,6 @@
-package com.example.shopv2.service.dto;
+package com.example.shopv2.pojo;
 
-public class RootResponse {
+public class RootPojo {
     public int id;
     public boolean vegetarian;
     public boolean vegan;

@@ -1,17 +1,16 @@
-package com.example.shopv2.service.dto;
+package com.example.shopv2.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Data
-public class NutritionResponse {
-    public ArrayList<NutritionNutrientResponse> nutrients;
-
+public class RecipesIngredientMeasuresMetricPojo {
+    public double amount;
+    public String unitShort;
+    public String unitLong;
 }

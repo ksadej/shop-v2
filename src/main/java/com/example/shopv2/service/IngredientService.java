@@ -3,8 +3,7 @@ package com.example.shopv2.service;
 
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.repository.IngredientRepository;
-import com.example.shopv2.service.dto.NutritionNutrientResponse;
-import com.example.shopv2.service.dto.RecipesIngredientResponse;
+import com.example.shopv2.pojo.RecipesIngredientPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -34,16 +33,16 @@ public class IngredientService {
 
 
     //pobiera składniki z przepisu na podstawie id przepisu
-    public List<RecipesIngredientResponse> getIngredientByRecipesId(Integer id){
+    public List<RecipesIngredientPojo> getIngredientByRecipesId(Integer id){
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
         System.out.println("Identyfikator: "+id);
-        ResponseEntity<RecipesIngredientResponse> entity = restTemplate
+        ResponseEntity<RecipesIngredientPojo> entity = restTemplate
                 .exchange("https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false",
                         HttpMethod.GET,
                         httpEntity,
-                        RecipesIngredientResponse.class);
+                        RecipesIngredientPojo.class);
         System.out.println(entity.getBody().getExtendedIngredients());
-        ArrayList<RecipesIngredientResponse> recipesIngredientResponses = entity.getBody().getExtendedIngredients();
+        ArrayList<RecipesIngredientPojo> recipesIngredientResponses = entity.getBody().getExtendedIngredients();
 
         return recipesIngredientResponses;
     }

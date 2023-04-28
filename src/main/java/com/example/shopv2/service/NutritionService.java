@@ -2,8 +2,8 @@ package com.example.shopv2.service;
 
 import com.example.shopv2.model.Nutrition;
 import com.example.shopv2.repository.NutritionRepository;
-import com.example.shopv2.service.dto.NutritionNutrientResponse;
-import com.example.shopv2.service.dto.RecipesIngredientResponse;
+import com.example.shopv2.pojo.NutritionNutrientPojo;
+import com.example.shopv2.pojo.RecipesIngredientPojo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -30,16 +30,16 @@ public class NutritionService {
     }
 
     //pobiera listę wartości odzywszczych składników na podstawie id składników
-    public ArrayList<NutritionNutrientResponse> getNutritionByIngredientId(Long id){
+    public ArrayList<NutritionNutrientPojo> getNutritionByIngredientId(Long id){
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<RecipesIngredientResponse> entity = restTemplate
+        ResponseEntity<RecipesIngredientPojo> entity = restTemplate
                 .exchange("https://api.spoonacular.com/food/ingredients/"+id+"/information?amount=1",
                         HttpMethod.GET,
                         httpEntity,
-                        RecipesIngredientResponse.class);
+                        RecipesIngredientPojo.class);
 
-        ArrayList<NutritionNutrientResponse> nutrient = entity.getBody().getNutrition().getNutrients();
+        ArrayList<NutritionNutrientPojo> nutrient = entity.getBody().getNutrition().getNutrients();
         return nutrient;
     }
 
@@ -47,13 +47,13 @@ public class NutritionService {
 
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<RecipesIngredientResponse> entity = restTemplate
+        ResponseEntity<RecipesIngredientPojo> entity = restTemplate
                 .exchange("https://api.spoonacular.com/food/ingredients/"+id+"/information?amount=1",
                         HttpMethod.GET,
                         httpEntity,
-                        RecipesIngredientResponse.class);
+                        RecipesIngredientPojo.class);
 
-        ArrayList<NutritionNutrientResponse> nutrient = entity.getBody().getNutrition().getNutrients();
+        ArrayList<NutritionNutrientPojo> nutrient = entity.getBody().getNutrition().getNutrients();
 
         for(int i=0; i<nutrient.size(); i++){
             Nutrition nutrition = Nutrition

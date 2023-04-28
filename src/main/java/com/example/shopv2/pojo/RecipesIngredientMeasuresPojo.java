@@ -1,4 +1,4 @@
-package com.example.shopv2.service.dto;
+package com.example.shopv2.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Data
-public class RecipesIngredientMeasures {
-    public RecipesIngredientMeasuresMetricResponse metric;
+public class RecipesIngredientMeasuresPojo {
+    public RecipesIngredientMeasuresPojo metric;
 }
