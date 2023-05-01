@@ -4,6 +4,8 @@ import com.example.shopv2.model.Nutrition;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -19,6 +21,8 @@ import java.util.stream.Collectors;
 @Service
 public class NutritionService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(NutritionService.class.getName());
+
     private final RestTemplate restTemplate;
     private final HttpHeaders httpHeaders;
     private final NutritionRepository nutritionRepository;
@@ -31,6 +35,8 @@ public class NutritionService {
 
     //pobiera listę wartości odzywszczych składników na podstawie id składników
     public ArrayList<NutritionNutrientPojo> getNutritionByIngredientId(Long id){
+        LOGGER.info("Getting nutrition by ingredients id");
+        LOGGER.debug("Ingredient id: "+id);
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
         ResponseEntity<RecipesIngredientPojo> entity = restTemplate
@@ -40,11 +46,14 @@ public class NutritionService {
                         RecipesIngredientPojo.class);
 
         ArrayList<NutritionNutrientPojo> nutrient = entity.getBody().getNutrition().getNutrients();
+        LOGGER.debug("List of nutritions"+ entity.getBody().getNutrition().getNutrients());
+
         return nutrient;
     }
 
     public void saveNutritionByIngredientId(Long id){
-
+        LOGGER.info("Saved nutrition by ingredients id");
+        LOGGER.debug("Ingredient id: "+id);
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
         ResponseEntity<RecipesIngredientPojo> entity = restTemplate
@@ -62,5 +71,7 @@ public class NutritionService {
                     .build();
             nutritionRepository.save(nutrition);
         }
+        LOGGER.info("Nutrition saved");
+
     }
 }

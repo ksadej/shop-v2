@@ -4,6 +4,8 @@ package com.example.shopv2.service;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
@@ -18,6 +20,8 @@ import java.util.List;
 
 @Service
 public class IngredientService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(IngredientService.class.getName());
 
     private  final IngredientRepository ingredientRepository;
     private final RestTemplate restTemplate;
@@ -34,30 +38,20 @@ public class IngredientService {
 
     //pobiera składniki z przepisu na podstawie id przepisu
     public List<RecipesIngredientPojo> getIngredientByRecipesId(Integer id){
+        LOGGER.info("Getting ingredients by recipes id");
+        LOGGER.debug("Recipes id: "+id);
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-        System.out.println("Identyfikator: "+id);
         ResponseEntity<RecipesIngredientPojo> entity = restTemplate
                 .exchange("https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false",
                         HttpMethod.GET,
                         httpEntity,
                         RecipesIngredientPojo.class);
-        System.out.println(entity.getBody().getExtendedIngredients());
+
+        LOGGER.debug("List of ingredients"+ entity.getBody().getExtendedIngredients());
         ArrayList<RecipesIngredientPojo> recipesIngredientResponses = entity.getBody().getExtendedIngredients();
 
         return recipesIngredientResponses;
     }
-
-
-//    public NutritionNutrientResponse sumAllNutrientsByIngredientId(Long id){
-//
-//        ArrayList<NutritionNutrientResponse> nutrient = getNutritionByIngredientId(id);
-//
-//        NutritionNutrientResponse nutrientResponse = NutritionNutrientResponse
-//                .builder()
-//
-//                .build();
-//        return null;
-//    }
 
     public List<Ingredient> getAllIngredients(){
         return ingredientRepository.findAll();

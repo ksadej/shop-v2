@@ -19,10 +19,10 @@ public class RecipesController {
     }
 
 
-    @GetMapping("/api/recipes")
-    public List<RecipesPojo> getRecipesByIngredients(@RequestParam Long id){
-        return recipesService.getRecipesByIngredients(id);
-    }
+//    @GetMapping("/api/recipes")
+//    public List<RecipesPojo> getRecipesByIngredients(@RequestParam Long id){
+//        return recipesService.getRecipesByIngredients(id);
+//    }
 
     @GetMapping("/api/recipes/{type}")
     public List<RecipesPojo> getRecipesByType(@PathVariable(value = "type") String type){

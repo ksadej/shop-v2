@@ -22,7 +22,7 @@ public class CardController {
         this.cardRepository = cardRepository;
     }
 
-    // zapisuje w tabeli Ingredient składnikie na podstawie id przepisu
+    // zapisuje w tabeli Ingredient składniki na podstawie id przepisu
     @GetMapping(path = "/api/card/{id}")
     public void saveIngredientByRecipesId(@PathVariable(value = "id")Integer id){
         cardService.saveRecipesIngredientsByRecipesId(id);

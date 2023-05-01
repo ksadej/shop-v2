@@ -8,6 +8,8 @@ import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class CardService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CardService.class.getName());
     private final CardRepository cardRepository;
     private final RecipesService recipesService;
     private final NutritionService nutritionService;
@@ -42,17 +45,12 @@ public class CardService {
 
     // zapisuje składniki z przepisu na podstawie id przepisu
     public void saveRecipesIngredientsByRecipesId(Integer id){
-
+        LOGGER.info("Saving ingredients by recipes ID");
         //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
         List<RecipesIngredientPojo> recipesIngredientPojo = ingredientService.getIngredientByRecipesId(id);
-        System.out.println("dane jakie dostałem z  przepisów: "+ recipesIngredientPojo);
-
-        //mapuję na lstę Stringów powyższą listę
-        List<String> names = recipesIngredientPojo.stream().map(c -> c.getName()).collect(Collectors.toList());
-        System.out.println("Lista nazw produktów: "+names);
 
         Card card = new Card();
-        for(int i=0; i< names.size(); i++){
+        for(int i=0; i< recipesIngredientPojo.size(); i++){
             Ingredient cc = Ingredient
                     .builder()
                     .aisle(recipesIngredientPojo.stream().map(c -> c.getAisle()).collect(Collectors.toList()).get(i))
@@ -67,7 +65,6 @@ public class CardService {
                     .build();
 
             card.getIngredients().add(cc);
-
             cardRepository.save(card);
         }
     }
