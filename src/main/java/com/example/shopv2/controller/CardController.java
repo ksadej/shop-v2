@@ -46,5 +46,9 @@ public class CardController {
         cardService.saveNutritionByIngredientIdTEST(id);
     }
 
-
+    //test
+    @GetMapping(path = "/api/card/test/{id}")
+    public void saveIngredientByRecipesIdTEST(@PathVariable(value = "id")Integer id){
+//        cardService.saveRecipesIngredientsByRecipesIdTEST(id);
+    }
 }

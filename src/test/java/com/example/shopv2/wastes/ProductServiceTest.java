@@ -1,4 +1,4 @@
-package com.example.shopv2.service;
+package com.example.shopv2.wastes;
 
 import com.example.shopv2.wastes.ProductRepository;
 import com.example.shopv2.wastes.ProductService;

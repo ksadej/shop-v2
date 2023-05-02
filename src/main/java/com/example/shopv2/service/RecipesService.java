@@ -24,12 +24,11 @@ public class RecipesService {
 
     private final HttpHeaders httpHeaders;
 
-    private final BasketService basketService;
+
     @Autowired
-    public RecipesService(RestTemplate restTemplate, @Qualifier("recipesHeaders") HttpHeaders httpHeaders, BasketService basketService) {
+    public RecipesService(RestTemplate restTemplate, @Qualifier("recipesHeaders") HttpHeaders httpHeaders) {
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
-        this.basketService = basketService;
     }
 
     //getting list of product by User Id Basket and finding on this list of product proposed recipes
@@ -53,8 +52,13 @@ public class RecipesService {
 //    }
 
     public List<RecipesPojo> getRecipesByType(String type){
+        if(Objects.isNull(type)){
+            throw new NullPointerException("Type is null");
+        }
         LOGGER.info("Getting recipes by typ");
         LOGGER.debug("Type of recipes: "+type);
+
+
         HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
         ResponseEntity<ResultPojo> entity = restTemplate

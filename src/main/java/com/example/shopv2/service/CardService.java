@@ -1,5 +1,7 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.mapper.IngredientMapper;
+import com.example.shopv2.mapper.NutritionMapper;
 import com.example.shopv2.model.Card;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
@@ -49,21 +51,11 @@ public class CardService {
         //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
         List<RecipesIngredientPojo> recipesIngredientPojo = ingredientService.getIngredientByRecipesId(id);
 
+        IngredientMapper ingredientMapper = new IngredientMapper();
         Card card = new Card();
         for(int i=0; i< recipesIngredientPojo.size(); i++){
-            Ingredient cc = Ingredient
-                    .builder()
-                    .aisle(recipesIngredientPojo.stream().map(c -> c.getAisle()).collect(Collectors.toList()).get(i))
-                    .amount(recipesIngredientPojo.stream().map(c -> c.getAmount()).collect(Collectors.toList()).get(i))
-                    .name(recipesIngredientPojo.stream().map(c -> c.getName()).collect(Collectors.toList()).get(i))
-                    .consistency(recipesIngredientPojo.stream().map(c -> c.getConsistency()).collect(Collectors.toList()).get(i))
-                    .image(recipesIngredientPojo.stream().map(c -> c.getImage()).collect(Collectors.toList()).get(i))
-                    .unit(recipesIngredientPojo.stream().map(c -> c.getUnit()).collect(Collectors.toList()).get(i))
-                    .original(recipesIngredientPojo.stream().map(c -> c.getOriginal()).collect(Collectors.toList()).get(i))
-                    .idIngredientAPI(recipesIngredientPojo.stream().map(c -> c.getId()).collect(Collectors.toList()).get(i))
-                    .card(card)
-                    .build();
-
+            Ingredient cc = ingredientMapper.ingredientPojoToIngredient(recipesIngredientPojo, i);
+            cc.setCard(card);
             card.getIngredients().add(cc);
             cardRepository.save(card);
         }
@@ -77,22 +69,14 @@ public class CardService {
         List<RecipesIngredientPojo> recipesIngredientPojo = ingredientService.getIngredientByRecipesId(id);
 
         List<Integer> idsOfIngredients = recipesIngredientPojo.stream().map(x -> x.getId()).collect(Collectors.toList());
-        System.out.println("Lista IDS składników: "+idsOfIngredients);
+        LOGGER.debug("List of ingredients id: "+ idsOfIngredients);
+
+        IngredientMapper ingredientMapper = new IngredientMapper();
         ArrayList<NutritionNutrientPojo> nu;
         Card card = new Card();
         for(int i=0; i< recipesIngredientPojo.size(); i++){
-            Ingredient cc = Ingredient
-                    .builder()
-                    .aisle(recipesIngredientPojo.stream().map(c -> c.getAisle()).collect(Collectors.toList()).get(i))
-                    .amount(recipesIngredientPojo.stream().map(c -> c.getAmount()).collect(Collectors.toList()).get(i))
-                    .name(recipesIngredientPojo.stream().map(c -> c.getName()).collect(Collectors.toList()).get(i))
-                    .consistency(recipesIngredientPojo.stream().map(c -> c.getConsistency()).collect(Collectors.toList()).get(i))
-                    .image(recipesIngredientPojo.stream().map(c -> c.getImage()).collect(Collectors.toList()).get(i))
-                    .unit(recipesIngredientPojo.stream().map(c -> c.getUnit()).collect(Collectors.toList()).get(i))
-                    .original(recipesIngredientPojo.stream().map(c -> c.getOriginal()).collect(Collectors.toList()).get(i))
-                    .idIngredientAPI(recipesIngredientPojo.stream().map(c -> c.getId()).collect(Collectors.toList()).get(i))
-                    .card(card)
-                    .build();
+            Ingredient cc = ingredientMapper.ingredientPojoToIngredient(recipesIngredientPojo, i);
+            cc.setCard(card);
 
             System.out.println("Wyszukano wartośści odzywcze nr "+i);
             nu = nutritionService.getNutritionByIngredientId(Long.valueOf(idsOfIngredients.get(i)));
@@ -113,7 +97,6 @@ public class CardService {
             }
 
             card.getIngredients().add(cc);
-            System.out.println("zapisany element nr: "+i);
             cardRepository.save(card);
         }
     }
@@ -126,6 +109,7 @@ public class CardService {
         List<Integer> idsOfIngredients = recipesIngredientPojos.stream().map(x -> x.getId()).collect(Collectors.toList());
         System.out.println("Lista IDS składników: "+idsOfIngredients);
 
+        NutritionMapper nutritionMapper = new NutritionMapper();
         Ingredient ingredientObject = new Ingredient();
         ArrayList<NutritionNutrientPojo> nu;
         for(int i=0; i<idsOfIngredients.size(); i++){
@@ -133,15 +117,7 @@ public class CardService {
             nu = nutritionService.getNutritionByIngredientId(Long.valueOf(idsOfIngredients.get(i)));
 
             for(int j=0; j<nu.size(); j++){
-                Nutrition nutrition = Nutrition
-                        .builder()
-                        .name(nu.stream().map(x -> x.getName()).collect(Collectors.toList()).get(j))
-                        .amount(nu.stream().map(x -> x.getAmount()).collect(Collectors.toList()).get(j))
-                        .percentOfDailyNeeds(nu.stream().map(x -> x.getAmount()).collect(Collectors.toList()).get(j))
-                        .unit(nu.stream().map(x -> x.getUnit()).collect(Collectors.toList()).get(j))
-//                        .ingredient(ingredientObject)
-                        .build();
-
+                Nutrition nutrition = nutritionMapper.nutritionPojoToNutrition(nu, j);
                 nutritionRepository.save(nutrition);
             }
         }
@@ -155,5 +131,4 @@ public class CardService {
 
         return ingredientRepository.findByCardId(cardList.getId());
     }
-
 }
