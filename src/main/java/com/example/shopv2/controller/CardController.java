@@ -2,6 +2,7 @@ package com.example.shopv2.controller;
 
 import com.example.shopv2.model.Card;
 import com.example.shopv2.model.Ingredient;
+import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.repository.CardRepository;
 import com.example.shopv2.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,32 +24,27 @@ public class CardController {
     }
 
     // zapisuje w tabeli Ingredient składniki na podstawie id przepisu
-    @GetMapping(path = "/api/card/{id}")
+    @PostMapping(path = "/api/card/ingredient")
     public void saveIngredientByRecipesId(@PathVariable(value = "id")Integer id){
         cardService.saveRecipesIngredientsByRecipesId(id);
     }
 
+    //pobiera wszystkie składniki recepty na podstawie id użytkownika
     @GetMapping(path = "/api/card/user/{id}")
     public List<Ingredient> getAllIngredientsByUserId(@PathVariable(value = "id")Long id){
         return cardService.getCardByUserId(id);
     }
 
-
     //zapisuje składniki oraz wartości odzywcze na podstawie id przepisu
-//    @GetMapping(path = "/api/card/nutrition/{id}")
-    @PostMapping(path = "/api/card")
-    public void saveIngredientAndNutritionByRecipesId(@RequestBody Card card){
-        cardService.saveIngredientsAndNutritionByRecipesId(Math.toIntExact(card.getId()));
+    @PostMapping(path = "/api/card/all/{id}")
+    public void saveIngredientAndNutritionByRecipesId(@PathVariable(value = "id")Integer id){
+        cardService.saveIngredientsAndNutritionByRecipesId(id);
     }
 
-    @GetMapping(path = "/api/card/test2/{id}")
-    public void saveIngredientByRecipesIdTEST2(@PathVariable(value = "id")Integer id){
-        cardService.saveNutritionByIngredientIdTEST(id);
+    //zapisuje wartości odzywcze na podstawie id przepisu
+    @PostMapping(path = "/api/card/nutrition/{id}")
+    public void saveNutritionByRecipesId(@PathVariable(value = "id")Integer id){
+        cardService.saveNutritionByIngredientId(id);
     }
 
-    //test
-    @GetMapping(path = "/api/card/test/{id}")
-    public void saveIngredientByRecipesIdTEST(@PathVariable(value = "id")Integer id){
-//        cardService.saveRecipesIngredientsByRecipesIdTEST(id);
-    }
 }

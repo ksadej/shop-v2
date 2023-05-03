@@ -5,6 +5,7 @@ import com.example.shopv2.mapper.NutritionMapper;
 import com.example.shopv2.model.Card;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
+import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.repository.CardRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
@@ -97,7 +98,7 @@ public class CardService {
     }
 
     // zapisuje Listę wartości odzywczych do tabeli Nutrition na podstawie id przepisu
-    public void saveNutritionByIngredientIdTEST(Integer id){
+    public void saveNutritionByIngredientId(Integer id){
 
         //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
         List<RecipesIngredientPojo> recipesIngredientPojos = ingredientService.getIngredientByRecipesId(id);
