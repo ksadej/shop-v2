@@ -10,7 +10,7 @@ import java.util.Objects;
 public class RecipesValidator {
 
     public void getRecipesByTypeValidate(String type){
-        if(type.length() <3){
+        if(type.length() < 3){
             throw new RecipesIncompleteException(RecipesValidatorEnum.TO_SHORT.getMessage());
         }
 
