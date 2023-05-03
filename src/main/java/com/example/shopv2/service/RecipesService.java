@@ -1,7 +1,9 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.exceptions.RecipesIncompleteException;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.pojo.ResultPojo;
+import com.example.shopv2.validator.RecipesValidator;
 import com.example.shopv2.wastes.BasketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,14 +23,17 @@ public class RecipesService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecipesService.class.getName());
 
     private final RestTemplate restTemplate;
-
+    private final RecipesValidator recipesValidator;
     private final HttpHeaders httpHeaders;
 
 
     @Autowired
-    public RecipesService(RestTemplate restTemplate, @Qualifier("recipesHeaders") HttpHeaders httpHeaders) {
+    public RecipesService(RestTemplate restTemplate,
+                          @Qualifier("recipesHeaders") HttpHeaders httpHeaders,
+                          RecipesValidator recipesValidator) {
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
+        this.recipesValidator = recipesValidator;
     }
 
     //getting list of product by User Id Basket and finding on this list of product proposed recipes
@@ -52,9 +57,8 @@ public class RecipesService {
 //    }
 
     public List<RecipesPojo> getRecipesByType(String type){
-        if(Objects.isNull(type)){
-            throw new NullPointerException("Type is null");
-        }
+        recipesValidator.getRecipesByTypeValidate(type);
+
         LOGGER.info("Getting recipes by typ");
         LOGGER.debug("Type of recipes: "+type);
 

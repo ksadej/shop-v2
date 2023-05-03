@@ -72,6 +72,7 @@ public class CardService {
         LOGGER.debug("List of ingredients id: "+ idsOfIngredients);
 
         IngredientMapper ingredientMapper = new IngredientMapper();
+        NutritionMapper nutritionMapper = new NutritionMapper();
         ArrayList<NutritionNutrientPojo> nu;
         Card card = new Card();
         for(int i=0; i< recipesIngredientPojo.size(); i++){
@@ -83,14 +84,8 @@ public class CardService {
             Ingredient ingredientObject = new Ingredient();
 
             for(int j=0; j<nu.size(); j++){
-                Nutrition nutrition = Nutrition
-                        .builder()
-                        .name(nu.stream().map(x -> x.getName()).collect(Collectors.toList()).get(j))
-                        .amount(nu.stream().map(x -> x.getAmount()).collect(Collectors.toList()).get(j))
-                        .percentOfDailyNeeds(nu.stream().map(x -> x.getAmount()).collect(Collectors.toList()).get(j))
-                        .unit(nu.stream().map(x -> x.getUnit()).collect(Collectors.toList()).get(j))
-                        .ingredient(ingredientObject)
-                        .build();
+                Nutrition nutrition = nutritionMapper.nutritionPojoToNutrition(nu, j);
+                nutrition.setIngredient(ingredientObject);
 
                 ingredientObject.getNutrition().add(nutrition);
                 ingredientRepository.save(ingredientObject);
