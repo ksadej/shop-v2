@@ -121,10 +121,22 @@ public class CardService {
 
 
     //pobiera kartę produktów na podstawie id użytkownika
-    public List<Ingredient> getCardByUserId(Long id){
-        Card cardList =  cardRepository.findByIdUser(id);
-        System.out.println("Id Usera przy pobieraniu karty produktów: "+cardList.getId());
+    public List<Card> getCardByUserId(Long id){
+        return cardRepository.findAllByIdUser(id);
+    }
 
-        return ingredientRepository.findByCardId(cardList.getId());
+    //metoda pobierajaca dane na podstawie id usera oraz sumująca wszystkie wartości odzywcze ze składników
+    //metoda pobierze na podstawie id użytkownika wszystkie jego id card
+    //na odstawie ID card wyszuka wszystkich składników
+    //ze składnikówy wyfiltruję nutrition i je zsumuję
+    public List<Card> sumIngredientsByUserId(Long id){
+        ArrayList<Card> cards = cardRepository.findAllByIdUser(id);
+
+
+//        Ingredient ingredient = Ingredient
+//                .builder(cards.stream().map(x-> x.get))
+//                .build()
+
+        return null;
     }
 }

@@ -1,5 +1,6 @@
 package com.example.shopv2.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,6 +23,7 @@ public class Card {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 

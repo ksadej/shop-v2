@@ -1,13 +1,12 @@
 package com.example.shopv2.controller;
 
 import com.example.shopv2.model.Card;
-import com.example.shopv2.model.Ingredient;
-import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.repository.CardRepository;
 import com.example.shopv2.service.CardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -31,7 +30,7 @@ public class CardController {
 
     //pobiera wszystkie składniki recepty na podstawie id użytkownika
     @GetMapping(path = "/api/card/user/{id}")
-    public List<Ingredient> getAllIngredientsByUserId(@PathVariable(value = "id")Long id){
+    public List<Card> getAllIngredientsByUserId(@PathVariable(value = "id")Long id){
         return cardService.getCardByUserId(id);
     }
 
@@ -47,4 +46,15 @@ public class CardController {
         cardService.saveNutritionByIngredientId(id);
     }
 
+
+    //testy
+//    @GetMapping(path = "/api/card/nutrition/t/{id}")
+//    public ArrayList<Ingredient> getAllIngredientsByCardId(@PathVariable(value = "id")Long id){
+//        return cardService.get(id);
+//    }
+
+//    @GetMapping(path = "/api/card/nutrition/t2/{id}")
+//    public Card getAllCards(@PathVariable(value = "id")Long id){
+//        return cardRepository.findByIdUser(id);
+//    }
 }

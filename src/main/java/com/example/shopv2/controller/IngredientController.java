@@ -1,5 +1,7 @@
 package com.example.shopv2.controller;
 
+import com.example.shopv2.model.Ingredient;
+import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.service.IngredientService;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,16 +9,20 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class IngredientController {
 
     private final IngredientService ingredientService;
+    private final IngredientRepository ingredientRepository;
 
     @Autowired
-    public IngredientController(IngredientService ingredientService) {
+    public IngredientController(IngredientService ingredientService, IngredientRepository ingredientRepository) {
         this.ingredientService = ingredientService;
+        this.ingredientRepository = ingredientRepository;
     }
 
     //pobiera Listę składników z przepisu na podstawie id przepisu
@@ -25,8 +31,19 @@ public class IngredientController {
         return ingredientService.getIngredientByRecipesId(id);
     }
 
-//    @GetMapping("/ingredient/all")
-//    public List<Ingredient> getAll(){
-//        return ingredientService.getAllIngredients();
-//    }
+    @GetMapping("/ingredient/card/{id}")
+    public List<Ingredient> getIngredientsByCardId(@PathVariable(value = "id")Integer id){
+        return ingredientService.getIngredientsByCardId(id);
+    }
+
+    @GetMapping("/ingredient/all")
+    public List<Ingredient> getAll(){
+        return ingredientRepository.findAll();
+    }
+
+    @GetMapping("/ingredient/user/{id}")
+    public List<Ingredient> sumIngredientsByUserId(@PathVariable(value = "id")Long id){
+        return ingredientService.sumAllIngredientsByUserId(id);
+    }
+
 }

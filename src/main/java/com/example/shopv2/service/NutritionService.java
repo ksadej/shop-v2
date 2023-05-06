@@ -1,6 +1,7 @@
 package com.example.shopv2.service;
 
 import com.example.shopv2.model.Nutrition;
+import com.example.shopv2.repository.CardRepository;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,11 +27,16 @@ public class NutritionService {
 
     private final RestTemplate restTemplate;
     private final HttpHeaders httpHeaders;
+    private final CardRepository cardRepository;
     private final NutritionRepository nutritionRepository;
     @Autowired
-    public NutritionService(RestTemplate restTemplate, @Qualifier("recipesHeaders") HttpHeaders httpHeaders, NutritionRepository nutritionRepository) {
+    public NutritionService(RestTemplate restTemplate,
+                            @Qualifier("recipesHeaders") HttpHeaders httpHeaders,
+                            CardRepository cardRepository,
+                            NutritionRepository nutritionRepository) {
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
+        this.cardRepository = cardRepository;
         this.nutritionRepository = nutritionRepository;
     }
 
@@ -72,6 +79,13 @@ public class NutritionService {
             nutritionRepository.save(nutrition);
         }
         LOGGER.info("Nutrition saved");
+    }
 
+    public ArrayList<Nutrition> sumAllNutritionsByUserId(Long id){
+        List<Long> listOfCardIds = cardRepository.findByIdUser(id)
+                .stream()
+                .map(x -> x.getId())
+                .collect(Collectors.toList());
+        return null;
     }
 }
