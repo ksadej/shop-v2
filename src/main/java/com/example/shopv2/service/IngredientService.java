@@ -70,11 +70,15 @@ public class IngredientService {
 
     //funkcja do podsumowania ilości produktów które mamy zakupić
     public List<Ingredient> sumAllIngredientsByUserId(Long id){
+
         // lista card id
+        LOGGER.info("Sum ingredients by USER id");
+        LOGGER.debug("USER id: "+id);
         List<Long> listOfCardIds = cardRepository.findByIdUser(id)
                 .stream()
                 .map(x -> x.getId())
                 .collect(Collectors.toList());
+
         //lista składników pobranych na podstawie card id
         List<Ingredient> ingredients = ingredientRepository.findAllByCardIdIn((ArrayList<Long>) listOfCardIds);
 

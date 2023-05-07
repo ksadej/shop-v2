@@ -1,10 +1,8 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.exceptions.RecipesIncompleteException;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.pojo.ResultPojo;
 import com.example.shopv2.validator.RecipesValidator;
-import com.example.shopv2.wastes.BasketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +11,7 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class RecipesService {

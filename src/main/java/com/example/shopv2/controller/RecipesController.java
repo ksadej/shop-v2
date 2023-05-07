@@ -24,15 +24,14 @@ public class RecipesController {
 //        return recipesService.getRecipesByIngredients(id);
 //    }
 
-    @GetMapping("/api/recipes/{type}")
+    //pobiera przepisy na podstawie ich typu
+    @GetMapping("/recipes/{type}")
     public List<RecipesPojo> getRecipesByType(@PathVariable(value = "type") String type){
         return recipesService.getRecipesByType(type);
     }
 
-
-
     //pobiera recepte na podstawie jej nr id
-    @GetMapping("/api/recipes/v1/{id}")
+    @GetMapping("/recipes/v1/{id}")
     public RecipesPojo getRecipesById(@PathVariable(value = "id")Integer id){
         return recipesService.getRecipesById(id);
     }

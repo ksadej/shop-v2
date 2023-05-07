@@ -26,21 +26,24 @@ public class IngredientController {
     }
 
     //pobiera Listę składników z przepisu na podstawie id przepisu
-    @GetMapping("/api/recipes/ingredient/{id}")
+    @GetMapping("/ingredient/recipes/{id}")
     public List<RecipesIngredientPojo> getRecipesIngredientsByRecipesId(@PathVariable(value = "id")Integer id){
         return ingredientService.getIngredientByRecipesId(id);
     }
 
+    //pobiera listę składników na podstawie card id
     @GetMapping("/ingredient/card/{id}")
     public List<Ingredient> getIngredientsByCardId(@PathVariable(value = "id")Integer id){
         return ingredientService.getIngredientsByCardId(id);
     }
 
+    //pobiera listę wszystkich składników z tabeli
     @GetMapping("/ingredient/all")
     public List<Ingredient> getAll(){
         return ingredientRepository.findAll();
     }
 
+    //sumuje wszytskie skladniki na podstawie id użytkownika
     @GetMapping("/ingredient/user/{id}")
     public List<Ingredient> sumIngredientsByUserId(@PathVariable(value = "id")Long id){
         return ingredientService.sumAllIngredientsByUserId(id);
