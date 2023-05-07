@@ -2,11 +2,12 @@ package com.example.shopv2.service;
 
 import com.example.shopv2.mapper.IngredientMapper;
 import com.example.shopv2.mapper.NutritionMapper;
-import com.example.shopv2.model.Card;
+import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
+import com.example.shopv2.model.Recipes;
 import com.example.shopv2.pojo.RecipesPojo;
-import com.example.shopv2.repository.CardRepository;
+import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
@@ -21,23 +22,23 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class CardService {
+public class BasketService {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CardService.class.getName());
-    private final CardRepository cardRepository;
+    private static final Logger LOGGER = LoggerFactory.getLogger(BasketService.class.getName());
+    private final BasketRepository basketRepository;
     private final RecipesService recipesService;
     private final NutritionService nutritionService;
     private final IngredientService ingredientService;
     private final IngredientRepository ingredientRepository;
     private final NutritionRepository nutritionRepository;
     @Autowired
-    public CardService(CardRepository cardRepository,
+    public BasketService(BasketRepository basketRepository,
                        RecipesService recipesService,
                        NutritionService nutritionService,
                        IngredientService ingredientService,
                        IngredientRepository ingredientRepository,
                        NutritionRepository nutritionRepository) {
-        this.cardRepository = cardRepository;
+        this.basketRepository = basketRepository;
         this.recipesService = recipesService;
         this.nutritionService = nutritionService;
         this.ingredientService = ingredientService;
@@ -47,19 +48,29 @@ public class CardService {
 
 
     // zapisuje składniki z przepisu na podstawie id przepisu
-    public void saveRecipesIngredientsByRecipesId(Integer id){
+    public void saveRecipesAndIngredientsByRecipesId(Integer id){
         LOGGER.info("Saving ingredients by recipes ID");
         //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
         List<RecipesIngredientPojo> recipesIngredientPojo = ingredientService.getIngredientByRecipesId(id);
+        RecipesPojo recipesPojos = recipesService.getRecipesById(id);
 
         IngredientMapper ingredientMapper = new IngredientMapper();
-        Card card = new Card();
+        Basket basket = new Basket();
         for(int i=0; i< recipesIngredientPojo.size(); i++){
-            Ingredient cc = ingredientMapper.ingredientPojoToIngredient(recipesIngredientPojo, i);
-            cc.setCard(card);
-            card.getIngredients().add(cc);
-            cardRepository.save(card);
+            Ingredient ingredientObject = ingredientMapper.ingredientPojoToIngredient(recipesIngredientPojo, i);
+            ingredientObject.setBasket(basket);
+
+            basket.getIngredients().add(ingredientObject);
+            basketRepository.save(basket);
         }
+
+        Recipes recipes = Recipes
+                .builder()
+                .idRecipesAPI(recipesPojos.id)
+                .build();
+
+        basket.getRecipes().add(recipes);
+        basketRepository.save(basket);
     }
 
 
@@ -75,10 +86,10 @@ public class CardService {
         IngredientMapper ingredientMapper = new IngredientMapper();
         NutritionMapper nutritionMapper = new NutritionMapper();
         ArrayList<NutritionNutrientPojo> nu;
-        Card card = new Card();
+        Basket card = new Basket();
         for(int i=0; i< recipesIngredientPojo.size(); i++){
             Ingredient cc = ingredientMapper.ingredientPojoToIngredient(recipesIngredientPojo, i);
-            cc.setCard(card);
+            cc.setBasket(card);
 
             System.out.println("Wyszukano wartośści odzywcze nr "+i);
             nu = nutritionService.getNutritionByIngredientId(Long.valueOf(idsOfIngredients.get(i)));
@@ -93,7 +104,7 @@ public class CardService {
             }
 
             card.getIngredients().add(cc);
-            cardRepository.save(card);
+            basketRepository.save(card);
         }
     }
 
@@ -121,22 +132,7 @@ public class CardService {
 
 
     //pobiera kartę produktów na podstawie id użytkownika
-    public List<Card> getCardByUserId(Long id){
-        return cardRepository.findAllByIdUser(id);
-    }
-
-    //metoda pobierajaca dane na podstawie id usera oraz sumująca wszystkie wartości odzywcze ze składników
-    //metoda pobierze na podstawie id użytkownika wszystkie jego id card
-    //na odstawie ID card wyszuka wszystkich składników
-    //ze składnikówy wyfiltruję nutrition i je zsumuję
-    public List<Card> sumIngredientsByUserId(Long id){
-        ArrayList<Card> cards = cardRepository.findAllByIdUser(id);
-
-
-//        Ingredient ingredient = Ingredient
-//                .builder(cards.stream().map(x-> x.get))
-//                .build()
-
-        return null;
+    public List<Basket> getCardByUserId(Long id){
+        return basketRepository.findAllByIdUser(id);
     }
 }

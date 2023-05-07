@@ -15,17 +15,19 @@ import java.util.List;
 @Data
 @Entity
 @Builder
-@Table(name = "Card")
-public class Card {
+@Table(name = "BASKET")
+public class Basket {
 
     @Id
-    @Column(name = "CARD_ID")
+    @Column(name = "BASKET_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "card", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 
+    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL)
+    private List<Recipes> recipes = new ArrayList<>();
     private Long idUser;
 }

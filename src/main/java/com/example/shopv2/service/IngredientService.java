@@ -1,9 +1,7 @@
 package com.example.shopv2.service;
 
-
-import com.example.shopv2.model.Card;
 import com.example.shopv2.model.Ingredient;
-import com.example.shopv2.repository.CardRepository;
+import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import org.slf4j.Logger;
@@ -18,9 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,18 +24,18 @@ public class IngredientService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IngredientService.class.getName());
 
-    private final CardRepository cardRepository;
+    private final BasketRepository basketRepository;
     private final IngredientRepository ingredientRepository;
     private final RestTemplate restTemplate;
 
     private final HttpHeaders httpHeaders;
 
     @Autowired
-    public IngredientService(CardRepository cardRepository,
+    public IngredientService(BasketRepository basketRepository,
                              IngredientRepository ingredientRepository,
                              RestTemplate restTemplate,
                              @Qualifier("recipesHeaders") HttpHeaders httpHeaders) {
-        this.cardRepository = cardRepository;
+        this.basketRepository = basketRepository;
         this.ingredientRepository = ingredientRepository;
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
@@ -65,7 +61,7 @@ public class IngredientService {
 
     //pobiera listę wszystkich składkików
     public List<Ingredient> getIngredientsByCardId(Integer id){
-        return ingredientRepository.findAllByCardId(Long.valueOf(id));
+        return ingredientRepository.findAllByBasketId(Long.valueOf(id));
     }
 
     //funkcja do podsumowania ilości produktów które mamy zakupić
@@ -74,13 +70,13 @@ public class IngredientService {
         // lista card id
         LOGGER.info("Sum ingredients by USER id");
         LOGGER.debug("USER id: "+id);
-        List<Long> listOfCardIds = cardRepository.findByIdUser(id)
+        List<Long> listOfCardIds = basketRepository.findByIdUser(id)
                 .stream()
                 .map(x -> x.getId())
                 .collect(Collectors.toList());
 
         //lista składników pobranych na podstawie card id
-        List<Ingredient> ingredients = ingredientRepository.findAllByCardIdIn((ArrayList<Long>) listOfCardIds);
+        List<Ingredient> ingredients = ingredientRepository.findAllByBasketIdIn((ArrayList<Long>) listOfCardIds);
 
         //lista nazw produktów z usuniętymi duplikatami
         List<String> ingredientNames = ingredients.stream()

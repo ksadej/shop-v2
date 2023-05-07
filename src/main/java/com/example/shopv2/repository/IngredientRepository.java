@@ -10,9 +10,9 @@ import java.util.List;
 @Repository
 public interface IngredientRepository extends JpaRepository<Ingredient, Long> {
 
-    public List<Ingredient> findByCardId(Long id);
+    public List<Ingredient> findByBasketId(Long id);
 
-    public ArrayList<Ingredient> findAllByCardId(Long id);
+    public ArrayList<Ingredient> findAllByBasketId(Long id);
 
-    public ArrayList<Ingredient> findAllByCardIdIn(ArrayList<Long> id);
+    public ArrayList<Ingredient> findAllByBasketIdIn(ArrayList<Long> id);
 }

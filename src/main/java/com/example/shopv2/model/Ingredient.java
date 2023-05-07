@@ -29,8 +29,8 @@ public class Ingredient {
 
     @JsonBackReference
     @ManyToOne
-    @JoinColumn(name ="CARD_ID")
-    private Card card;
+    @JoinColumn(name ="BASKET_ID")
+    private Basket basket;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL)

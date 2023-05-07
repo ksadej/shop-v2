@@ -33,7 +33,6 @@ public class RecipesPojo {
     public String license;
     public String sourceName;
     public double pricePerServing;
-
     public String title;
     public int readyInMinutes;
     public int servings;
