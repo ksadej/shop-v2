@@ -1,11 +1,8 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.exceptions.RecipesIncompleteException;
-import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.validator.RecipesValidator;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
 import org.springframework.web.client.RestTemplate;
@@ -19,7 +16,7 @@ class RecipesServiceTest {
     private HttpHeaders httpHeaders;
     public void setup(){
         recipesService = Mockito.mock(RecipesService.class);
-    recipesService = new RecipesService(restTemplate, httpHeaders, recipesValidator);
+//    recipesService = new RecipesService(basketRepository, restTemplate, httpHeaders, recipesValidator);
     }
 
 

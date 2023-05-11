@@ -1,7 +1,10 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.model.Basket;
+import com.example.shopv2.model.Recipes;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.pojo.ResultPojo;
+import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.validator.RecipesValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,22 +14,26 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RecipesService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecipesService.class.getName());
 
+    private final BasketRepository basketRepository;
     private final RestTemplate restTemplate;
     private final RecipesValidator recipesValidator;
     private final HttpHeaders httpHeaders;
 
 
     @Autowired
-    public RecipesService(RestTemplate restTemplate,
+    public RecipesService(BasketRepository basketRepository, RestTemplate restTemplate,
                           @Qualifier("recipesHeaders") HttpHeaders httpHeaders,
                           RecipesValidator recipesValidator) {
+        this.basketRepository = basketRepository;
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
         this.recipesValidator = recipesValidator;
@@ -88,5 +95,16 @@ public class RecipesService {
         LOGGER.debug("Recipes by id: "+ entity.getBody());
 
         return rootResponses;
+    }
+
+    public List<Recipes> getRecipesByUserId(Long id){
+        ArrayList<Basket> basketList = basketRepository.findAllByIdUser(id);
+
+        List<Recipes> recipes = basketList
+                .stream()
+                .flatMap(x -> x.getRecipes().stream())
+                .collect(Collectors.toList());
+
+        return recipes;
     }
 }

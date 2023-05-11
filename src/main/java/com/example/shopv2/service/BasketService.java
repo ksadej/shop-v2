@@ -52,6 +52,8 @@ public class BasketService {
         LOGGER.info("Saving ingredients by recipes ID");
         //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
         List<RecipesIngredientPojo> recipesIngredientPojo = ingredientService.getIngredientByRecipesId(id);
+
+        //pobieram obiekt RecipesPojo i zapisuje go do nowego obiektu
         RecipesPojo recipesPojos = recipesService.getRecipesById(id);
 
         IngredientMapper ingredientMapper = new IngredientMapper();
@@ -67,6 +69,7 @@ public class BasketService {
         Recipes recipes = Recipes
                 .builder()
                 .idRecipesAPI(recipesPojos.id)
+                .basket(basket)
                 .build();
 
         basket.getRecipes().add(recipes);
@@ -75,7 +78,7 @@ public class BasketService {
 
 
     // zapisuje listę składników wraz z wartościami z przepisu na podstawie id przepisu
-    public void saveIngredientsAndNutritionByRecipesId(Integer id){
+    public void saveAllByRecipesId(Integer id){
 
         //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
         List<RecipesIngredientPojo> recipesIngredientPojo = ingredientService.getIngredientByRecipesId(id);
@@ -86,10 +89,10 @@ public class BasketService {
         IngredientMapper ingredientMapper = new IngredientMapper();
         NutritionMapper nutritionMapper = new NutritionMapper();
         ArrayList<NutritionNutrientPojo> nu;
-        Basket card = new Basket();
+        Basket basket = new Basket();
         for(int i=0; i< recipesIngredientPojo.size(); i++){
             Ingredient cc = ingredientMapper.ingredientPojoToIngredient(recipesIngredientPojo, i);
-            cc.setBasket(card);
+            cc.setBasket(basket);
 
             System.out.println("Wyszukano wartośści odzywcze nr "+i);
             nu = nutritionService.getNutritionByIngredientId(Long.valueOf(idsOfIngredients.get(i)));
@@ -103,9 +106,20 @@ public class BasketService {
                 ingredientRepository.save(ingredientObject);
             }
 
-            card.getIngredients().add(cc);
-            basketRepository.save(card);
+            basket.getIngredients().add(cc);
+            basketRepository.save(basket);
         }
+
+        //pobieram obiekt RecipesPojo i zapisuje go do nowego obiektu
+        RecipesPojo recipesPojos = recipesService.getRecipesById(id);
+        Recipes recipes = Recipes
+                .builder()
+                .idRecipesAPI(recipesPojos.id)
+                .basket(basket)
+                .build();
+
+        basket.getRecipes().add(recipes);
+        basketRepository.save(basket);
     }
 
     // zapisuje Listę wartości odzywczych do tabeli Nutrition na podstawie id przepisu
@@ -129,6 +143,7 @@ public class BasketService {
             }
         }
     }
+
 
 
     //pobiera kartę produktów na podstawie id użytkownika

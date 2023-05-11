@@ -27,6 +27,7 @@ public class Basket {
     @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL)
     private List<Ingredient> ingredients = new ArrayList<>();
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL)
     private List<Recipes> recipes = new ArrayList<>();
     private Long idUser;

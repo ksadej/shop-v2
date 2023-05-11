@@ -1,6 +1,7 @@
 package com.example.shopv2.controller;
 
 import com.example.shopv2.model.Basket;
+import com.example.shopv2.model.Recipes;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.service.BasketService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +22,8 @@ public class BasketController {
     }
 
     // zapisuje w tabeli Ingredient składniki na podstawie id przepisu
-    @PostMapping(path = "/api/basket/all/{id}")
-    public void saveIngredientByRecipesId(@PathVariable(value = "id")Integer id){
+    @PostMapping(path = "/api/basket/v1/all/{id}")
+    public void saveIngredientAndRecipesByRecipesId(@PathVariable(value = "id")Integer id){
         basketService.saveRecipesAndIngredientsByRecipesId(id);
     }
 
@@ -35,7 +36,7 @@ public class BasketController {
     //zapisuje składniki oraz wartości odzywcze na podstawie id przepisu
     @PostMapping(path = "/api/basket/all/{id}")
     public void saveIngredientAndNutritionByRecipesId(@PathVariable(value = "id")Integer id){
-        basketService.saveIngredientsAndNutritionByRecipesId(id);
+        basketService.saveAllByRecipesId(id);
     }
 
     //zapisuje wartości odzywcze na podstawie id przepisu
@@ -46,13 +47,6 @@ public class BasketController {
 
 
     //testy
-//    @GetMapping(path = "/api/basket/nutrition/t/{id}")
-//    public ArrayList<Ingredient> getAllIngredientsByCardId(@PathVariable(value = "id")Long id){
-//        return basketService.get(id);
-//    }
 
-//    @GetMapping(path = "/api/basket/nutrition/t2/{id}")
-//    public Card getAllCards(@PathVariable(value = "id")Long id){
-//        return basetRepository.findByIdUser(id);
-//    }
+
 }

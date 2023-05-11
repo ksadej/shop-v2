@@ -1,7 +1,6 @@
-package com.example.shopv2.model;
+package com.example.shopv2.controller.dto;
 
 import com.example.shopv2.model.enums.MealTime;
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,19 +8,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.OffsetDateTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Entity
 @Builder
-@Table(name = "MEAL_CALENDAR")
-public class MealCalendar {
+public class MealCalendarResponse {
 
-    @Id
-    @Column(name = "MEAL_CALENDAR_ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private Integer idRecipes;
     private String day;
     private MealTime time;

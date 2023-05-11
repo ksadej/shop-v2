@@ -1,5 +1,6 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.mapper.NutritionMapper;
 import com.example.shopv2.model.Nutrition;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.NutritionRepository;
@@ -28,14 +29,16 @@ public class NutritionService {
     private final RestTemplate restTemplate;
     private final HttpHeaders httpHeaders;
     private final BasketRepository basketRepository;
+    private final NutritionMapper nutritionMapper;
     private final NutritionRepository nutritionRepository;
     @Autowired
     public NutritionService(RestTemplate restTemplate,
                             @Qualifier("recipesHeaders") HttpHeaders httpHeaders,
-                            BasketRepository basketRepository, NutritionRepository nutritionRepository) {
+                            BasketRepository basketRepository, NutritionMapper nutritionMapper, NutritionRepository nutritionRepository) {
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
         this.basketRepository = basketRepository;
+        this.nutritionMapper = nutritionMapper;
         this.nutritionRepository = nutritionRepository;
     }
 

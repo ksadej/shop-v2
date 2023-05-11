@@ -2,10 +2,12 @@ package com.example.shopv2.mapper;
 
 import com.example.shopv2.model.Nutrition;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Component
 public class NutritionMapper {
 
     public Nutrition nutritionPojoToNutrition(List<NutritionNutrientPojo> nutritionNutrientPojo, int i){
