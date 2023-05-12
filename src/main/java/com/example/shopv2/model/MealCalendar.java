@@ -1,5 +1,6 @@
 package com.example.shopv2.model;
 
+import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,7 +24,9 @@ public class MealCalendar {
     private Long id;
 
     private Integer idRecipes;
-    private String day;
+    @Enumerated(EnumType.STRING)
+    private Days day;
+    @Enumerated(EnumType.STRING)
     private MealTime time;
     private OffsetDateTime dataMeal;
 }

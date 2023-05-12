@@ -1,5 +1,6 @@
 package com.example.shopv2.controller.dto;
 
+import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +17,7 @@ public class MealCalendarRequest {
 
     private Long id;
     private Integer idRecipes;
-    private String day;
+    private Days day;
     private MealTime time;
     private OffsetDateTime dataMeal;
 }
