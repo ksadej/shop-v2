@@ -29,4 +29,11 @@ public class MealCalendar {
     @Enumerated(EnumType.STRING)
     private MealTime time;
     private OffsetDateTime dataMeal;
+
+    public MealCalendar(Integer idRecipes, Days day, MealTime time, OffsetDateTime dataMeal) {
+        this.idRecipes = idRecipes;
+        this.day = day;
+        this.time = time;
+        this.dataMeal = dataMeal;
+    }
 }

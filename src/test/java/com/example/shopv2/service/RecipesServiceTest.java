@@ -2,6 +2,7 @@ package com.example.shopv2.service;
 
 import com.example.shopv2.validator.RecipesValidator;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.http.HttpHeaders;
@@ -14,6 +15,7 @@ class RecipesServiceTest {
     private RestTemplate restTemplate;
 
     private HttpHeaders httpHeaders;
+    @BeforeEach
     public void setup(){
         recipesService = Mockito.mock(RecipesService.class);
 //    recipesService = new RecipesService(basketRepository, restTemplate, httpHeaders, recipesValidator);

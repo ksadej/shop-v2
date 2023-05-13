@@ -20,4 +20,11 @@ public class MealCalendarRequest {
     private Days day;
     private MealTime time;
     private OffsetDateTime dataMeal;
+
+    public MealCalendarRequest(Integer idRecipes, Days day, MealTime time, OffsetDateTime dataMeal) {
+        this.idRecipes = idRecipes;
+        this.day = day;
+        this.time = time;
+        this.dataMeal = dataMeal;
+    }
 }

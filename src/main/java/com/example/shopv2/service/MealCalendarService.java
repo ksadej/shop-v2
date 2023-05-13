@@ -2,17 +2,20 @@ package com.example.shopv2.service;
 
 import com.example.shopv2.controller.dto.MealCalendarRequest;
 import com.example.shopv2.controller.dto.MealCalendarResponse;
+import com.example.shopv2.exceptions.MealCalendarException;
 import com.example.shopv2.mapper.MealCalendarMapper;
 import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.repository.MealCalendarRepository;
 import com.example.shopv2.validator.MealCalendarValidator;
+import com.example.shopv2.validator.enums.MealCalendarEnum;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class MealCalendarService {
@@ -22,7 +25,9 @@ public class MealCalendarService {
     private final MealCalendarValidator mealCalendarValidator;
 
     @Autowired
-    public MealCalendarService(MealCalendarRepository mealCalendarRepository, MealCalendarMapper mealCalendarMapper, MealCalendarValidator mealCalendarValidator) {
+    public MealCalendarService(MealCalendarRepository mealCalendarRepository,
+                               MealCalendarMapper mealCalendarMapper,
+                               MealCalendarValidator mealCalendarValidator) {
         this.mealCalendarRepository = mealCalendarRepository;
         this.mealCalendarMapper = mealCalendarMapper;
         this.mealCalendarValidator = mealCalendarValidator;
@@ -30,14 +35,6 @@ public class MealCalendarService {
 
     public void saveMealCalendar(MealCalendarRequest mealCalendarRequest){
         mealCalendarValidator.saveMealCalendarValidator(mealCalendarRequest);
-
-        MealCalendar mealCalendar = mealCalendarMapper.requestToEntity(mealCalendarRequest);
-        mealCalendarRepository.save(mealCalendar);
-    }
-
-    public void saveMealCalendarTest(MealCalendarRequest mealCalendarRequest){
-        mealCalendarValidator.saveMealCalendarValidator(mealCalendarRequest);
-
 
         MealCalendar mealCalendar = mealCalendarMapper.requestToEntity(mealCalendarRequest);
         mealCalendarRepository.save(mealCalendar);
