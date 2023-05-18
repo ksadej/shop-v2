@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class MealCalendarService {
@@ -33,14 +33,17 @@ public class MealCalendarService {
         this.mealCalendarValidator = mealCalendarValidator;
     }
 
-    public void saveMealCalendar(MealCalendarRequest mealCalendarRequest){
+    public MealCalendar saveMealCalendar(MealCalendarRequest mealCalendarRequest){
         mealCalendarValidator.saveMealCalendarValidator(mealCalendarRequest);
 
         MealCalendar mealCalendar = mealCalendarMapper.requestToEntity(mealCalendarRequest);
-        mealCalendarRepository.save(mealCalendar);
+        return mealCalendarRepository.save(mealCalendar);
     }
 
-    public List<MealCalendarResponse> getByDayAndTime(String day, MealTime time){
+    public List<MealCalendarResponse> getByDayAndTime(Days day, MealTime time){
+
+        MealCalendarResponse mealCalendarResponse = new MealCalendarResponse(day, time);
+        mealCalendarValidator.getByDayAndTimeValidator(mealCalendarResponse);
         List<MealCalendar> mealCalendars = mealCalendarRepository.findByDayAndTime(day, time);
 
         List<MealCalendarResponse> calendarResponses = new ArrayList<>();
@@ -48,21 +51,27 @@ public class MealCalendarService {
         for(int i=0; i<mealCalendars.size(); i++) {
             calendarResponses.add(mealCalendarMapper.entityToResponse(mealCalendars, i)) ;
         }
-
         return calendarResponses;
     }
 
-
-
     public List<MealCalendarResponse> getCalendar(){
+
         List<MealCalendar> mealCalendars = mealCalendarRepository.findAll();
 
         List<MealCalendarResponse> calendarResponses = new ArrayList<>();
 
         for(int i=0; i<mealCalendars.size(); i++) {
-            calendarResponses.add(mealCalendarMapper.entityToResponse(mealCalendars, i)) ;
+            calendarResponses.add(mealCalendarMapper.entityToResponse(mealCalendars, i));
         }
 
         return calendarResponses;
     }
+
+    public void deleteMealCalendar(Long id) {
+
+        mealCalendarValidator.deleteMealCalendarValidator(id);
+        mealCalendarRepository.deleteById(id);
+    }
+
+
 }

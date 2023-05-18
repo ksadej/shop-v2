@@ -1,6 +1,6 @@
 package com.example.shopv2;
 
-import org.springframework.boot.CommandLineRunner;
+import com.example.shopv2.repository.RecipesRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
@@ -8,15 +8,12 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 @SpringBootApplication(exclude = {
 		SecurityAutoConfiguration.class
 })
-public class ShopV2Application implements CommandLineRunner {
+public class ShopV2Application{
 
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShopV2Application.class, args);
 	}
 
-	@Override
-	public void run(String...args) throws Exception {
 
-	}
 }

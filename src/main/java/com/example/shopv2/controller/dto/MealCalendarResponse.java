@@ -20,4 +20,16 @@ public class MealCalendarResponse {
     private Days day;
     private MealTime time;
     private OffsetDateTime dataMeal;
+
+    public MealCalendarResponse(Integer idRecipes, Days day, MealTime time, OffsetDateTime dataMeal) {
+        this.idRecipes = idRecipes;
+        this.day = day;
+        this.time = time;
+        this.dataMeal = dataMeal;
+    }
+
+    public MealCalendarResponse(Days day, MealTime time) {
+        this.day = day;
+        this.time = time;
+    }
 }
