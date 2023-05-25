@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,13 +49,17 @@ public class BasketService {
 
 
     // zapisuje składniki z przepisu na podstawie id przepisu
+    @Transactional
     public void saveRecipesAndIngredientsByRecipesId(Integer id){
         LOGGER.info("Saving ingredients by recipes ID");
+
         //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
         List<RecipesIngredientPojo> recipesIngredientPojo = ingredientService.getIngredientByRecipesId(id);
+        System.out.println("recipesIngredientPojo: "+recipesIngredientPojo);
 
         //pobieram obiekt RecipesPojo i zapisuje go do nowego obiektu
         RecipesPojo recipesPojos = recipesService.getRecipesById(id);
+        System.out.println("recipesPojos "+ recipesPojos);
 
         IngredientMapper ingredientMapper = new IngredientMapper();
         Basket basket = new Basket();
@@ -131,7 +136,6 @@ public class BasketService {
         System.out.println("Lista IDS składników: "+idsOfIngredients);
 
         NutritionMapper nutritionMapper = new NutritionMapper();
-        Ingredient ingredientObject = new Ingredient();
         ArrayList<NutritionNutrientPojo> nu;
         for(int i=0; i<idsOfIngredients.size(); i++){
             System.out.println("Wyszukano wartośści odzywcze nr "+i);

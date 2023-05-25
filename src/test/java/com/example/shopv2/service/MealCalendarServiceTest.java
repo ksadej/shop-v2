@@ -9,7 +9,6 @@ import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.repository.MealCalendarRepository;
 import com.example.shopv2.validator.MealCalendarValidator;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -25,12 +24,13 @@ class MealCalendarServiceTest {
 
     private MealCalendarRepository mealCalendarRepository;
     private MealCalendarService mealCalendarService;
+    private MealCalendarMapper mealCalendarMapper;
     MealCalendarValidator mealCalendarValidator = new MealCalendarValidator(mealCalendarRepository);
 
     @BeforeEach
     public void setup(){
         mealCalendarRepository = mock(MealCalendarRepository.class);
-        MealCalendarMapper mealCalendarMapper = mock(MealCalendarMapper.class);
+        mealCalendarMapper = mock(MealCalendarMapper.class);
         mealCalendarService = new MealCalendarService(mealCalendarRepository, mealCalendarMapper, mealCalendarValidator);
     }
 
