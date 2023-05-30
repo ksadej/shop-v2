@@ -9,6 +9,9 @@ public class MealCalendarException extends RuntimeException{
         this.errorCode = errorCode;
     }
 
+    public MealCalendarException(StringBuilder message, StringBuilder code) {
+    }
+
     public String getErrorCode() {
         return errorCode;
     }
