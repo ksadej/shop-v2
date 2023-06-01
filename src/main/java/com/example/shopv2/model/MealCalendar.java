@@ -2,7 +2,7 @@ package com.example.shopv2.model;
 
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
-import jakarta.persistence.*;
+import javax.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

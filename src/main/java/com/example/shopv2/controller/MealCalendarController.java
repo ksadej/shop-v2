@@ -9,6 +9,7 @@ import com.example.shopv2.repository.MealCalendarRepository;
 import com.example.shopv2.service.MealCalendarService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +28,7 @@ public class MealCalendarController {
         this.mealCalendarRepository = mealCalendarRepository;
     }
 
+
     @PostMapping(path = "/calendar")
     public MealCalendar saveMealCalendar(@RequestBody MealCalendarRequest mealCalendarRequest){
         return mealCalendarService.saveMealCalendar(mealCalendarRequest);
@@ -37,11 +39,13 @@ public class MealCalendarController {
         mealCalendarService.deleteMealCalendar(id);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path ="/calendar/{day}/{time}")
     public List<MealCalendarResponse> getByDayAndTime(@PathVariable Days day, @PathVariable MealTime time){
         return mealCalendarService.getByDayAndTime(day, time);
     }
 
+    @PreAuthorize("hasRole('NORMAL')")
     @GetMapping(path ="/calendar")
     public List<MealCalendarResponse> getCalendar(){
         return mealCalendarService.getCalendar();
