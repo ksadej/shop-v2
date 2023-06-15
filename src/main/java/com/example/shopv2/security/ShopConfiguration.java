@@ -14,7 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
-//https://www.youtube.com/watch?v=lA18U8dGKF8
+
 @Configuration
 @EnableWebSecurity
 public class ShopConfiguration extends WebSecurityConfigurerAdapter {
