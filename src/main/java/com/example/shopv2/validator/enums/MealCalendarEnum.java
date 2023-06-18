@@ -4,9 +4,10 @@ public enum MealCalendarEnum {
 
     ID_RECIPES("Invalid idRecipes value"),
     MEAL_DATE("Invalid meal date value"),
-    TIME("Invalid time value"),
+    TIME_MEAL("Invalid time value"),
     DAYS("Invalid day value"),
-    ID("Invalid ID value for delete");
+    ID("Invalid ID value for delete"),
+    DATA_MEAL("Invalid DATE MEAL");
 
     private final String message;
 

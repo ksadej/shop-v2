@@ -1,4 +1,4 @@
-package com.example.shopv2.validator.MealCalendarChain;
+package com.example.shopv2.validator;
 
 public class ValidatorMessage {
 
