@@ -42,6 +42,7 @@ public class MealCalendarService {
         LOGGER.debug("MealCalendarRequest: "+mealCalendarRequest);
         mealCalendarValidator.saveMealCalendarValidator(mealCalendarRequest);
 
+//        mealCalendarValidator.saveMealCalendarValidator2(mealCalendarRequest);
         MealCalendar mealCalendar = mealCalendarMapper.requestToEntity(mealCalendarRequest);
         LOGGER.debug("Data saved: "+mealCalendar);
         return mealCalendarRepository.save(mealCalendar);

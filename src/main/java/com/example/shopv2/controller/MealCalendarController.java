@@ -39,13 +39,13 @@ public class MealCalendarController {
         mealCalendarService.deleteMealCalendar(id);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping(path ="/calendar/{day}/{time}")
     public List<MealCalendarResponse> getByDayAndTime(@PathVariable Days day, @PathVariable MealTime time){
         return mealCalendarService.getByDayAndTime(day, time);
     }
 
-    @PreAuthorize("hasRole('NORMAL')")
+//    @PreAuthorize("hasRole('NORMAL')")
     @GetMapping(path ="/calendar")
     public List<MealCalendarResponse> getCalendar(){
         return mealCalendarService.getCalendar();

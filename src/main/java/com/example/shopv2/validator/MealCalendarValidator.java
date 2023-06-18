@@ -4,6 +4,9 @@ import com.example.shopv2.controller.dto.MealCalendarRequest;
 import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.exceptions.MealCalendarException;
 import com.example.shopv2.repository.MealCalendarRepository;
+import com.example.shopv2.validator.MealCalendarChain.TimeValidator;
+import com.example.shopv2.validator.MealCalendarChain.Validator;
+import com.example.shopv2.validator.MealCalendarChain.ValidatorMessage;
 import com.example.shopv2.validator.enums.MealCalendarEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -60,6 +63,13 @@ public class MealCalendarValidator {
         if((id == null) || (id <=0) || (!mealCalendarRepository.existsById(id))){
             throw new MealCalendarException(MealCalendarEnum.ID.getMessage(),  "Error code: 8");
         }
+    }
+
+    private Validator validator = new TimeValidator();
+
+    public void saveMealCalendarValidator2(MealCalendarRequest mealCalendarRequest){
+
+        ValidatorMessage validatorMessage = validator.valid(mealCalendarRequest, new ValidatorMessage());
     }
 
 }
