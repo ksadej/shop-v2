@@ -11,17 +11,6 @@ import java.util.List;
 @Component
 public class MealCalendarMapper implements MealCalendarMapperImpl{
 
-    public MealCalendarResponse entityToResponse(List<MealCalendar> mealCalendar, int i){
-        return MealCalendarResponse
-                .builder()
-                .id(mealCalendar.get(i).getId())
-                .idRecipes(mealCalendar.get(i).getIdRecipes())
-                .day(mealCalendar.get(i).getDay())
-                .time(mealCalendar.get(i).getTime())
-                .dataMeal(mealCalendar.get(i).getDataMeal())
-                .build();
-    }
-
     @Override
     public MealCalendar requestToEntity(MealCalendarRequest mealCalendarRequest){
         return MealCalendar
@@ -32,7 +21,6 @@ public class MealCalendarMapper implements MealCalendarMapperImpl{
                 .dataMeal(mealCalendarRequest.getDataMeal())
                 .build();
     }
-
 
     @Override
     public MealCalendarResponse entityToResponse(MealCalendar mealCalendar){

@@ -39,26 +39,6 @@ public class RecipesService {
         this.recipesValidator = recipesValidator;
     }
 
-    //getting list of product by User Id Basket and finding on this list of product proposed recipes
-//    public List<RecipesPojo> getRecipesByIngredients(Long id){
-//        LOGGER.info("Getting recipes by ingredients id");
-//        LOGGER.debug("Ingredient id: "+id);
-//        List<String> products = basketService.getListOfProductNames(id);
-//        String ingredients = products.toString();
-//
-//        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-//
-//        ResponseEntity<RecipesPojo[]> entity = restTemplate
-//                .exchange("https://api.spoonacular.com/recipes/findByIngredients?ingredients=" + ingredients,
-//                        HttpMethod.GET,
-//                        httpEntity,
-//                        RecipesPojo[].class);
-//
-//        List<RecipesPojo> recipesPojo = Arrays.stream(Objects.requireNonNull(entity.getBody())).toList();
-//
-//        return recipesPojo;
-//    }
-
     public List<RecipesPojo> getRecipesByType(String type){
         recipesValidator.getRecipesByTypeValidate(type);
 

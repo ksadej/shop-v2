@@ -53,31 +53,21 @@ public class MealCalendarService {
     public List<MealCalendarResponse> getByDayAndTime(Days day, MealTime time){
         LOGGER.info("Method getByDayAndTime");
         LOGGER.debug("Days: "+day+" Meal time: "+time);
-        MealCalendarResponse mealCalendarResponse = new MealCalendarResponse(day, time);
-        mealCalendarValidator.getByDayAndTimeValidator(mealCalendarResponse);
-        List<MealCalendar> mealCalendars = mealCalendarRepository.findByDayAndTime(day, time);
+        mealCalendarValidator.getByDayAndTimeValidator(new MealCalendarResponse(day, time));
 
-        List<MealCalendarResponse> calendarResponses = new ArrayList<>();
-
-        for(int i=0; i<mealCalendars.size(); i++) {
-            calendarResponses.add(mealCalendarMapper.entityToResponse(mealCalendars, i)) ;
-        }
-        LOGGER.debug("Response from getByDayAndTime: "+calendarResponses);
-        return calendarResponses;
+        return mealCalendarRepository.findByDayAndTime(day, time)
+                .stream()
+                .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
+                .collect(Collectors.toList());
     }
 
     public List<MealCalendarResponse> getCalendar(){
         LOGGER.info("Method getCalendar");
-        List<MealCalendar> mealCalendars = mealCalendarRepository.findAll();
 
-        List<MealCalendarResponse> calendarResponses = new ArrayList<>();
-
-        for(int i=0; i<mealCalendars.size(); i++) {
-            calendarResponses.add(mealCalendarMapper.entityToResponse(mealCalendars, i));
-        }
-
-        LOGGER.debug("Calendar returned: "+calendarResponses);
-        return calendarResponses;
+        return mealCalendarRepository.findAll()
+                .stream()
+                .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
+                .collect(Collectors.toList());
     }
 
     public void deleteMealCalendar(Long id) {
