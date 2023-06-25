@@ -51,4 +51,8 @@ public class MealCalendarController {
         return mealCalendarService.getCalendar();
     }
 
+    @GetMapping(path = "/calendar/filter")
+    public List<MealCalendarResponse> getMealsBetweenDate(@RequestParam String fromDate, @RequestParam String toDate){
+        return mealCalendarService.getMealsBetweenDate(fromDate, toDate);
+    }
 }

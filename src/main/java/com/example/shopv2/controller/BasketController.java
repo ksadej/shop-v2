@@ -13,12 +13,10 @@ import java.util.List;
 public class BasketController {
 
     private final BasketService basketService;
-    private final BasketRepository basketRepository;
 
     @Autowired
-    public BasketController(BasketService basketService, BasketRepository basketRepository) {
+    public BasketController(BasketService basketService) {
         this.basketService = basketService;
-        this.basketRepository = basketRepository;
     }
 
     // zapisuje w tabeli Ingredient składniki na podstawie id przepisu

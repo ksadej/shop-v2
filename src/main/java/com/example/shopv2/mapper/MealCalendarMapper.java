@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class MealCalendarMapper {
+public class MealCalendarMapper implements MealCalendarMapperImpl{
 
     public MealCalendarResponse entityToResponse(List<MealCalendar> mealCalendar, int i){
         return MealCalendarResponse
@@ -22,6 +22,7 @@ public class MealCalendarMapper {
                 .build();
     }
 
+    @Override
     public MealCalendar requestToEntity(MealCalendarRequest mealCalendarRequest){
         return MealCalendar
                 .builder()
@@ -29,6 +30,19 @@ public class MealCalendarMapper {
                 .day(Days.valueOf(mealCalendarRequest.getDay().name().toUpperCase()))
                 .time(mealCalendarRequest.getTime())
                 .dataMeal(mealCalendarRequest.getDataMeal())
+                .build();
+    }
+
+
+    @Override
+    public MealCalendarResponse entityToResponse(MealCalendar mealCalendar){
+        return MealCalendarResponse
+                .builder()
+                .id(mealCalendar.getId())
+                .idRecipes(mealCalendar.getIdRecipes())
+                .day(mealCalendar.getDay())
+                .time(mealCalendar.getTime())
+                .dataMeal(mealCalendar.getDataMeal())
                 .build();
     }
 }

@@ -15,9 +15,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MealCalendarService {
@@ -85,5 +87,23 @@ public class MealCalendarService {
         mealCalendarRepository.deleteById(id);
     }
 
+    public List<MealCalendarResponse> getMealsBetweenDate(String fromDate, String toDate){
+        final String dateSuffix = "T00:00:00.001Z";
+        final OffsetDateTime fData = OffsetDateTime.parse(fromDate + dateSuffix);
+        final OffsetDateTime tDate = OffsetDateTime.parse(toDate + dateSuffix);
 
+        List<MealCalendar>  mealCalendars= mealCalendarRepository.findAllByBetweenDate(fData, tDate);
+        List<MealCalendarResponse> calendarResponses = new ArrayList<>();
+
+//        for(int i=0; i< mealCalendars.size(); i++){
+//            calendarResponses.add(mealCalendarMapper.entityToResponse(mealCalendars, i));
+//        }
+//        return calendarResponses;
+
+        return mealCalendarRepository.findAllByBetweenDate(fData, tDate)
+                .stream()
+                .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
+                .collect(Collectors.toList());
+
+    }
 }

@@ -14,9 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.from;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -147,6 +149,26 @@ class MealCalendarServiceTest {
         //then
        assertThat(result)
                .hasSize(1);
+    }
+
+    @Test
+    void getMealsBetweenDate_getDataBetweenDate_returnData(){
+        //given
+        final String fromDate = "2023-01-04";
+        final String toDate = "2023-01-05";
+        final String dateSuffix = "T00:00:00.001Z";
+        final OffsetDateTime fDate = OffsetDateTime.parse(fromDate + dateSuffix);
+        final OffsetDateTime tDate = OffsetDateTime.parse(toDate + dateSuffix);
+        final MealCalendar mealCalendarOne =
+                new MealCalendar(7L, 12, Days.FRIDAY, MealTime.EVENING, OffsetDateTime.parse("2023-01-05T10:12:30+01:00"));
+        when(mealCalendarRepository.findAllByBetweenDate(fDate, tDate)).thenReturn(List.of(mealCalendarOne));
+
+        //when
+        mealCalendarService.getMealsBetweenDate(fromDate, toDate);
+
+        //then
+        verify(mealCalendarRepository, times(1)).findAllByBetweenDate(fDate, tDate);
+
     }
 
 }
