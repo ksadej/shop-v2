@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class IngredientMapper {
+public class IngredientMapper implements IngredientMapperImpl{
 
     public Ingredient ingredientPojoToIngredient(List<RecipesIngredientPojo> recipesIngredientPojo, int i){
         return Ingredient
@@ -20,6 +20,21 @@ public class IngredientMapper {
                 .unit(recipesIngredientPojo.stream().map(c -> c.getUnit()).toList().get(i))
                 .original(recipesIngredientPojo.stream().map(c -> c.getOriginal()).toList().get(i))
                 .idIngredientAPI(recipesIngredientPojo.stream().map(c -> c.getId()).toList().get(i))
+                .build();
+    }
+
+    @Override
+    public Ingredient requestToEntity(RecipesIngredientPojo recipesIngredientPojo) {
+        return Ingredient
+                .builder()
+                .aisle(recipesIngredientPojo.getAisle())
+                .amount(recipesIngredientPojo.getAmount())
+                .name(recipesIngredientPojo.getName())
+                .consistency(recipesIngredientPojo.getConsistency())
+                .image(recipesIngredientPojo.getImage())
+                .unit(recipesIngredientPojo.getUnit())
+                .original(recipesIngredientPojo.getOriginal())
+                .idIngredientAPI(recipesIngredientPojo.getId())
                 .build();
     }
 }

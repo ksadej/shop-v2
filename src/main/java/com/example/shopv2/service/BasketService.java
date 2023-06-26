@@ -81,6 +81,44 @@ public class BasketService {
         basketRepository.save(basket);
     }
 
+    @Transactional
+    public void saveRecipesAndIngredientsByRecipesIdTEST(Integer id){
+        LOGGER.info("Saving ingredients by recipes ID");
+
+        //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
+        List<RecipesIngredientPojo> recipesIngredientPojo = ingredientService.getIngredientByRecipesId(id);
+        System.out.println("recipesIngredientPojo: "+recipesIngredientPojo);
+
+        //pobieram obiekt RecipesPojo i zapisuje go do nowego obiektu
+        RecipesPojo recipesPojos = recipesService.getRecipesById(id);
+        System.out.println("recipesPojos "+ recipesPojos);
+
+        IngredientMapper ingredientMapper = new IngredientMapper();
+        Basket basket = new Basket();
+        for(int i=0; i< recipesIngredientPojo.size(); i++){
+            Ingredient ingredientObject = ingredientMapper.ingredientPojoToIngredient(recipesIngredientPojo, i);
+            ingredientObject.setBasket(basket);
+
+            basket.getIngredients().add(ingredientObject);
+            basketRepository.save(basket);
+        }
+
+        List<Ingredient> ing = ingredientService.getIngredientByRecipesId(id)
+                .stream()
+                .map(IngredientMapper -> ingredientMapper.requestToEntity(IngredientMapper))
+                .collect(Collectors.toList());
+
+
+        Recipes recipes = Recipes
+                .builder()
+                .idRecipesAPI(recipesPojos.id)
+                .basket(basket)
+                .build();
+
+        basket.getRecipes().add(recipes);
+        basketRepository.save(basket);
+    }
+
 
     // zapisuje listę składników wraz z wartościami z przepisu na podstawie id przepisu
     public void saveAllByRecipesId(Integer id){
