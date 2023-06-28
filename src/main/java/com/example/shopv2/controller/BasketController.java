@@ -23,6 +23,7 @@ public class BasketController {
     @PostMapping(path = "/api/basket/v1/all/{id}")
     public void saveIngredientAndRecipesByRecipesId(@PathVariable(value = "id")Integer id){
         basketService.saveRecipesAndIngredientsByRecipesId(id);
+
     }
 
     //pobiera wszystkie składniki recepty na podstawie id użytkownika
@@ -45,6 +46,9 @@ public class BasketController {
 
 
     //testy
-
+    @PostMapping(path = "/api/basket/v1/TEST/{id}")
+    public void saveIngredientAndRecipesByRecipesIdTEST(@PathVariable(value = "id")Integer id){
+        basketService.saveRecipesInToBasket(id);
+    }
 
 }

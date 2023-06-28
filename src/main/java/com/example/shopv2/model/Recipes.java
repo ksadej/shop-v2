@@ -26,4 +26,9 @@ public class Recipes {
     private Basket basket;
 
     private Integer idRecipesAPI;
+
+
+    public Recipes(Integer idRecipesAPI) {
+        this.idRecipesAPI = idRecipesAPI;
+    }
 }

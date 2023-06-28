@@ -20,4 +20,14 @@ public class NutritionMapper {
                 .unit(nutritionNutrientPojo.stream().map(x -> x.getUnit()).toList().get(i))
                 .build();
     }
+
+    public Nutrition requestToEntity(NutritionNutrientPojo nutritionNutrientPojo){
+        return Nutrition
+                .builder()
+                .name(nutritionNutrientPojo.getName())
+                .amount(nutritionNutrientPojo.getAmount())
+                .percentOfDailyNeeds(nutritionNutrientPojo.getPercentOfDailyNeeds())
+                .unit(nutritionNutrientPojo.getUnit())
+                .build();
+    }
 }
