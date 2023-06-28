@@ -80,6 +80,31 @@ public class BasketService {
         basketRepository.save(basket);
     }
 
+    // zapisuje Listę wartości odzywczych do tabeli Nutrition na podstawie id przepisu
+    public void saveNutritionByIngredientId(Integer id){
+        //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
+        List<RecipesIngredientPojo> recipesIngredientPojos = ingredientService.getIngredientByRecipesId(id);
+        List<Integer> idsOfIngredients = recipesIngredientPojos
+                .stream()
+                .map(x -> x.getId())
+                .collect(Collectors.toList());
+
+        NutritionMapper nutritionMapper = new NutritionMapper();
+        ArrayList<NutritionNutrientPojo> nu = null;
+        for(int i=0; i<idsOfIngredients.size(); i++){
+            nu = nutritionService.getNutritionByIngredientId(Long.valueOf(idsOfIngredients.get(i)));
+        }
+
+        Ingredient ingredient = new Ingredient();
+        List<Nutrition> nutritions = nu.stream()
+                .map(NutritionMapper -> nutritionMapper.requestToEntity(NutritionMapper))
+                .peek(x ->x.setIngredient(ingredient))
+                .collect(Collectors.toList());
+
+        ingredient.setNutrition(nutritions);
+        ingredientRepository.save(ingredient);
+    }
+
     // zapisuje listę składników wraz z wartościami z przepisu na podstawie id przepisu
     public void saveAllByRecipesId(Integer id){
 
@@ -125,68 +150,8 @@ public class BasketService {
         basketRepository.save(basket);
     }
 
-    // zapisuje Listę wartości odzywczych do tabeli Nutrition na podstawie id przepisu
-    public void saveNutritionByIngredientId(Integer id){
-
-        //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
-        List<RecipesIngredientPojo> recipesIngredientPojos = ingredientService.getIngredientByRecipesId(id);
-        List<Integer> idsOfIngredients = recipesIngredientPojos.stream().map(x -> x.getId()).collect(Collectors.toList());
-        System.out.println("Lista IDS składników: "+idsOfIngredients);
-
-        NutritionMapper nutritionMapper = new NutritionMapper();
-        ArrayList<NutritionNutrientPojo> nu;
-        for(int i=0; i<idsOfIngredients.size(); i++){
-            System.out.println("Wyszukano wartośści odzywcze nr "+i);
-            nu = nutritionService.getNutritionByIngredientId(Long.valueOf(idsOfIngredients.get(i)));
-
-            for(int j=0; j<nu.size(); j++){
-                Nutrition nutrition = nutritionMapper.nutritionPojoToNutrition(nu, j);
-                nutritionRepository.save(nutrition);
-            }
-        }
-    }
-
     //pobiera kartę produktów na podstawie id użytkownika
     public List<Basket> getCardByUserId(Long id){
         return basketRepository.findAllByIdUser(id);
-    }
-
-
-    public void saveNutritionByIngredientIdTEST(Integer id){
-        //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
-        List<RecipesIngredientPojo> recipesIngredientPojos = ingredientService.getIngredientByRecipesId(id);
-        List<Integer> idsOfIngredients = recipesIngredientPojos.stream().map(x -> x.getId()).collect(Collectors.toList());
-        System.out.println("Lista IDS składników: "+idsOfIngredients);
-
-        NutritionMapper nutritionMapper = new NutritionMapper();
-        ArrayList<NutritionNutrientPojo> nu;
-        for(int i=0; i<idsOfIngredients.size(); i++){
-            System.out.println("Wyszukano wartośści odzywcze nr "+i);
-            nu = nutritionService.getNutritionByIngredientId(Long.valueOf(idsOfIngredients.get(i)));
-
-            for(int j=0; j<nu.size(); j++){
-                Nutrition nutrition = nutritionMapper.nutritionPojoToNutrition(nu, j);
-                nutritionRepository.save(nutrition);
-            }
-        }
-
-        ///Nutritions
-//        NutritionMapper nutritionMapper = new NutritionMapper();
-//        Ingredient ingredient = new Ingredient();
-//        List<Long> ingredientsIds = ingredients.stream().map(x ->x.getId()).collect(Collectors.toList());
-//        List<NutritionNutrientPojo> nutritionNutrientPojos = new ArrayList<>();
-//        for(int i=0; i<ingredientsIds.size(); i++){
-//            nutritionNutrientPojos = nutritionService.getNutritionByIngredientId(ingredientsIds.get(i));
-//        }
-//
-//
-//        List<Nutrition> nutritions = nutritionNutrientPojos
-//                .stream()
-//                        .map(NutritionMapper -> nutritionMapper.requestToEntity(NutritionMapper))
-//                                .collect(Collectors.toList());
-//        ///End of Nutritions
-
-//        ingredient.setNutrition(nutritions);
-//        ingredientRepository.save(ingredient);
     }
 }

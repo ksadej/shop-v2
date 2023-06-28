@@ -44,11 +44,4 @@ public class BasketController {
         basketService.saveNutritionByIngredientId(id);
     }
 
-
-    //testy
-    @PostMapping(path = "/api/basket/v1/TEST/{id}")
-    public void saveIngredientAndRecipesByRecipesIdTEST(@PathVariable(value = "id")Integer id){
-        basketService.saveRecipesInToBasket(id);
-    }
-
 }
