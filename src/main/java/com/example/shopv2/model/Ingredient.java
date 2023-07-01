@@ -1,5 +1,6 @@
 package com.example.shopv2.model;
 
+import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -36,7 +37,6 @@ public class Ingredient {
     @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL)
     private List<Nutrition> nutrition = new ArrayList<>();
 
-
     private Integer idIngredientAPI;
     private String aisle;
     private String image;
@@ -47,4 +47,5 @@ public class Ingredient {
     private String originalName;
     private double amount;
     private String unit;
+
 }
