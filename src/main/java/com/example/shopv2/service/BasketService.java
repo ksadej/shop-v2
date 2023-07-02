@@ -50,7 +50,6 @@ public class BasketService {
         this.nutritionRepository = nutritionRepository;
     }
 
-
     @Transactional
     public void saveRecipesAndIngredientsByRecipesId(Integer id) {
         LOGGER.info("Saving ingredients in basket by recipes ID");
@@ -82,27 +81,14 @@ public class BasketService {
 
     // zapisuje Listę wartości odzywczych do tabeli Nutrition na podstawie id przepisu
     public void saveNutritionByIngredientId(Integer id) {
-        //zapisuje do Listy, listę składników przepisu pobranego na podstawie id recepty
-        List<RecipesIngredientPojo> recipesIngredientPojos = ingredientService.getIngredientByRecipesId(id);
-        List<Integer> idsOfIngredients = recipesIngredientPojos
-                .stream()
-                .map(x -> x.getId())
-                .collect(Collectors.toList());
 
+        ArrayList<NutritionNutrientPojo> nutritionList = nutritionService.getNutritionByIngredientId(Long.valueOf(id));
         NutritionMapper nutritionMapper = new NutritionMapper();
-        ArrayList<NutritionNutrientPojo> nu = null;
-        for (int i = 0; i < idsOfIngredients.size(); i++) {
-            nu = nutritionService.getNutritionByIngredientId(Long.valueOf(idsOfIngredients.get(i)));
-
-            Ingredient ingredient = new Ingredient();
-            List<Nutrition> nutritions = nu.stream()
-                    .map(NutritionMapper -> nutritionMapper.requestToEntity(NutritionMapper))
-//                    .peek(x ->x.setIngredient(ingredient))
-                    .collect(Collectors.toList());
-
-            nutritions.stream()
-                    .forEach(nutritionRepository::save);
-        }
+        nutritionList
+                .stream()
+                .map(NutritionMapper -> nutritionMapper.requestToEntity(NutritionMapper))
+                .peek(x ->x.setIdIngredientAPI(id))
+                .forEach(NutritionRepository -> nutritionRepository.save(NutritionRepository));
     }
 
     // zapisuje listę składników wraz z wartościami z przepisu na podstawie id przepisu
@@ -130,36 +116,34 @@ public class BasketService {
                 .collect(Collectors.toList());
         ///End of Ingredients
 
-        basket.setRecipes(List.of(ing));
-        basket.setIngredients(ingredients);
-
         ///Nutrition
-        //pobiera listę id recept
-        List<Integer> idsOfIngredients = recipesIngredientPojo.stream().map(x -> x.getId()).collect(Collectors.toList());
-        NutritionMapper nutritionMapper = new NutritionMapper();
-        List<Nutrition> nutritionList = new ArrayList<>();
-        ArrayList<NutritionNutrientPojo> nu = null;
-        for (int i = 0; i < idsOfIngredients.size(); i++) {
-            //wyszukuje składniki na podstawie id recepty
-            nu = nutritionService.getNutritionByIngredientId(Long.valueOf(idsOfIngredients.get(i)));
-            Ingredient ingredient = new Ingredient();
-            Nutrition nutritions = Nutrition
+        List<Integer> ids = ingredientService.getIngredientByRecipesId(id)
+                .stream()
+                .map(x ->x.getId())
+                .toList();
+
+        ArrayList<NutritionNutrientPojo> nutritionByIngredientId =null;
+        for(int i=0; i<ids.size(); i++){
+            nutritionByIngredientId = nutritionService.getNutritionByIngredientId(Long.valueOf(ids.get(i)));
+        }
+
+        List<Nutrition> nutritions = new ArrayList<>();
+        for(int i=0; i<nutritionByIngredientId.size(); i++){
+            Nutrition nutrition = Nutrition
                     .builder()
-                    .name(nu.get(i).getName())
-                    .ingredient(ingredient)
+                    .name(nutritionByIngredientId.get(i).getName())
+                    .basket(basket)
                     .build();
-//        nutritionList.add(nutritions);
-            ingredient.getNutrition().add(nutritions);
-            basket.setIngredients(List.of(ingredient));
+
+            nutritions.add(nutrition);
         }
         ///End of Nutrition
 
+        basket.setRecipes(List.of(ing));
+        basket.setIngredients(ingredients);
+        basket.setNutritionList(nutritions);
         basketRepository.save(basket);
     }
-
-
-
-
 
     //pobiera kartę produktów na podstawie id użytkownika
     public List<Basket> getCardByUserId(Long id){

@@ -25,8 +25,16 @@ public class Nutrition {
     @ManyToOne
     @JoinColumn(name ="INGREDIENT_ID")
     private Ingredient ingredient;
+
+    @JsonBackReference
+    @ManyToOne
+    @JoinColumn(name ="BASKET_ID")
+    private Basket basket;
+
     private String name;
     private double amount;
     private String unit;
     private double percentOfDailyNeeds;
+    private Integer idIngredientAPI;
+
 }

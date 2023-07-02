@@ -30,4 +30,6 @@ public class NutritionController {
     public void saveNutritionByIngredientId(@PathVariable Long id){
         nutritionService.saveNutritionByIngredientId(id);
     }
+
+
 }

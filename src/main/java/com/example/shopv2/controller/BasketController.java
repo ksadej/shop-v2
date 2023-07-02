@@ -1,11 +1,13 @@
 package com.example.shopv2.controller;
 
 import com.example.shopv2.model.Basket;
-import com.example.shopv2.model.Recipes;
-import com.example.shopv2.repository.BasketRepository;
+import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.service.BasketService;
+import com.example.shopv2.service.NutritionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -13,10 +15,12 @@ import java.util.List;
 public class BasketController {
 
     private final BasketService basketService;
+    private final NutritionService nutritionService;
 
     @Autowired
-    public BasketController(BasketService basketService) {
+    public BasketController(BasketService basketService, NutritionService nutritionService) {
         this.basketService = basketService;
+        this.nutritionService = nutritionService;
     }
 
     // zapisuje w tabeli Ingredient składniki na podstawie id przepisu
@@ -44,5 +48,9 @@ public class BasketController {
         basketService.saveNutritionByIngredientId(id);
     }
 
+    @GetMapping(path = "/api/basket/TEST")
+    public void getAllIngredientsByUserIdTEST(){
+        basketService.saveIngredientWithNutritionByRecipesId();
+    }
 
 }
