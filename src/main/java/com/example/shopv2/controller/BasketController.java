@@ -48,9 +48,4 @@ public class BasketController {
         basketService.saveNutritionByIngredientId(id);
     }
 
-    @GetMapping(path = "/api/basket/TEST")
-    public void getAllIngredientsByUserIdTEST(){
-        basketService.saveIngredientWithNutritionByRecipesId();
-    }
-
 }
