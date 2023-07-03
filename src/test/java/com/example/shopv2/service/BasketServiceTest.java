@@ -1,13 +1,12 @@
 package com.example.shopv2.service;
 
 import com.example.shopv2.model.Basket;
-import com.example.shopv2.model.Ingredient;
-import com.example.shopv2.model.Recipes;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
+import com.example.shopv2.validator.BasketValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -18,8 +17,6 @@ import java.util.List;
 
 import static org.mockito.Mockito.*;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class BasketServiceTest {
 
     private BasketService basketService;
@@ -29,6 +26,7 @@ class BasketServiceTest {
     private IngredientService ingredientService;
     private IngredientRepository ingredientRepository;
     private NutritionRepository nutritionRepository;
+    private BasketValidator basketValidator;
     @BeforeEach
     public void setup(){
         basketRepository = Mockito.mock(BasketRepository.class);
@@ -39,56 +37,53 @@ class BasketServiceTest {
         nutritionRepository = Mockito.mock(NutritionRepository.class);
         basketService = new BasketService(basketRepository, recipesService,
                 nutritionService, ingredientService,
-                ingredientRepository, nutritionRepository);
+                ingredientRepository, nutritionRepository, basketValidator);
     }
 
     @Test
     void saveRecipesAndIngredientsByRecipesId_saveObject_saved(){
         //given
-        RecipesIngredientPojo recipesIngredientPojo1 = RecipesIngredientPojo
-                .builder()
-                .name("name1")
-                .build();
-
-        List<RecipesIngredientPojo> recipesIngredientPojoList = new ArrayList<>();
-        recipesIngredientPojoList.add(recipesIngredientPojo1);
-        RecipesPojo recipesPojo = new RecipesPojo();
-
-        Integer id = 22;
-        when(ingredientService.getIngredientByRecipesId(id)).thenReturn(recipesIngredientPojoList);
-        when(recipesService.getRecipesById(id)).thenReturn(recipesPojo);
-
         //when
-        basketService.saveRecipesAndIngredientsByRecipesId(id);
+        basketService.saveRecipesAndIngredientsByRecipesId(anyInt());
 
         //then
-        ArgumentCaptor<Basket> argumentCaptor1 = ArgumentCaptor.forClass(Basket.class);
-        verify(basketRepository, times(2)).save(argumentCaptor1.capture());
+        ArgumentCaptor<Basket> argumentCaptor = ArgumentCaptor.forClass(Basket.class);
+        verify(basketRepository, times(1)).save(argumentCaptor.capture());
     }
 
-
     @Test
-    void saveAllByRecipesId_saveObject_saved(){
+    void saveRecipesAndIngredientsByRecipesId_saveObject_saved2(){
         //given
+        final Integer recipesId =1212;
+
         RecipesIngredientPojo recipesIngredientPojo1 = RecipesIngredientPojo
                 .builder()
                 .name("name1")
                 .build();
 
-        List<RecipesIngredientPojo> recipesIngredientPojoList = new ArrayList<>();
-        recipesIngredientPojoList.add(recipesIngredientPojo1);
-        RecipesPojo recipesPojo = new RecipesPojo();
-        Integer id = 22;
-
-        when(ingredientService.getIngredientByRecipesId(id)).thenReturn(recipesIngredientPojoList);
-        when(recipesService.getRecipesById(id)).thenReturn(recipesPojo);
+        when(ingredientService.getIngredientByRecipesId(recipesId)).thenReturn(List.of(recipesIngredientPojo1));
+        when(recipesService.getRecipesById(recipesId)).thenReturn(new RecipesPojo());
 
         //when
-        basketService.saveAllByRecipesId(id);
+        basketService.saveRecipesAndIngredientsByRecipesId(recipesId);
+
+        //then
+        ArgumentCaptor<Basket> argumentCaptor = ArgumentCaptor.forClass(Basket.class);
+        verify(basketRepository, times(1)).save(argumentCaptor.capture());
+    }
+
+    @Test
+    void saveAllByRecipesId_saveObject_checkIfSaved(){
+        //given
+        when(ingredientService.getIngredientByRecipesId(anyInt())).thenReturn(List.of(new RecipesIngredientPojo()));
+        when(recipesService.getRecipesById(anyInt())).thenReturn(new RecipesPojo());
+
+        //when
+        basketService.saveAllByRecipesId(anyInt());
 
         //then
         ArgumentCaptor<Basket> argumentCaptor1 = ArgumentCaptor.forClass(Basket.class);
-        verify(basketRepository, times(2)).save(argumentCaptor1.capture());
+        verify(basketRepository, times(1)).save(argumentCaptor1.capture());
     }
 
     @Test

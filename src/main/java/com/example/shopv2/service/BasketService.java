@@ -6,19 +6,17 @@ import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
 import com.example.shopv2.model.Recipes;
-import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
+import com.example.shopv2.validator.BasketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.swing.text.html.HTMLDocument;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -34,6 +32,7 @@ public class BasketService {
     private final IngredientService ingredientService;
     private final IngredientRepository ingredientRepository;
     private final NutritionRepository nutritionRepository;
+    private final BasketValidator basketValidator;
 
     @Autowired
     public BasketService(BasketRepository basketRepository,
@@ -41,18 +40,20 @@ public class BasketService {
                          NutritionService nutritionService,
                          IngredientService ingredientService,
                          IngredientRepository ingredientRepository,
-                         NutritionRepository nutritionRepository) {
+                         NutritionRepository nutritionRepository, BasketValidator basketValidator) {
         this.basketRepository = basketRepository;
         this.recipesService = recipesService;
         this.nutritionService = nutritionService;
         this.ingredientService = ingredientService;
         this.ingredientRepository = ingredientRepository;
         this.nutritionRepository = nutritionRepository;
+        this.basketValidator = basketValidator;
     }
 
     @Transactional
     public void saveRecipesAndIngredientsByRecipesId(Integer id) {
         LOGGER.info("Saving ingredients in basket by recipes ID");
+        basketValidator.basketDataValidator(id);
 
         Basket basket = new Basket();
 
@@ -81,6 +82,8 @@ public class BasketService {
 
     // zapisuje Listę wartości odzywczych do tabeli Nutrition na podstawie id przepisu
     public void saveNutritionByIngredientId(Integer id) {
+        LOGGER.info("Saving nutrition by ingredient ID");
+        basketValidator.basketDataValidator(id);
 
         ArrayList<NutritionNutrientPojo> nutritionList = nutritionService.getNutritionByIngredientId(Long.valueOf(id));
         NutritionMapper nutritionMapper = new NutritionMapper();
@@ -95,6 +98,7 @@ public class BasketService {
     @Transactional
     public void saveAllByRecipesId(Integer id) {
         LOGGER.info("Saving ingredients in basket by recipes ID");
+        basketValidator.basketDataValidator(id);
 
         Basket basket = new Basket();
 
@@ -121,23 +125,25 @@ public class BasketService {
                 .stream()
                 .map(x ->x.getId())
                 .toList();
+        Iterator<Integer> iterator = ids.iterator();
 
-        ArrayList<NutritionNutrientPojo> nutritionByIngredientId =null;
-        for(int i=0; i<ids.size(); i++){
-            nutritionByIngredientId = nutritionService.getNutritionByIngredientId(Long.valueOf(ids.get(i)));
-        }
+//        ArrayList<NutritionNutrientPojo> nutritionByIngredientId =null;
+//        for(int i=0; i<ids.size(); i++){
+//            nutritionByIngredientId = nutritionService.getNutritionByIngredientId(Long.valueOf(ids.get(i)));
+//        }
 
-        List<Nutrition> nutritions = new ArrayList<>();
-        for(int i=0; i<nutritionByIngredientId.size(); i++){
-            Nutrition nutrition = Nutrition
-                    .builder()
-                    .name(nutritionByIngredientId.get(i).getName())
-                    .basket(basket)
-                    .build();
+        ArrayList<NutritionNutrientPojo> nutritionByIngredientId =
+                nutritionByIngredientId = nutritionService.getNutritionByIngredientId(Long.valueOf(iterator.next()));
 
-            nutritions.add(nutrition);
-        }
-        ///End of Nutrition
+        NutritionMapper nutritionMapper = new NutritionMapper();
+        List<Nutrition> nutritions = nutritionByIngredientId
+                .stream()
+                .map(NutritionMapper -> nutritionMapper.requestToEntity(NutritionMapper))
+                .peek(x -> x.setBasket(basket))
+                .collect(Collectors.toList());
+
+
+
 
         basket.setRecipes(List.of(ing));
         basket.setIngredients(ingredients);
@@ -147,6 +153,9 @@ public class BasketService {
 
     //pobiera kartę produktów na podstawie id użytkownika
     public List<Basket> getCardByUserId(Long id){
+        LOGGER.info("Getting card by user ID");
+        basketValidator.basketDataValidator(Math.toIntExact(id));
+
         return basketRepository.findAllByIdUser(id);
     }
 }

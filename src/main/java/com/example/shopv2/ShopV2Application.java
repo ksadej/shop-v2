@@ -10,11 +10,8 @@ import java.util.ArrayList;
 @SpringBootApplication
 public class ShopV2Application{
 
-
 	public static void main(String[] args) {
 		SpringApplication.run(ShopV2Application.class, args);
 
 	}
-
-
 }
