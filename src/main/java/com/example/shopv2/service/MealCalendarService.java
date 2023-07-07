@@ -94,6 +94,11 @@ public class MealCalendarService {
                 .stream()
                 .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
                 .collect(Collectors.toList());
-
     }
+
+    public List<MealCalendarResponse> filterMealByDate(String date){
+        return null;
+    }
+
+
 }

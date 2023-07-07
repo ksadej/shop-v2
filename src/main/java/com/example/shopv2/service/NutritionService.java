@@ -82,12 +82,4 @@ public class NutritionService {
         }
         LOGGER.info("Nutrition saved");
     }
-
-    public ArrayList<Nutrition> sumAllNutritionsByUserId(Long id){
-        List<Long> listOfCardIds = basketRepository.findByIdUser(id)
-                .stream()
-                .map(x -> x.getId())
-                .collect(Collectors.toList());
-        return null;
-    }
 }

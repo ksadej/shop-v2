@@ -12,4 +12,5 @@ public interface BasketRepository extends JpaRepository<Basket, Long> {
     public ArrayList<Basket> findByIdUser(Long id);
     public ArrayList<Basket> findAllByIdUser(Long id);
 
+
 }

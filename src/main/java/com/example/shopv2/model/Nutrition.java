@@ -3,14 +3,15 @@ package com.example.shopv2.model;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+
+import lombok.*;
+
+import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
+@Getter
+@Setter
 @Entity
 @Builder
 @Table(name = "NUTRITION")
@@ -37,4 +38,30 @@ public class Nutrition {
     private double percentOfDailyNeeds;
     private Integer idIngredientAPI;
 
+    @Override
+    public String toString() {
+        return "Nutrition{" +
+                "id=" + id +
+                ", ingredient=" + ingredient +
+                ", basket=" + basket +
+                ", name='" + name + '\'' +
+                ", amount=" + amount +
+                ", unit='" + unit + '\'' +
+                ", percentOfDailyNeeds=" + percentOfDailyNeeds +
+                ", idIngredientAPI=" + idIngredientAPI +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Nutrition nutrition = (Nutrition) o;
+        return Double.compare(nutrition.amount, amount) == 0 && Double.compare(nutrition.percentOfDailyNeeds, percentOfDailyNeeds) == 0 && Objects.equals(id, nutrition.id) && Objects.equals(ingredient, nutrition.ingredient) && Objects.equals(basket, nutrition.basket) && Objects.equals(name, nutrition.name) && Objects.equals(unit, nutrition.unit) && Objects.equals(idIngredientAPI, nutrition.idIngredientAPI);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, ingredient, basket, name, amount, unit, percentOfDailyNeeds, idIngredientAPI);
+    }
 }

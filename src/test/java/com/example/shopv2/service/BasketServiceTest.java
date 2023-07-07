@@ -1,5 +1,7 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.exceptions.BasketException;
+import com.example.shopv2.mapper.NutritionMapper;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import com.example.shopv2.pojo.RecipesPojo;
@@ -15,6 +17,7 @@ import org.mockito.Mockito;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 class BasketServiceTest {
@@ -26,7 +29,9 @@ class BasketServiceTest {
     private IngredientService ingredientService;
     private IngredientRepository ingredientRepository;
     private NutritionRepository nutritionRepository;
-    private BasketValidator basketValidator;
+    private BasketValidator basketValidator = new BasketValidator();
+    private NutritionMapper nutritionMapper = new NutritionMapper();
+
     @BeforeEach
     public void setup(){
         basketRepository = Mockito.mock(BasketRepository.class);
@@ -35,16 +40,17 @@ class BasketServiceTest {
         ingredientService = Mockito.mock(IngredientService.class);
         ingredientRepository = Mockito.mock(IngredientRepository.class);
         nutritionRepository = Mockito.mock(NutritionRepository.class);
+//        basketValidator = Mockito.mock(BasketValidator.class);
         basketService = new BasketService(basketRepository, recipesService,
                 nutritionService, ingredientService,
-                ingredientRepository, nutritionRepository, basketValidator);
+                ingredientRepository, nutritionRepository, basketValidator, nutritionMapper);
     }
 
     @Test
     void saveRecipesAndIngredientsByRecipesId_saveObject_saved(){
         //given
         //when
-        basketService.saveRecipesAndIngredientsByRecipesId(anyInt());
+        basketService.saveRecipesAndIngredientsByRecipesId(2333);
 
         //then
         ArgumentCaptor<Basket> argumentCaptor = ArgumentCaptor.forClass(Basket.class);
@@ -110,4 +116,14 @@ class BasketServiceTest {
         verify(basketRepository, times(1)).save(argumentCaptor1.capture());
     }
 
+    @Test
+    void saveMethods_checkSearchedId_returnException(){
+        //given//when//then
+        assertThrows(BasketException.class, () -> basketService.saveAllByRecipesId(0));
+        assertThrows(BasketException.class, () -> basketService.saveAllByRecipesId(-1));
+        assertThrows(BasketException.class, () -> basketService.saveNutritionByIngredientId(0));
+        assertThrows(BasketException.class, () -> basketService.saveNutritionByIngredientId(-32));
+        assertThrows(BasketException.class, () -> basketService.saveRecipesAndIngredientsByRecipesId(0));
+        assertThrows(BasketException.class, () -> basketService.saveRecipesAndIngredientsByRecipesId(-53));
+    }
 }

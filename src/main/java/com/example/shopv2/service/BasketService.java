@@ -17,9 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,6 +33,8 @@ public class BasketService {
     private final IngredientRepository ingredientRepository;
     private final NutritionRepository nutritionRepository;
     private final BasketValidator basketValidator;
+    private final NutritionMapper nutritionMapper;
+
 
     @Autowired
     public BasketService(BasketRepository basketRepository,
@@ -40,7 +42,7 @@ public class BasketService {
                          NutritionService nutritionService,
                          IngredientService ingredientService,
                          IngredientRepository ingredientRepository,
-                         NutritionRepository nutritionRepository, BasketValidator basketValidator) {
+                         NutritionRepository nutritionRepository, BasketValidator basketValidator, NutritionMapper nutritionMapper) {
         this.basketRepository = basketRepository;
         this.recipesService = recipesService;
         this.nutritionService = nutritionService;
@@ -48,6 +50,7 @@ public class BasketService {
         this.ingredientRepository = ingredientRepository;
         this.nutritionRepository = nutritionRepository;
         this.basketValidator = basketValidator;
+        this.nutritionMapper = nutritionMapper;
     }
 
     @Transactional
@@ -133,17 +136,13 @@ public class BasketService {
 //        }
 
         ArrayList<NutritionNutrientPojo> nutritionByIngredientId =
-                nutritionByIngredientId = nutritionService.getNutritionByIngredientId(Long.valueOf(iterator.next()));
+                 nutritionService.getNutritionByIngredientId(Long.valueOf(iterator.next()));
 
-        NutritionMapper nutritionMapper = new NutritionMapper();
         List<Nutrition> nutritions = nutritionByIngredientId
                 .stream()
                 .map(NutritionMapper -> nutritionMapper.requestToEntity(NutritionMapper))
                 .peek(x -> x.setBasket(basket))
                 .collect(Collectors.toList());
-
-
-
 
         basket.setRecipes(List.of(ing));
         basket.setIngredients(ingredients);
@@ -158,4 +157,35 @@ public class BasketService {
 
         return basketRepository.findAllByIdUser(id);
     }
+
+    public List<Nutrition> summingNutritionByBasket(){
+        List<Basket> baskets = basketRepository.findAllByIdUser(2222L);
+
+        List<Nutrition> nutritions = baskets.get(0).getNutritionList();
+        System.out.println(nutritions);
+        Set<String> nutritionNames = nutritions
+                .stream()
+                .map(Nutrition::getName)
+                .collect(Collectors.toSet());
+
+
+    Nutrition nn = Nutrition
+            .builder()
+            .name("Vitamin B12")
+            .amount(nutritions.stream()
+                    .filter(c -> c.getName().equals("Vitamin B12"))
+                    .map(x->x.getAmount())
+                    .mapToDouble(Double::doubleValue)
+                    .sum())
+            .build();
+
+//        System.out.println(nutrition1);
+
+        return List.of(nn);
+    }
+
+    //metoda do sumowania ceny i naliczania rabatów
+    //metoda do sumowania nutrions data
+    //metoda do sumowania wszystkich składników
+    //metoda do pobierania proponowanych przepisów na podstawie produktów
 }

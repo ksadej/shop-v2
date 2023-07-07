@@ -1,7 +1,7 @@
 package com.example.shopv2.controller;
 
 import com.example.shopv2.model.Basket;
-import com.example.shopv2.pojo.NutritionNutrientPojo;
+import com.example.shopv2.model.Nutrition;
 import com.example.shopv2.service.BasketService;
 import com.example.shopv2.service.NutritionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,4 +48,8 @@ public class BasketController {
         basketService.saveNutritionByIngredientId(id);
     }
 
+    @GetMapping(path = "/api/basket/sum")
+    public List<Nutrition> sumNutritionByBasketIdXX(){
+        return basketService.summingNutritionByBasket();
+    }
 }

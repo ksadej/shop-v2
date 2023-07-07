@@ -104,4 +104,7 @@ public class IngredientService {
 
         return newIngredients;
     }
+
+    //filtry: po cenie produktu od najmniejszego do największego
+    //filtry: po kategorii: owoce, warzywa itd.
 }
