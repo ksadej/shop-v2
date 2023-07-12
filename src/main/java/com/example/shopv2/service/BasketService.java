@@ -168,20 +168,47 @@ public class BasketService {
                 .map(Nutrition::getName)
                 .collect(Collectors.toSet());
 
+        List<String> nutritionNames2 = nutritionNames.stream().toList();
+        System.out.println(nutritionNames2);
 
-    Nutrition nn = Nutrition
+//    Nutrition nn = Nutrition
+//            .builder()
+//            .name("Vitamin B12")
+//            .amount(nutritions.stream()
+//                    .filter(c -> c.getName().equals("Vitamin B12"))
+//                    .map(x->x.getAmount())
+//                    .mapToDouble(Double::doubleValue)
+//                    .sum())
+//            .build();
+
+        List<Nutrition> nutritionList = new ArrayList<>();
+        for(int i=0;i<nutritionNames2.size(); i++){
+            Nutrition nn = Nutrition
             .builder()
-            .name("Vitamin B12")
+            .name(nutritionNames2.get(i))
             .amount(nutritions.stream()
-                    .filter(c -> c.getName().equals("Vitamin B12"))
+                    .filter(c -> nutritionNames2.contains(c.getName()))
                     .map(x->x.getAmount())
                     .mapToDouble(Double::doubleValue)
                     .sum())
             .build();
+            nutritionList.add(nn);
+        }
 
-//        System.out.println(nutrition1);
+//    Nutrition nn = Nutrition
+//            .builder()
+//            .name("Vitamin B12")
+//            .amount(nutritions.stream()
+//                    .filter(c -> c.getName().equals("Vitamin B12"))
+//                    .map(x->x.getAmount())
+//                    .mapToDouble(Double::doubleValue)
+//                    .sum())
+//            .build();
 
-        return List.of(nn);
+
+
+
+        return nutritionList;
     }
 
     //metoda do sumowania ceny i naliczania rabatów
