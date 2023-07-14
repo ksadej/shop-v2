@@ -12,6 +12,7 @@ import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import com.example.shopv2.validator.BasketValidator;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -158,61 +159,70 @@ public class BasketService {
         return basketRepository.findAllByIdUser(id);
     }
 
-    public List<Nutrition> summingNutritionByBasket(){
-        List<Basket> baskets = basketRepository.findAllByIdUser(2222L);
+    //sumuje wartosci nutrition na podstawie basket id
+    public List<Nutrition> summingNutritionByBasket(Integer basketId){
+        List<Basket> baskets = basketRepository.findAllByIdUser(Long.valueOf(basketId));
 
         List<Nutrition> nutritions = baskets.get(0).getNutritionList();
-        System.out.println(nutritions);
         Set<String> nutritionNames = nutritions
                 .stream()
                 .map(Nutrition::getName)
                 .collect(Collectors.toSet());
 
-        List<String> nutritionNames2 = nutritionNames.stream().toList();
-        System.out.println(nutritionNames2);
+        Map<String, Double> sumNut = nutritions
+                .stream()
+                .collect(Collectors.groupingBy(Nutrition::getName,
+                        Collectors.summingDouble(Nutrition::getAmount)));
 
-//    Nutrition nn = Nutrition
-//            .builder()
-//            .name("Vitamin B12")
-//            .amount(nutritions.stream()
-//                    .filter(c -> c.getName().equals("Vitamin B12"))
-//                    .map(x->x.getAmount())
-//                    .mapToDouble(Double::doubleValue)
-//                    .sum())
-//            .build();
+        List<String> strings = nutritionNames.stream().collect(Collectors.toList());
+        ArrayList<Nutrition> nutritionArrayList = new ArrayList<>();
+        for(int i=0; i< sumNut.size(); i++) {
+            String name = strings.get(i);
 
-        List<Nutrition> nutritionList = new ArrayList<>();
-        for(int i=0;i<nutritionNames2.size(); i++){
-            Nutrition nn = Nutrition
-            .builder()
-            .name(nutritionNames2.get(i))
-            .amount(nutritions.stream()
-                    .filter(c -> nutritionNames2.contains(c.getName()))
-                    .map(x->x.getAmount())
-                    .mapToDouble(Double::doubleValue)
-                    .sum())
-            .build();
-            nutritionList.add(nn);
+            Nutrition nutrition = Nutrition
+                    .builder()
+                    .name(name)
+                    .amount(sumNut.get(name))
+                    .build();
+            nutritionArrayList.add(nutrition);
         }
+        return nutritionArrayList;
+    }
 
-//    Nutrition nn = Nutrition
-//            .builder()
-//            .name("Vitamin B12")
-//            .amount(nutritions.stream()
-//                    .filter(c -> c.getName().equals("Vitamin B12"))
-//                    .map(x->x.getAmount())
-//                    .mapToDouble(Double::doubleValue)
-//                    .sum())
-//            .build();
+    public List<Ingredient> sumIngredientByBasketId(){
+        List<Basket> baskets = basketRepository.findAllByIdUser(2222L);
+        System.out.println(baskets);
 
+        List<Ingredient> ingredients = baskets.get(0).getIngredients();
+        System.out.println(ingredients);
 
+        Set<String> strings = ingredients
+                .stream()
+                .map(x->x.getName())
+                .collect(Collectors.toSet());
+        System.out.println(strings);
 
+        Map<String, Double> sumIng = ingredients
+                .stream()
+                .collect(Collectors.groupingBy(Ingredient::getName,
+                        Collectors.summingDouble(Ingredient::getAmount)));
+        System.out.println(sumIng);
 
-        return nutritionList;
+        List<String> ingredientName = strings.stream().toList();
+        ArrayList<Ingredient> ingredientArrayList = new ArrayList<>();
+        for(int i=0; i< ingredientName.size(); i++){
+            String name = ingredientName.get(i);
+            Ingredient ingredient = Ingredient
+                    .builder()
+                    .name(name)
+                    .amount(sumIng.get(name))
+                    .build();
+            ingredientArrayList.add(ingredient);
+        }
+        return ingredientArrayList;
     }
 
     //metoda do sumowania ceny i naliczania rabatów
-    //metoda do sumowania nutrions data
     //metoda do sumowania wszystkich składników
     //metoda do pobierania proponowanych przepisów na podstawie produktów
 }
