@@ -3,6 +3,8 @@ package com.example.shopv2.controller;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
+import com.example.shopv2.model.Recipes;
+import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.service.BasketService;
 import com.example.shopv2.service.NutritionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +30,6 @@ public class BasketController {
     @PostMapping(path = "/api/basket/v1/all/{id}")
     public void saveIngredientAndRecipesByRecipesId(@PathVariable(value = "id")Integer id){
         basketService.saveRecipesAndIngredientsByRecipesId(id);
-
     }
 
     //pobiera wszystkie składniki recepty na podstawie id użytkownika
@@ -49,13 +50,23 @@ public class BasketController {
         basketService.saveNutritionByIngredientId(id);
     }
 
+    @GetMapping(path = "/api/basket/recipes/{id}")
+    public List<RecipesPojo> getRecipiesList(@PathVariable(value = "id") Integer id){
+        return basketService.getListOfRecipesByBasketId(id);
+    }
+
     @GetMapping(path = "/api/basket/sumNutrition/{id}")
     public List<Nutrition> sumNutritionByBasketId(@PathVariable(value = "id") Integer id){
         return basketService.summingNutritionByBasket(id);
     }
 
-    @GetMapping(path = "/api/basket/sumIngredient")
-    public List<Ingredient> sumIngredientByBasketId(){
-        return basketService.sumIngredientByBasketId();
+    @GetMapping(path = "/api/basket/sumIngredient/{id}")
+    public List<Ingredient> sumIngredientByBasketId(@PathVariable(value = "id") Integer id){
+        return basketService.sumIngredientByBasketId(id);
+    }
+
+    @GetMapping(path = "/api/basket/sumPrice/{id}")
+    public Double sumPriceByBasketId(@PathVariable(value = "id") Integer id){
+        return basketService.sumPriceByBasketId(id);
     }
 }

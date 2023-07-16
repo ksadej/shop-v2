@@ -27,7 +27,6 @@ public class Recipes {
 
     private Integer idRecipesAPI;
 
-
     public Recipes(Integer idRecipesAPI) {
         this.idRecipesAPI = idRecipesAPI;
     }

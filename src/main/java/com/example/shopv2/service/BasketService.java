@@ -6,13 +6,13 @@ import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
 import com.example.shopv2.model.Recipes;
+import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import com.example.shopv2.validator.BasketValidator;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -131,11 +130,6 @@ public class BasketService {
                 .toList();
         Iterator<Integer> iterator = ids.iterator();
 
-//        ArrayList<NutritionNutrientPojo> nutritionByIngredientId =null;
-//        for(int i=0; i<ids.size(); i++){
-//            nutritionByIngredientId = nutritionService.getNutritionByIngredientId(Long.valueOf(ids.get(i)));
-//        }
-
         ArrayList<NutritionNutrientPojo> nutritionByIngredientId =
                  nutritionService.getNutritionByIngredientId(Long.valueOf(iterator.next()));
 
@@ -189,24 +183,20 @@ public class BasketService {
         return nutritionArrayList;
     }
 
-    public List<Ingredient> sumIngredientByBasketId(){
-        List<Basket> baskets = basketRepository.findAllByIdUser(2222L);
-        System.out.println(baskets);
+    public List<Ingredient> sumIngredientByBasketId(Integer id){
+        List<Basket> baskets = basketRepository.findAllByIdUser(Long.valueOf(id));
 
         List<Ingredient> ingredients = baskets.get(0).getIngredients();
-        System.out.println(ingredients);
 
         Set<String> strings = ingredients
                 .stream()
                 .map(x->x.getName())
                 .collect(Collectors.toSet());
-        System.out.println(strings);
 
         Map<String, Double> sumIng = ingredients
                 .stream()
                 .collect(Collectors.groupingBy(Ingredient::getName,
                         Collectors.summingDouble(Ingredient::getAmount)));
-        System.out.println(sumIng);
 
         List<String> ingredientName = strings.stream().toList();
         ArrayList<Ingredient> ingredientArrayList = new ArrayList<>();
@@ -222,7 +212,33 @@ public class BasketService {
         return ingredientArrayList;
     }
 
-    //metoda do sumowania ceny i naliczania rabatów
-    //metoda do sumowania wszystkich składników
+    public List<RecipesPojo> getListOfRecipesByBasketId(Integer id){
+        List<Basket> baskets = basketRepository.findAllByIdUser(Long.valueOf(id));
+        System.out.println(baskets);
+
+        List<Integer> recipesIds = baskets.get(0).getRecipes()
+                .stream()
+                .map(x -> x.getIdRecipesAPI())
+                .collect(Collectors.toList());
+        System.out.println(recipesIds);
+
+        List<RecipesPojo> recipesPojoList = new ArrayList<>();
+        for(int i=0; i<recipesIds.size(); i++){
+            recipesPojoList.add(recipesService.getRecipesById(recipesIds.get(i)));
+        }
+        return recipesPojoList;
+    }
+
+    public Double sumPriceByBasketId(Integer id){
+       Double recipesPojoList = this.getListOfRecipesByBasketId(id)
+               .stream()
+               .map(x->x.getPricePerServing())
+               .mapToDouble(Double::doubleValue)
+               .sum();
+
+        return recipesPojoList;
+    }
+
+    //metoda naliczania rabatów na całość zakupów i na konkretne przepisy
     //metoda do pobierania proponowanych przepisów na podstawie produktów
 }

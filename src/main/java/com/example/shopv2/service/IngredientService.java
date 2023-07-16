@@ -101,7 +101,6 @@ public class IngredientService {
                     .build();
             newIngredients.add(ingredient);
         }
-
         return newIngredients;
     }
 
