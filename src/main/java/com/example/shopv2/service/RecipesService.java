@@ -87,12 +87,4 @@ public class RecipesService {
 
         return recipes;
     }
-
-    //filtry: wyszukiwanie po ingredient, po nutrition, wyszukiwanie recepty o podobnych skladnikach
-    //filtry: recepty do wyszukiwania w kategorii kaloryczności
-    //filtr: w kategorii zdrowotnosci przepisu (healthScore)
-    //filtr: w kategorii ceny
-    //filtr: w kategorii: mięsnej, vege, itd
-    //filtr: typ dania: lunch, main course itd
-
 }

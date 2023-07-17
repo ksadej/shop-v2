@@ -9,8 +9,6 @@ import com.example.shopv2.repository.MealCalendarRepository;
 import com.example.shopv2.service.MealCalendarService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -40,9 +38,9 @@ public class MealCalendarController {
     }
 
 //    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping(path ="/calendar/{day}/{time}")
+    @GetMapping(path ="/calendar/filter/{day}/{time}")
     public List<MealCalendarResponse> getByDayAndTime(@PathVariable Days day, @PathVariable MealTime time){
-        return mealCalendarService.getByDayAndTime(day, time);
+        return mealCalendarService.filterByDayAndTime(day, time);
     }
 
 //    @PreAuthorize("hasRole('NORMAL')")
@@ -52,7 +50,18 @@ public class MealCalendarController {
     }
 
     @GetMapping(path = "/calendar/filter")
-    public List<MealCalendarResponse> getMealsBetweenDate(@RequestParam String fromDate, @RequestParam String toDate){
-        return mealCalendarService.getMealsBetweenDate(fromDate, toDate);
+    public List<MealCalendarResponse> filterMealsBetweenDate(@RequestParam String fromDate, @RequestParam String toDate){
+        return mealCalendarService.filterMealsBetweenDate(fromDate, toDate);
     }
+
+    @GetMapping(path = "/calendar/filter/day/{day}")
+    public List<MealCalendarResponse> filterByDays(@PathVariable String day){
+        return mealCalendarService.filterByDays(day);
+    }
+
+    @GetMapping(path = "/calendar/filter/time/{mealTime}")
+    public List<MealCalendarResponse> filterByTime(@PathVariable String mealTime){
+        return mealCalendarService.filterByTimeOfDay(mealTime);
+    }
+
 }

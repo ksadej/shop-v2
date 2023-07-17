@@ -14,11 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.time.OffsetDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.from;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -87,7 +85,7 @@ class MealCalendarServiceTest {
         when(mealCalendarRepository.findByDayAndTime(d,m)).thenReturn(mealCalendarList);
 
         //when
-        mealCalendarService.getByDayAndTime(d,m);
+        mealCalendarService.filterByDayAndTime(d,m);
 
         //then
         verify(mealCalendarRepository).findByDayAndTime(d,m);
@@ -100,8 +98,8 @@ class MealCalendarServiceTest {
         MealTime m =  MealTime.MORNING;
 
         //when//then
-        assertThrows(MealCalendarException.class, () -> mealCalendarService.getByDayAndTime(null,m));
-        assertThrows(MealCalendarException.class, () -> mealCalendarService.getByDayAndTime(d,null));
+        assertThrows(MealCalendarException.class, () -> mealCalendarService.filterByDayAndTime(null,m));
+        assertThrows(MealCalendarException.class, () -> mealCalendarService.filterByDayAndTime(d,null));
     }
 
     @Test
@@ -164,7 +162,7 @@ class MealCalendarServiceTest {
         when(mealCalendarRepository.findAllByBetweenDate(fDate, tDate)).thenReturn(List.of(mealCalendarOne));
 
         //when
-        mealCalendarService.getMealsBetweenDate(fromDate, toDate);
+        mealCalendarService.filterMealsBetweenDate(fromDate, toDate);
 
         //then
         verify(mealCalendarRepository, times(1)).findAllByBetweenDate(fDate, tDate);

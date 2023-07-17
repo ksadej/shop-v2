@@ -17,4 +17,8 @@ public interface MealCalendarRepository extends JpaRepository<MealCalendar, Long
 
     @Query("SELECT e FROM MealCalendar e WHERE e.dataMeal >= :dataFrom AND e.dataMeal <= :dataTo")
     List<MealCalendar> findAllByBetweenDate(OffsetDateTime dataFrom, OffsetDateTime dataTo);
+
+    List<MealCalendar> findAllByDay(Days day);
+
+    List<MealCalendar> findAllByTime(MealTime mealTime);
 }
