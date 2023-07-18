@@ -4,13 +4,13 @@ import com.example.shopv2.controller.dto.MealCalendarRequest;
 import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.exceptions.MealCalendarException;
 import com.example.shopv2.repository.MealCalendarRepository;
-import com.example.shopv2.validator.MealCalendarChain.DataMealValidator;
-import com.example.shopv2.validator.MealCalendarChain.DayMealValidator;
 import com.example.shopv2.validator.MealCalendarChain.IdRecipesValidator;
+import com.example.shopv2.validator.enums.FilterParametersEnum;
 import com.example.shopv2.validator.enums.MealCalendarEnum;
 import org.springframework.stereotype.Component;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.Objects;
 
 @Component
@@ -41,15 +41,15 @@ public class MealCalendarValidator {
             throw new MealCalendarException(MealCalendarEnum.DATA_MEAL.getMessage(),  "Error code: 4");
         }
 
-        if(Objects.isNull(mealCalendarRequest.getDay())){
-            throw new MealCalendarException(MealCalendarEnum.DAYS.getMessage(),  "Error code: 5");
+        if(Objects.isNull(mealCalendarRequest.getDay()) || mealCalendarRequest.getDay().toString().equals("")){
+            throw new MealCalendarException(MealCalendarEnum.DAY.getMessage(),  "Error code: 5");
         }
     }
 
     public void getByDayAndTimeValidator(MealCalendarResponse mealCalendarResponse){
 
         if(Objects.isNull(mealCalendarResponse.getDay()) || mealCalendarResponse.getDay().toString().equals("") ){
-            throw new MealCalendarException(MealCalendarEnum.DAYS.getMessage(), "Error code: 6");
+            throw new MealCalendarException(MealCalendarEnum.DAY.getMessage(), "Error code: 6");
         }
 
         if(Objects.isNull(mealCalendarResponse.getTime()) || mealCalendarResponse.getTime().toString().equals("")) {
@@ -64,13 +64,37 @@ public class MealCalendarValidator {
         }
     }
 
+    public void  filterMealsBetweenDateValidator(Map<String, String> filters){
+
+        //check if year exist, month missing
+        if (filters.containsKey(FilterParametersEnum.MONTH.getKey())
+                && !filters.containsKey(FilterParametersEnum.YEAR.getKey())){
+            throw new MealCalendarException(FilterParametersEnum.MONTH.getKey(), "Error code: invalid date: no month!");
+        }
+
+        //check if toDate exist, fromDate missing
+        if (filters.containsKey(FilterParametersEnum.TO_DATE.getKey())
+                && !filters.containsKey(FilterParametersEnum.FROM_DATE.getKey())) {
+
+            throw new MealCalendarException(FilterParametersEnum.FROM_DATE.getKey(), "Error code: invalid date: no from date!");
+        }
+
+        //check if fromDate exist, toDate missing
+        if (filters.containsKey(FilterParametersEnum.FROM_DATE.getKey())
+                && !filters.containsKey(FilterParametersEnum.TO_DATE.getKey())) {
+
+            throw new MealCalendarException(FilterParametersEnum.TO_DATE.getKey(), "Error code: invalid date: no to date!");
+        }
+    }
+
 
     private Validator validator = new IdRecipesValidator();
 
     public void saveMealCalendarValidator2(MealCalendarRequest mealCalendarRequest){
 
-        System.out.println("VALIDACJA START");
+        System.out.println("VALIDACJA START 1");
         ValidatorMessage validatorMessage = validator.valid(mealCalendarRequest, new ValidatorMessage());
+        System.out.println("VALIDACJA START 2");
         if(validatorMessage.getMessage().isEmpty()){
             return;
         }

@@ -2,8 +2,8 @@ package com.example.shopv2.validator;
 
 public class ValidatorMessage {
 
-    private StringBuilder message;
-    private StringBuilder code;
+    private StringBuilder message = new StringBuilder();
+    private StringBuilder code = new StringBuilder();
 
     public String getMessage() {
         return message.toString();
