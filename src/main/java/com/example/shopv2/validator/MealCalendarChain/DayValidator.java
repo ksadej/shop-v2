@@ -1,23 +1,19 @@
 package com.example.shopv2.validator.MealCalendarChain;
 
 import com.example.shopv2.controller.dto.MealCalendarRequest;
-import com.example.shopv2.validator.Validator;
-import com.example.shopv2.validator.ValidatorMessage;
+import com.example.shopv2.exceptions.MealCalendarException;
 import com.example.shopv2.validator.enums.MealCalendarEnum;
 
 import java.util.Objects;
 
-public class DayValidator implements Validator {
-
-    private Validator next = new IdRecipesValidator();
+public class DayValidator extends Validator {
 
     @Override
-    public ValidatorMessage valid(MealCalendarRequest mealCalendarRequest, ValidatorMessage validatorMessage) {
+    public void handler(MealCalendarRequest mealCalendarRequest) {
         if(Objects.isNull(mealCalendarRequest.getDay()) || mealCalendarRequest.getDay().toString().equals("")){
-            validatorMessage.setMessage(MealCalendarEnum.DAY.getMessage());
-            validatorMessage.setCode("Error code: 5");
+            throw new MealCalendarException(MealCalendarEnum.DAY.getMessage(), "Error code: 5");
         }
+        next.handler(mealCalendarRequest);
 
-        return next.valid(mealCalendarRequest, validatorMessage);
     }
 }

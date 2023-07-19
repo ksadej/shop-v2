@@ -45,7 +45,6 @@ public class MealCalendarService {
         LOGGER.debug("MealCalendarRequest: "+mealCalendarRequest);
         mealCalendarValidator.saveMealCalendarValidator(mealCalendarRequest);
 
-//        mealCalendarValidator.saveMealCalendarValidator2(mealCalendarRequest);
         MealCalendar mealCalendar = mealCalendarMapper.requestToEntity(mealCalendarRequest);
         LOGGER.debug("Data saved: "+mealCalendar);
         return mealCalendarRepository.save(mealCalendar);
@@ -111,11 +110,10 @@ public class MealCalendarService {
 
 
     public List<MealCalendarResponse> getAllFilteredMeals(Map<String, String> filter){
-        if(filter.containsKey(FilterParametersEnum.FROM_DATE.getKey())){
+        if(filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()) && filter.containsKey(FilterParametersEnum.TO_DATE.getKey())){
             return filterMealsBetweenDate(
                     filter.get(FilterParametersEnum.FROM_DATE.getKey()),
-                    filter.get(FilterParametersEnum.TO_DATE.getKey())
-            );
+                    filter.get(FilterParametersEnum.TO_DATE.getKey()));
         } else if (filter.containsKey(FilterParametersEnum.YEAR.getKey())) {
             MonthsEnum month = MonthsEnum.valueOf(filter.get(FilterParametersEnum.MONTH.getKey()).toUpperCase());
             String year = filter.get(FilterParametersEnum.YEAR.getKey());

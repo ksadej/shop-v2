@@ -6,7 +6,8 @@ public enum MealCalendarEnum {
     TIME_MEAL("Invalid time value"),
     DAY("Invalid day value"),
     ID("Invalid ID value for delete"),
-    DATA_MEAL("Invalid DATE MEAL");
+    DATA_MEAL("Invalid DATE MEAL"),
+    MISSING_FILTER_KEY("Missing filter key");
 
     private final String message;
 

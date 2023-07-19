@@ -166,7 +166,6 @@ class MealCalendarServiceTest {
 
         //then
         verify(mealCalendarRepository, times(1)).findAllByBetweenDate(fDate, tDate);
-
     }
 
 }

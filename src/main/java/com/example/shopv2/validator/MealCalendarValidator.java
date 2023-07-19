@@ -4,7 +4,7 @@ import com.example.shopv2.controller.dto.MealCalendarRequest;
 import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.exceptions.MealCalendarException;
 import com.example.shopv2.repository.MealCalendarRepository;
-import com.example.shopv2.validator.MealCalendarChain.IdRecipesValidator;
+import com.example.shopv2.validator.MealCalendarChain.*;
 import com.example.shopv2.validator.enums.FilterParametersEnum;
 import com.example.shopv2.validator.enums.MealCalendarEnum;
 import org.springframework.stereotype.Component;
@@ -24,26 +24,15 @@ public class MealCalendarValidator {
     }
 
     public void saveMealCalendarValidator(MealCalendarRequest mealCalendarRequest){
+        Validator idRecipes = new IdRecipesValidator();
+        Validator dayValidator = new DayValidator();
+        Validator timeMeal = new TimeMealValidator();
+        Validator dataMeal = new DataMealValidator();
+        idRecipes.setNext(dayValidator);
+        dayValidator.setNext(timeMeal);
+        timeMeal.setNext(dataMeal);
 
-        if(mealCalendarRequest == null){
-            throw new MealCalendarException("Object is null", "Error code: 1");
-        }
-
-        if(Objects.isNull(mealCalendarRequest.getIdRecipes()) || mealCalendarRequest.getIdRecipes() <= 0){
-            throw new MealCalendarException(MealCalendarEnum.ID_RECIPES.getMessage(),  "Error code: 2");
-        }
-
-        if(Objects.isNull(mealCalendarRequest.getTime()) || mealCalendarRequest.getTime().toString().equals("")) {
-            throw new MealCalendarException(MealCalendarEnum.TIME_MEAL.getMessage(), "Error code: 3");
-        }
-
-        if(Objects.isNull(mealCalendarRequest.getDataMeal()) || OffsetDateTime.now().isAfter(mealCalendarRequest.getDataMeal())){
-            throw new MealCalendarException(MealCalendarEnum.DATA_MEAL.getMessage(),  "Error code: 4");
-        }
-
-        if(Objects.isNull(mealCalendarRequest.getDay()) || mealCalendarRequest.getDay().toString().equals("")){
-            throw new MealCalendarException(MealCalendarEnum.DAY.getMessage(),  "Error code: 5");
-        }
+        idRecipes.handler(mealCalendarRequest);
     }
 
     public void getByDayAndTimeValidator(MealCalendarResponse mealCalendarResponse){
@@ -85,20 +74,6 @@ public class MealCalendarValidator {
 
             throw new MealCalendarException(FilterParametersEnum.TO_DATE.getKey(), "Error code: invalid date: no to date!");
         }
-    }
-
-
-    private Validator validator = new IdRecipesValidator();
-
-    public void saveMealCalendarValidator2(MealCalendarRequest mealCalendarRequest){
-
-        System.out.println("VALIDACJA START 1");
-        ValidatorMessage validatorMessage = validator.valid(mealCalendarRequest, new ValidatorMessage());
-        System.out.println("VALIDACJA START 2");
-        if(validatorMessage.getMessage().isEmpty()){
-            return;
-        }
-        throw new MealCalendarException(validatorMessage.getMessage(), validatorMessage.getCode());
     }
 
 }
