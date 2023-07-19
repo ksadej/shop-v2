@@ -7,6 +7,7 @@ import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.repository.MealCalendarRepository;
+import com.example.shopv2.service.filters.MonthsEnum;
 import com.example.shopv2.validator.MealCalendarValidator;
 import com.example.shopv2.validator.enums.FilterParametersEnum;
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,21 +68,11 @@ public class MealCalendarService {
         mealCalendarRepository.deleteById(id);
     }
 
-
-    public List<MealCalendarResponse> getAllFilteredMeals(Map<String, String> filter){
-
-//        mealCalendarValidator.filterMealsBetweenDateValidator();
-        return filterMealsBetweenDate(filter.get(FilterParametersEnum.FROM_DATE), filter.get(FilterParametersEnum.TO_DATE));
-    }
-
     public List<MealCalendarResponse> filterMealsBetweenDate(String fromDate, String toDate){
 
         final String dateSuffix = "T00:00:00.001Z";
         final OffsetDateTime fData = OffsetDateTime.parse(fromDate + dateSuffix);
         final OffsetDateTime tDate = OffsetDateTime.parse(toDate + dateSuffix);
-
-        List<MealCalendar>  mealCalendars= mealCalendarRepository.findAllByBetweenDate(fData, tDate);
-        List<MealCalendarResponse> calendarResponses = new ArrayList<>();
 
         return mealCalendarRepository.findAllByBetweenDate(fData, tDate)
                 .stream()
@@ -116,4 +108,28 @@ public class MealCalendarService {
     public List<MealCalendar> filterByRecipesName(String name){
         return null;
     }
+
+
+    public List<MealCalendarResponse> getAllFilteredMeals(Map<String, String> filter){
+        if(filter.containsKey(FilterParametersEnum.FROM_DATE.getKey())){
+            return filterMealsBetweenDate(
+                    filter.get(FilterParametersEnum.FROM_DATE.getKey()),
+                    filter.get(FilterParametersEnum.TO_DATE.getKey())
+            );
+        } else if (filter.containsKey(FilterParametersEnum.YEAR.getKey())) {
+            MonthsEnum month = MonthsEnum.valueOf(filter.get(FilterParametersEnum.MONTH.getKey()).toUpperCase());
+            String year = filter.get(FilterParametersEnum.YEAR.getKey());
+            return getAllExpensesForMonthInYear(month, year);
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<MealCalendarResponse> getAllExpensesForMonthInYear(MonthsEnum month, String year) {
+        String from = month.getFirstDayForYear(year);
+        String to = month.getLastDayForYear(year);
+
+        return filterMealsBetweenDate(from, to);
+    }
+
 }

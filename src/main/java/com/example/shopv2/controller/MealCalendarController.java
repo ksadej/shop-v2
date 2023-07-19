@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -54,6 +55,11 @@ public class MealCalendarController {
         return mealCalendarService.filterMealsBetweenDate(fromDate, toDate);
     }
 
+    @GetMapping(path = "/calendar/filter/date")
+    public List<MealCalendarResponse> filterMealsDate(@RequestParam Map<String, String> filter){
+        return mealCalendarService.getAllFilteredMeals(filter);
+    }
+
     @GetMapping(path = "/calendar/filter/day/{day}")
     public List<MealCalendarResponse> filterByDays(@PathVariable String day){
         return mealCalendarService.filterByDays(day);
@@ -63,5 +69,4 @@ public class MealCalendarController {
     public List<MealCalendarResponse> filterByTime(@PathVariable String mealTime){
         return mealCalendarService.filterByTimeOfDay(mealTime);
     }
-
 }
