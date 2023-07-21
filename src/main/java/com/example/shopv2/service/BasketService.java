@@ -1,6 +1,7 @@
 package com.example.shopv2.service;
 
 import com.example.shopv2.controller.dto.BasketResponse;
+import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.mapper.BasketMapper;
 import com.example.shopv2.mapper.IngredientMapper;
 import com.example.shopv2.mapper.NutritionMapper;
@@ -14,7 +15,9 @@ import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
+import com.example.shopv2.service.filters.MonthsEnum;
 import com.example.shopv2.validator.BasketValidator;
+import com.example.shopv2.validator.enums.FilterParametersEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -263,6 +266,28 @@ public class BasketService {
                 .collect(Collectors.toList());
         System.out.println(basketResponses);
         return basketResponses;
+    }
+
+    public List<BasketResponse> getAllFilteredBasket(Map<String, String> filter){
+        if((filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()) && !filter.containsKey(FilterParametersEnum.TO_DATE.getKey())) &&
+                (filter.containsKey(FilterParametersEnum.TO_DATE.getKey()) && !filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()))){
+            return filterBasketBetweenDate(
+                    filter.get(FilterParametersEnum.FROM_DATE.getKey()),
+                    filter.get(FilterParametersEnum.TO_DATE.getKey()));
+        } else if (filter.containsKey(FilterParametersEnum.YEAR.getKey())) {
+            MonthsEnum month = MonthsEnum.valueOf(filter.get(FilterParametersEnum.MONTH.getKey()).toUpperCase());
+            String year = filter.get(FilterParametersEnum.YEAR.getKey());
+            return getAllExpensesForMonthInYear(month, year);
+        }
+
+        return Collections.emptyList();
+    }
+
+    private List<BasketResponse> getAllExpensesForMonthInYear(MonthsEnum month, String year) {
+        String from = month.getFirstDayForYear(year);
+        String to = month.getLastDayForYear(year);
+
+        return filterBasketBetweenDate(from, to);
     }
 
     //metoda naliczania rabatów na całość zakupów i na konkretne przepisy
