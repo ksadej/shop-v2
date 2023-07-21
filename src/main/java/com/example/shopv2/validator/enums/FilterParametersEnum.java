@@ -4,8 +4,7 @@ public enum FilterParametersEnum {
     FROM_DATE("from"),
     TO_DATE("to"),
     YEAR("year"),
-    MONTH("month"),
-    CATEGORY("category");
+    MONTH("month");
 
     private final String key;
 

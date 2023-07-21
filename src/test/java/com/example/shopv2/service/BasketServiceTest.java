@@ -1,6 +1,7 @@
 package com.example.shopv2.service;
 
 import com.example.shopv2.exceptions.BasketException;
+import com.example.shopv2.mapper.BasketMapper;
 import com.example.shopv2.mapper.NutritionMapper;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
@@ -31,7 +32,7 @@ class BasketServiceTest {
     private NutritionRepository nutritionRepository;
     private BasketValidator basketValidator = new BasketValidator();
     private NutritionMapper nutritionMapper = new NutritionMapper();
-
+    private BasketMapper basketMapper = new BasketMapper();
     @BeforeEach
     public void setup(){
         basketRepository = Mockito.mock(BasketRepository.class);
@@ -43,7 +44,7 @@ class BasketServiceTest {
 //        basketValidator = Mockito.mock(BasketValidator.class);
         basketService = new BasketService(basketRepository, recipesService,
                 nutritionService, ingredientService,
-                ingredientRepository, nutritionRepository, basketValidator, nutritionMapper);
+                ingredientRepository, nutritionRepository, basketValidator, nutritionMapper, basketMapper);
     }
 
     @Test

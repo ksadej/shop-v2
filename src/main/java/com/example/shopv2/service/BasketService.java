@@ -1,5 +1,7 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.controller.dto.BasketResponse;
+import com.example.shopv2.mapper.BasketMapper;
 import com.example.shopv2.mapper.IngredientMapper;
 import com.example.shopv2.mapper.NutritionMapper;
 import com.example.shopv2.model.Basket;
@@ -19,6 +21,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -34,6 +42,7 @@ public class BasketService {
     private final NutritionRepository nutritionRepository;
     private final BasketValidator basketValidator;
     private final NutritionMapper nutritionMapper;
+    private final BasketMapper basketMapper;
 
 
     @Autowired
@@ -42,7 +51,7 @@ public class BasketService {
                          NutritionService nutritionService,
                          IngredientService ingredientService,
                          IngredientRepository ingredientRepository,
-                         NutritionRepository nutritionRepository, BasketValidator basketValidator, NutritionMapper nutritionMapper) {
+                         NutritionRepository nutritionRepository, BasketValidator basketValidator, NutritionMapper nutritionMapper, BasketMapper basketMapper) {
         this.basketRepository = basketRepository;
         this.recipesService = recipesService;
         this.nutritionService = nutritionService;
@@ -51,6 +60,7 @@ public class BasketService {
         this.nutritionRepository = nutritionRepository;
         this.basketValidator = basketValidator;
         this.nutritionMapper = nutritionMapper;
+        this.basketMapper = basketMapper;
     }
 
     @Transactional
@@ -59,6 +69,7 @@ public class BasketService {
         basketValidator.basketDataValidator(id);
 
         Basket basket = new Basket();
+        basket.setDataAdded(OffsetDateTime.now());
 
         ///Recipes
         Recipes ing = Recipes
@@ -237,6 +248,21 @@ public class BasketService {
                .sum();
 
         return recipesPojoList;
+    }
+
+    public List<BasketResponse> filterBasketBetweenDate(String fromDate, String toDate){
+
+        OffsetDateTime fData = OffsetDateTime.parse(fromDate,  DateTimeFormatter.ISO_DATE_TIME);
+        OffsetDateTime tDate = OffsetDateTime.parse(fromDate,  DateTimeFormatter.ISO_DATE_TIME);
+        System.out.println(fData);
+        System.out.println(tDate);
+
+        List<BasketResponse> basketResponses = basketRepository.findAllByBetweenDate(fData, tDate)
+                .stream()
+                .map(BasketMapper -> basketMapper.entityToResponse(BasketMapper))
+                .collect(Collectors.toList());
+        System.out.println(basketResponses);
+        return basketResponses;
     }
 
     //metoda naliczania rabatów na całość zakupów i na konkretne przepisy

@@ -1,16 +1,15 @@
 package com.example.shopv2.controller;
 
+import com.example.shopv2.controller.dto.BasketResponse;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
-import com.example.shopv2.model.Recipes;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.service.BasketService;
 import com.example.shopv2.service.NutritionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200")
@@ -68,5 +67,10 @@ public class BasketController {
     @GetMapping(path = "/api/basket/sumPrice/{id}")
     public Double sumPriceByBasketId(@PathVariable(value = "id") Integer id){
         return basketService.sumPriceByBasketId(id);
+    }
+
+    @GetMapping(path = "/api/basket/filter")
+    public List<BasketResponse> filterMealsBetweenDate(@RequestParam String fromDate, @RequestParam String toDate){
+        return basketService.filterBasketBetweenDate(fromDate, toDate);
     }
 }

@@ -110,7 +110,8 @@ public class MealCalendarService {
 
 
     public List<MealCalendarResponse> getAllFilteredMeals(Map<String, String> filter){
-        if(filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()) && filter.containsKey(FilterParametersEnum.TO_DATE.getKey())){
+        if((filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()) && !filter.containsKey(FilterParametersEnum.TO_DATE.getKey())) &&
+                (filter.containsKey(FilterParametersEnum.TO_DATE.getKey()) && !filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()))){
             return filterMealsBetweenDate(
                     filter.get(FilterParametersEnum.FROM_DATE.getKey()),
                     filter.get(FilterParametersEnum.TO_DATE.getKey()));
