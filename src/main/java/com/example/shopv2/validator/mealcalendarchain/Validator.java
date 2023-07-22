@@ -1,4 +1,4 @@
-package com.example.shopv2.validator.MealCalendarChain;
+package com.example.shopv2.validator.mealcalendarchain;
 
 import com.example.shopv2.controller.dto.MealCalendarRequest;
 

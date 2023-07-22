@@ -4,12 +4,11 @@ import com.example.shopv2.controller.dto.MealCalendarRequest;
 import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.exceptions.MealCalendarException;
 import com.example.shopv2.repository.MealCalendarRepository;
-import com.example.shopv2.validator.MealCalendarChain.*;
+import com.example.shopv2.validator.mealcalendarchain.*;
 import com.example.shopv2.validator.enums.FilterParametersEnum;
 import com.example.shopv2.validator.enums.MealCalendarEnum;
 import org.springframework.stereotype.Component;
 
-import java.time.OffsetDateTime;
 import java.util.Map;
 import java.util.Objects;
 

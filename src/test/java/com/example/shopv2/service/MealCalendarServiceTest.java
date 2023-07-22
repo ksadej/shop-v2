@@ -3,12 +3,14 @@ package com.example.shopv2.service;
 import com.example.shopv2.controller.dto.MealCalendarRequest;
 import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.exceptions.MealCalendarException;
+import com.example.shopv2.filters.FilterRangeAbstract;
 import com.example.shopv2.mapper.MealCalendarMapper;
 import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.repository.MealCalendarRepository;
 import com.example.shopv2.validator.MealCalendarValidator;
+import com.example.shopv2.validator.filterfactory.MealCalendarParametersValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -26,12 +28,16 @@ class MealCalendarServiceTest {
     private MealCalendarService mealCalendarService;
     private MealCalendarMapper mealCalendarMapper;
     MealCalendarValidator mealCalendarValidator = new MealCalendarValidator(mealCalendarRepository);
+    MealCalendarParametersValidator mealCalendarParametersValidator = new MealCalendarParametersValidator();
 
     @BeforeEach
     public void setup(){
         mealCalendarRepository = mock(MealCalendarRepository.class);
         mealCalendarMapper = mock(MealCalendarMapper.class);
-        mealCalendarService = new MealCalendarService(mealCalendarRepository, mealCalendarMapper, mealCalendarValidator);
+        mealCalendarService = new MealCalendarService(mealCalendarRepository,
+                mealCalendarMapper,
+                mealCalendarValidator,
+                mealCalendarParametersValidator, null);
     }
 
     @Test

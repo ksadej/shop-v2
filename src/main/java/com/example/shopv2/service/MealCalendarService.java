@@ -2,21 +2,21 @@ package com.example.shopv2.service;
 
 import com.example.shopv2.controller.dto.MealCalendarRequest;
 import com.example.shopv2.controller.dto.MealCalendarResponse;
+import com.example.shopv2.filters.FilterRangeAbstract;
+import com.example.shopv2.filters.MealCalendarFilterRange;
 import com.example.shopv2.mapper.MealCalendarMapper;
 import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.repository.MealCalendarRepository;
-import com.example.shopv2.service.filters.MonthsEnum;
 import com.example.shopv2.validator.MealCalendarValidator;
-import com.example.shopv2.validator.enums.FilterParametersEnum;
+import com.example.shopv2.validator.filterfactory.MealCalendarParametersValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -28,16 +28,20 @@ public class MealCalendarService {
     private final MealCalendarRepository mealCalendarRepository;
     private final MealCalendarMapper mealCalendarMapper;
     private final MealCalendarValidator mealCalendarValidator;
-
+    private final MealCalendarParametersValidator mealCalendarParametersValidator;
     private static final Logger LOGGER = LoggerFactory.getLogger(MealCalendarService.class.getName());
-
+    private final FilterRangeAbstract filterRangeAbstract;
     @Autowired
     public MealCalendarService(MealCalendarRepository mealCalendarRepository,
                                MealCalendarMapper mealCalendarMapper,
-                               MealCalendarValidator mealCalendarValidator) {
+                               MealCalendarValidator mealCalendarValidator,
+                               MealCalendarParametersValidator mealCalendarParametersValidator,
+                               MealCalendarFilterRange mealCalendarFilterRange) {
         this.mealCalendarRepository = mealCalendarRepository;
         this.mealCalendarMapper = mealCalendarMapper;
         this.mealCalendarValidator = mealCalendarValidator;
+        this.mealCalendarParametersValidator = mealCalendarParametersValidator;
+        this.filterRangeAbstract = mealCalendarFilterRange;
     }
 
     public MealCalendar saveMealCalendar(MealCalendarRequest mealCalendarRequest){
@@ -67,18 +71,6 @@ public class MealCalendarService {
         mealCalendarRepository.deleteById(id);
     }
 
-    public List<MealCalendarResponse> filterMealsBetweenDate(String fromDate, String toDate){
-
-        final String dateSuffix = "T00:00:00.001Z";
-        final OffsetDateTime fData = OffsetDateTime.parse(fromDate + dateSuffix);
-        final OffsetDateTime tDate = OffsetDateTime.parse(toDate + dateSuffix);
-
-        return mealCalendarRepository.findAllByBetweenDate(fData, tDate)
-                .stream()
-                .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
-                .collect(Collectors.toList());
-    }
-
     public List<MealCalendarResponse> filterByDayAndTime(Days day, MealTime time){
         LOGGER.info("Method getByDayAndTime");
         LOGGER.debug("Days: "+day+" Meal time: "+time);
@@ -104,31 +96,29 @@ public class MealCalendarService {
                 .collect(Collectors.toList());
     }
 
-    public List<MealCalendar> filterByRecipesName(String name){
+    public List<MealCalendarResponse> filterByRecipesName(String name){
         return null;
     }
 
+    public List<MealCalendarResponse> filterMealsBetweenDate(String fromDate, String toDate){
 
-    public List<MealCalendarResponse> getAllFilteredMeals(Map<String, String> filter){
-        if((filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()) && !filter.containsKey(FilterParametersEnum.TO_DATE.getKey())) &&
-                (filter.containsKey(FilterParametersEnum.TO_DATE.getKey()) && !filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()))){
-            return filterMealsBetweenDate(
-                    filter.get(FilterParametersEnum.FROM_DATE.getKey()),
-                    filter.get(FilterParametersEnum.TO_DATE.getKey()));
-        } else if (filter.containsKey(FilterParametersEnum.YEAR.getKey())) {
-            MonthsEnum month = MonthsEnum.valueOf(filter.get(FilterParametersEnum.MONTH.getKey()).toUpperCase());
-            String year = filter.get(FilterParametersEnum.YEAR.getKey());
-            return getAllExpensesForMonthInYear(month, year);
-        }
+        final String dateSuffix = "T00:00:00.001Z";
+        final OffsetDateTime fData = OffsetDateTime.parse(fromDate + dateSuffix);
+        final OffsetDateTime tDate = OffsetDateTime.parse(toDate + dateSuffix);
 
-        return Collections.emptyList();
+        return mealCalendarRepository.findAllByBetweenDate(fData, tDate)
+                .stream()
+                .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
+                .collect(Collectors.toList());
     }
 
-    private List<MealCalendarResponse> getAllExpensesForMonthInYear(MonthsEnum month, String year) {
-        String from = month.getFirstDayForYear(year);
-        String to = month.getLastDayForYear(year);
+    public List<MealCalendarResponse> getAllFilteredMeals(Map<String, String> filter){
+        mealCalendarParametersValidator.validateFilter(filter);
 
-        return filterMealsBetweenDate(from, to);
+        return filterRangeAbstract.getAllByFilters(filter)
+                .stream()
+                .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
+                .collect(Collectors.toList());
     }
 
 }
