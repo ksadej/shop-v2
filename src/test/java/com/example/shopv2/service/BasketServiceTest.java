@@ -44,7 +44,7 @@ class BasketServiceTest {
 //        basketValidator = Mockito.mock(BasketValidator.class);
         basketService = new BasketService(basketRepository, recipesService,
                 nutritionService, ingredientService,
-                ingredientRepository, nutritionRepository, basketValidator, nutritionMapper, basketMapper);
+                ingredientRepository, nutritionRepository, basketValidator, nutritionMapper, basketMapper, null);
     }
 
     @Test

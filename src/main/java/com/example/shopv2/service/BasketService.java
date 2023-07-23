@@ -1,7 +1,8 @@
 package com.example.shopv2.service;
 
 import com.example.shopv2.controller.dto.BasketResponse;
-import com.example.shopv2.controller.dto.MealCalendarResponse;
+import com.example.shopv2.filters.BasketFilterRange;
+import com.example.shopv2.filters.FilterRangeAbstract;
 import com.example.shopv2.mapper.BasketMapper;
 import com.example.shopv2.mapper.IngredientMapper;
 import com.example.shopv2.mapper.NutritionMapper;
@@ -15,7 +16,7 @@ import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
-import com.example.shopv2.service.filters.MonthsEnum;
+import com.example.shopv2.validator.enums.MonthsEnum;
 import com.example.shopv2.validator.BasketValidator;
 import com.example.shopv2.validator.enums.FilterParametersEnum;
 import org.slf4j.Logger;
@@ -24,12 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Clock;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
-import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,7 +43,7 @@ public class BasketService {
     private final BasketValidator basketValidator;
     private final NutritionMapper nutritionMapper;
     private final BasketMapper basketMapper;
-
+    private final FilterRangeAbstract<Basket> filterRangeAbstract;
 
     @Autowired
     public BasketService(BasketRepository basketRepository,
@@ -54,7 +51,11 @@ public class BasketService {
                          NutritionService nutritionService,
                          IngredientService ingredientService,
                          IngredientRepository ingredientRepository,
-                         NutritionRepository nutritionRepository, BasketValidator basketValidator, NutritionMapper nutritionMapper, BasketMapper basketMapper) {
+                         NutritionRepository nutritionRepository,
+                         BasketValidator basketValidator,
+                         NutritionMapper nutritionMapper,
+                         BasketMapper basketMapper,
+                         BasketFilterRange basketFilterRange) {
         this.basketRepository = basketRepository;
         this.recipesService = recipesService;
         this.nutritionService = nutritionService;
@@ -64,6 +65,7 @@ public class BasketService {
         this.basketValidator = basketValidator;
         this.nutritionMapper = nutritionMapper;
         this.basketMapper = basketMapper;
+        this.filterRangeAbstract = basketFilterRange;
     }
 
     @Transactional
@@ -269,26 +271,13 @@ public class BasketService {
     }
 
     public List<BasketResponse> getAllFilteredBasket(Map<String, String> filter){
-        if((filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()) && !filter.containsKey(FilterParametersEnum.TO_DATE.getKey())) &&
-                (filter.containsKey(FilterParametersEnum.TO_DATE.getKey()) && !filter.containsKey(FilterParametersEnum.FROM_DATE.getKey()))){
-            return filterBasketBetweenDate(
-                    filter.get(FilterParametersEnum.FROM_DATE.getKey()),
-                    filter.get(FilterParametersEnum.TO_DATE.getKey()));
-        } else if (filter.containsKey(FilterParametersEnum.YEAR.getKey())) {
-            MonthsEnum month = MonthsEnum.valueOf(filter.get(FilterParametersEnum.MONTH.getKey()).toUpperCase());
-            String year = filter.get(FilterParametersEnum.YEAR.getKey());
-            return getAllExpensesForMonthInYear(month, year);
-        }
 
-        return Collections.emptyList();
+        return filterRangeAbstract.getAllByFilters(filter)
+                .stream()
+                .map(BasketMapper -> basketMapper.entityToResponse(BasketMapper))
+                .collect(Collectors.toList());
     }
 
-    private List<BasketResponse> getAllExpensesForMonthInYear(MonthsEnum month, String year) {
-        String from = month.getFirstDayForYear(year);
-        String to = month.getLastDayForYear(year);
-
-        return filterBasketBetweenDate(from, to);
-    }
 
     //metoda naliczania rabatów na całość zakupów i na konkretne przepisy
     //metoda do pobierania proponowanych przepisów na podstawie produktów

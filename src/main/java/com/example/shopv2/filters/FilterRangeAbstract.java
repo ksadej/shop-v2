@@ -1,8 +1,7 @@
 package com.example.shopv2.filters;
 
-import com.example.shopv2.controller.dto.MealCalendarResponse;
-import com.example.shopv2.model.MealCalendar;
-import com.example.shopv2.service.filters.MonthsEnum;
+
+import com.example.shopv2.validator.enums.MonthsEnum;
 import com.example.shopv2.validator.enums.FilterParametersEnum;
 
 import java.time.OffsetDateTime;
@@ -10,11 +9,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public abstract class FilterRangeAbstract {
+public abstract class FilterRangeAbstract<T> {
 
     private final static String DATE_SUFFIX = "T00:00:00.001Z";
 
-    public List<MealCalendar> getAllByFilters(Map<String, String> filter){
+    public List<T> getAllByFilters(Map<String, String> filter){
 
         if(isFilterForFromToDate(filter)) {
             String fromDate = filter.get(FilterParametersEnum.FROM_DATE.getKey());
@@ -39,7 +38,7 @@ public abstract class FilterRangeAbstract {
                 && filter.containsKey(FilterParametersEnum.MONTH.getKey());
     }
 
-    private List<MealCalendar> getAllForMonthInYear(MonthsEnum month, String year) {
+    private List<T> getAllForMonthInYear(MonthsEnum month, String year) {
         String from = month.getFirstDayForYear(year);
         String to = month.getLastDayForYear(year);
 
@@ -50,5 +49,5 @@ public abstract class FilterRangeAbstract {
         return OffsetDateTime.parse(date + DATE_SUFFIX);
     }
 
-    protected abstract List<MealCalendar> getAllEntityBetweenDate(OffsetDateTime fromDate, OffsetDateTime toDate);
+    protected abstract List<T> getAllEntityBetweenDate(OffsetDateTime fromDate, OffsetDateTime toDate);
 }

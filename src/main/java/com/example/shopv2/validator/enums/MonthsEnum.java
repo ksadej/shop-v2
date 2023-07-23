@@ -1,4 +1,4 @@
-package com.example.shopv2.service.filters;
+package com.example.shopv2.validator.enums;
 
 public enum MonthsEnum {
     JANUARY("01", "31"),
