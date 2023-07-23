@@ -10,7 +10,7 @@ import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.repository.MealCalendarRepository;
 import com.example.shopv2.validator.MealCalendarValidator;
-import com.example.shopv2.validator.filterfactory.MealCalendarParametersValidator;
+import com.example.shopv2.validator.ParametersValidatorFactory.MealCalendarParametersValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,7 +111,6 @@ public class MealCalendarService {
     }
 
     public List<MealCalendarResponse> getAllFilteredMeals(Map<String, String> filter){
-        mealCalendarParametersValidator.validateFilter(filter);
 
         return filterRangeAbstract.getAllByFilters(filter)
                 .stream()

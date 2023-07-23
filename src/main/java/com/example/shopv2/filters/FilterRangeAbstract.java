@@ -1,8 +1,12 @@
 package com.example.shopv2.filters;
 
 
+import com.example.shopv2.validator.ParametersValidatorFactory.BasketParametersValidator;
+import com.example.shopv2.validator.ParametersValidatorFactory.MealCalendarParametersValidator;
 import com.example.shopv2.validator.enums.MonthsEnum;
 import com.example.shopv2.validator.enums.FilterParametersEnum;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 
 import java.time.OffsetDateTime;
 import java.util.Collections;
@@ -11,9 +15,23 @@ import java.util.Map;
 
 public abstract class FilterRangeAbstract<T> {
 
+    @Autowired
+    private MealCalendarParametersValidator mealCalendarParametersValidator;
+
+    @Autowired
+    private BasketParametersValidator basketParametersValidator;
+
     private final static String DATE_SUFFIX = "T00:00:00.001Z";
 
     public List<T> getAllByFilters(Map<String, String> filter){
+
+        if(MealCalendarFilterRange.class.getName().equals("MealCalendarFilterRange")){
+            mealCalendarParametersValidator.validateFilter(filter);
+        }
+
+        if(BasketFilterRange.class.getName().equals("BasketFilterRange")){
+            basketParametersValidator.validateFilter(filter);
+        }
 
         if(isFilterForFromToDate(filter)) {
             String fromDate = filter.get(FilterParametersEnum.FROM_DATE.getKey());

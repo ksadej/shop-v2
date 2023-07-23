@@ -1,6 +1,6 @@
-package com.example.shopv2.validator.filterfactory;
+package com.example.shopv2.validator.ParametersValidatorFactory;
 
-import com.example.shopv2.exceptions.MissingFilterException;
+import com.example.shopv2.exceptions.FilterException;
 import com.example.shopv2.validator.enums.FilterParametersEnum;
 
 import java.util.Map;
@@ -14,7 +14,7 @@ public abstract class FilterValidator {
 
     private void checkIfToDateExistFromDateMissing(Map<String, String> filter, String errorCode) {
         if(filter.containsKey(FilterParametersEnum.TO_DATE.getKey()) && !filter.containsKey(FilterParametersEnum.FROM_DATE.getKey())){
-            throw new MissingFilterException(FilterParametersEnum.FROM_DATE.getKey(), errorCode);
+            throw new FilterException(FilterParametersEnum.FROM_DATE.getKey(), errorCode);
         }
     }
 
