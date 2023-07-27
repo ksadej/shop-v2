@@ -52,27 +52,4 @@ public class MealCalendarValidator {
         }
     }
 
-    public void  filterMealsBetweenDateValidator(Map<String, String> filters){
-
-        //check if year exist, month missing
-        if (filters.containsKey(FilterParametersEnum.MONTH.getKey())
-                && !filters.containsKey(FilterParametersEnum.YEAR.getKey())){
-            throw new MealCalendarException(FilterParametersEnum.MONTH.getKey(), "Error code: invalid date: no month!");
-        }
-
-        //check if toDate exist, fromDate missing
-        if (filters.containsKey(FilterParametersEnum.TO_DATE.getKey())
-                && !filters.containsKey(FilterParametersEnum.FROM_DATE.getKey())) {
-
-            throw new MealCalendarException(FilterParametersEnum.FROM_DATE.getKey(), "Error code: invalid date: no from date!");
-        }
-
-        //check if fromDate exist, toDate missing
-        if (filters.containsKey(FilterParametersEnum.FROM_DATE.getKey())
-                && !filters.containsKey(FilterParametersEnum.TO_DATE.getKey())) {
-
-            throw new MealCalendarException(FilterParametersEnum.TO_DATE.getKey(), "Error code: invalid date: no to date!");
-        }
-    }
-
 }

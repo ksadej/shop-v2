@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class IngredientController {
@@ -47,6 +45,12 @@ public class IngredientController {
     @GetMapping("/ingredient/user/{id}")
     public List<Ingredient> sumIngredientsByUserId(@PathVariable(value = "id")Long id){
         return ingredientService.sumAllIngredientsByUserId(id);
+    }
+
+
+    @GetMapping("/ingredient/test")
+    public List<RecipesIngredientPojo> sumIngredientsByUserId4(){
+        return ingredientService.getIngredientByRecipesId6();
     }
 
 }

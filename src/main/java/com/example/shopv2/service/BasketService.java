@@ -100,6 +100,7 @@ public class BasketService {
     }
 
     // zapisuje Listę wartości odzywczych do tabeli Nutrition na podstawie id przepisu
+    @Transactional
     public void saveNutritionByIngredientId(Integer id) {
         LOGGER.info("Saving nutrition by ingredient ID");
         basketValidator.basketDataValidator(id);

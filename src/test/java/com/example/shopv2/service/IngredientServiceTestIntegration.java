@@ -1,33 +1,25 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.mapper.IngredientMapper;
-import com.example.shopv2.pojo.RecipesIngredientPojo;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
+import com.github.tomakehurst.wiremock.WireMockServer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
-import java.util.List;
+import static org.mockito.Mockito.*;
 
-class IngredientServiceTest {
+@SpringBootTest
+class IngredientServiceTestIntegration {
 
-    @InjectMocks
+    private WireMockServer wireMockServer;
     private IngredientService ingredientService;
-    @Mock
-    private RestTemplate restTemplate;
-
-    @Autowired
-    private HttpHeaders httpHeaders;
+    BasketRepository basketRepository;
+    IngredientRepository ingredientRepository;
+    final RestTemplate restTemplate = new RestTemplate();
+    final HttpHeaders httpHeaders = new HttpHeaders();
 
     @BeforeEach
     public void setup(){

@@ -1,6 +1,5 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.mapper.IngredientMapper;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
@@ -8,11 +7,8 @@ import com.example.shopv2.pojo.RecipesIngredientPojo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,29 +17,37 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class IngredientService {
+public class IngredientService{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IngredientService.class.getName());
 
     private final BasketRepository basketRepository;
     private final IngredientRepository ingredientRepository;
     private final RestTemplate restTemplate;
-    private final IngredientMapper ingredientMapper;
-
     private final HttpHeaders httpHeaders;
 
     @Autowired
     public IngredientService(BasketRepository basketRepository,
                              IngredientRepository ingredientRepository,
-                             RestTemplate restTemplate,
-                             IngredientMapper ingredientMapper, @Qualifier("recipesHeaders") HttpHeaders httpHeaders) {
+                             RestTemplate restTemplate, HttpHeaders httpHeaders) {
         this.basketRepository = basketRepository;
         this.ingredientRepository = ingredientRepository;
         this.restTemplate = restTemplate;
-        this.ingredientMapper = ingredientMapper;
         this.httpHeaders = httpHeaders;
     }
 
+    private final String URL = "https://api.spoonacular.com/recipes/716406/information?includeNutrition=false";
+
+//    @Autowired
+//    ConnectionImpl connection;
+
+    public List<RecipesIngredientPojo> getIngredientByRecipesId6(){
+
+//        ArrayList<RecipesIngredientPojo> ingredients = connection.getIngredientByRecipesId4(URL, RecipesIngredientPojo.class).getExtendedIngredients();
+        ArrayList<RecipesIngredientPojo> ingredients = ConnectionImpl.getIngredientByRecipesId4(URL, RecipesIngredientPojo.class).getExtendedIngredients();
+        return ingredients;
+
+    }
 
     //pobiera składniki z przepisu na podstawie id przepisu
     public List<RecipesIngredientPojo> getIngredientByRecipesId(Integer id){
@@ -58,7 +62,6 @@ public class IngredientService {
 
         LOGGER.debug("List of ingredients"+ entity.getBody().getExtendedIngredients());
         ArrayList<RecipesIngredientPojo> recipesIngredientResponses = entity.getBody().getExtendedIngredients();
-
         return recipesIngredientResponses;
     }
 
@@ -103,6 +106,8 @@ public class IngredientService {
         }
         return newIngredients;
     }
+
+
 
     //filtry: po cenie produktu od najmniejszego do największego
     //filtry: po kategorii: owoce, warzywa itd.

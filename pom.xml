@@ -70,6 +70,21 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.github.tomakehurst/wiremock -->
+		<dependency>
+			<groupId>com.github.tomakehurst</groupId>
+			<artifactId>wiremock</artifactId>
+			<version>1.46</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-web-reactive -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web-reactive</artifactId>
+			<version>5.0.0.M4</version>
+		</dependency>
+
+
 
 		<dependency>
 			<groupId>org.junit.jupiter</groupId>

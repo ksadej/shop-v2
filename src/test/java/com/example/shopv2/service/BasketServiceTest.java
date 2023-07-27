@@ -4,6 +4,9 @@ import com.example.shopv2.exceptions.BasketException;
 import com.example.shopv2.mapper.BasketMapper;
 import com.example.shopv2.mapper.NutritionMapper;
 import com.example.shopv2.model.Basket;
+import com.example.shopv2.model.Ingredient;
+import com.example.shopv2.model.Nutrition;
+import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.repository.BasketRepository;
@@ -44,7 +47,11 @@ class BasketServiceTest {
 //        basketValidator = Mockito.mock(BasketValidator.class);
         basketService = new BasketService(basketRepository, recipesService,
                 nutritionService, ingredientService,
-                ingredientRepository, nutritionRepository, basketValidator, nutritionMapper, basketMapper, null);
+                ingredientRepository,
+                nutritionRepository,
+                basketValidator,
+                nutritionMapper,
+                basketMapper, null);
     }
 
     @Test
@@ -94,7 +101,7 @@ class BasketServiceTest {
     }
 
     @Test
-    void saveNutritionByIngredientId_saveObject_saved(){
+    void saveNutritionByIngredientId_saveObject_checkIfSaved(){
         //given
         RecipesIngredientPojo recipesIngredientPojo = RecipesIngredientPojo
                 .builder()

@@ -47,6 +47,7 @@ public class ShopConfiguration extends WebSecurityConfigurerAdapter {
                 .antMatchers( "/calendar/**").permitAll()
                 .antMatchers( "/recipes/**").permitAll()
                 .antMatchers( "/nutrition/**").permitAll()
+                .antMatchers( "/ingredient/**").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
