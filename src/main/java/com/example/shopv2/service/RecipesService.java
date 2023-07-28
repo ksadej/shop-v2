@@ -45,35 +45,23 @@ public class RecipesService {
         LOGGER.info("Getting recipes by typ");
         LOGGER.debug("Type of recipes: "+type);
 
-
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-
-        ResponseEntity<ResultPojo> entity = restTemplate
-                .exchange("https://api.spoonacular.com/recipes/complexSearch?type="+type ,
-                        HttpMethod.GET,
-                        httpEntity,
-                        ResultPojo.class);
-
-        List<RecipesPojo> recipesResponses = entity.getBody().getResults();
-        LOGGER.debug("List of recipes by type "+ entity.getBody().getResults());
-        return recipesResponses;
-
+        ArrayList<RecipesPojo> entity =
+                Connection.externalApiConnectionGET(
+                        "https://api.spoonacular.com/recipes/complexSearch?type=" + type,
+                            ResultPojo.class).getResults();
+        LOGGER.debug("List of recipes by type "+ entity);
+        return entity;
     }
 
     public RecipesPojo getRecipesById(Integer id){
         LOGGER.info("Getting recipes by id");
         LOGGER.debug("ID of recipes: "+id);
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-        System.out.println("Identyfikator: "+id);
-        ResponseEntity<RecipesPojo> entity = restTemplate
-                .exchange("https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false",
-                        HttpMethod.GET,
-                        httpEntity,
-                        RecipesPojo.class);
-        System.out.println(entity.getBody());
-        RecipesPojo rootResponses = entity.getBody();
-        LOGGER.debug("Recipes by id: "+ entity.getBody());
 
+        RecipesPojo rootResponses = Connection.externalApiConnectionGET(
+                "https://api.spoonacular.com/recipes/" + id + "/information?includeNutrition=false",
+                RecipesPojo.class);
+
+        LOGGER.debug("Recipes by id: "+ rootResponses);
         return rootResponses;
     }
 

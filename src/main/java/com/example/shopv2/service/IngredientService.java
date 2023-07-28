@@ -7,7 +7,6 @@ import com.example.shopv2.pojo.RecipesIngredientPojo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -23,46 +22,25 @@ public class IngredientService{
 
     private final BasketRepository basketRepository;
     private final IngredientRepository ingredientRepository;
-    private final RestTemplate restTemplate;
-    private final HttpHeaders httpHeaders;
+
 
     @Autowired
     public IngredientService(BasketRepository basketRepository,
-                             IngredientRepository ingredientRepository,
-                             RestTemplate restTemplate, HttpHeaders httpHeaders) {
+                             IngredientRepository ingredientRepository) {
         this.basketRepository = basketRepository;
         this.ingredientRepository = ingredientRepository;
-        this.restTemplate = restTemplate;
-        this.httpHeaders = httpHeaders;
-    }
-
-    private final String URL = "https://api.spoonacular.com/recipes/716406/information?includeNutrition=false";
-
-//    @Autowired
-//    ConnectionImpl connection;
-
-    public List<RecipesIngredientPojo> getIngredientByRecipesId6(){
-
-//        ArrayList<RecipesIngredientPojo> ingredients = connection.getIngredientByRecipesId4(URL, RecipesIngredientPojo.class).getExtendedIngredients();
-        ArrayList<RecipesIngredientPojo> ingredients = ConnectionImpl.getIngredientByRecipesId4(URL, RecipesIngredientPojo.class).getExtendedIngredients();
-        return ingredients;
-
     }
 
     //pobiera składniki z przepisu na podstawie id przepisu
     public List<RecipesIngredientPojo> getIngredientByRecipesId(Integer id){
         LOGGER.info("Getting ingredients by recipes id");
         LOGGER.debug("Recipes id: "+id);
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
-        ResponseEntity<RecipesIngredientPojo> entity = restTemplate
-                .exchange("https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false",
-                        HttpMethod.GET,
-                        httpEntity,
-                        RecipesIngredientPojo.class);
+        ArrayList<RecipesIngredientPojo> extendedIngredients =
+                Connection.externalApiConnectionGET(
+                        "https://api.spoonacular.com/recipes/"+id+"/information?includeNutrition=false", RecipesIngredientPojo.class).getExtendedIngredients();
+        LOGGER.debug("List of ingredients"+ extendedIngredients);
 
-        LOGGER.debug("List of ingredients"+ entity.getBody().getExtendedIngredients());
-        ArrayList<RecipesIngredientPojo> recipesIngredientResponses = entity.getBody().getExtendedIngredients();
-        return recipesIngredientResponses;
+        return extendedIngredients;
     }
 
     //pobiera listę wszystkich składkików

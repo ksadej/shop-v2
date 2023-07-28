@@ -46,11 +46,4 @@ public class IngredientController {
     public List<Ingredient> sumIngredientsByUserId(@PathVariable(value = "id")Long id){
         return ingredientService.sumAllIngredientsByUserId(id);
     }
-
-
-    @GetMapping("/ingredient/test")
-    public List<RecipesIngredientPojo> sumIngredientsByUserId4(){
-        return ingredientService.getIngredientByRecipesId6();
-    }
-
 }

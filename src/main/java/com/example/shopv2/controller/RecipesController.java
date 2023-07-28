@@ -19,12 +19,6 @@ public class RecipesController {
         this.recipesService = recipesService;
     }
 
-
-//    @GetMapping("/api/recipes")
-//    public List<RecipesPojo> getRecipesByIngredients(@RequestParam Long id){
-//        return recipesService.getRecipesByIngredients(id);
-//    }
-
     //pobiera przepisy na podstawie ich typu
     @GetMapping("/recipes/{type}")
     public List<RecipesPojo> getRecipesByType(@PathVariable(value = "type") String type){

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,17 +27,14 @@ public class NutritionService {
 
     private final RestTemplate restTemplate;
     private final HttpHeaders httpHeaders;
-    private final BasketRepository basketRepository;
-    private final NutritionMapper nutritionMapper;
     private final NutritionRepository nutritionRepository;
+
     @Autowired
     public NutritionService(RestTemplate restTemplate,
-                            @Qualifier("recipesHeaders") HttpHeaders httpHeaders,
-                            BasketRepository basketRepository, NutritionMapper nutritionMapper, NutritionRepository nutritionRepository) {
+                            HttpHeaders httpHeaders,
+                            NutritionRepository nutritionRepository) {
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
-        this.basketRepository = basketRepository;
-        this.nutritionMapper = nutritionMapper;
         this.nutritionRepository = nutritionRepository;
     }
 
@@ -46,32 +42,25 @@ public class NutritionService {
     public ArrayList<NutritionNutrientPojo> getNutritionByIngredientId(Long id){
         LOGGER.info("Getting nutrition by ingredients id");
         LOGGER.debug("Ingredient id: "+id);
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<RecipesIngredientPojo> entity = restTemplate
-                .exchange("https://api.spoonacular.com/food/ingredients/"+id+"/information?amount=1",
-                        HttpMethod.GET,
-                        httpEntity,
-                        RecipesIngredientPojo.class);
+        ArrayList<NutritionNutrientPojo> nutrients =
+                Connection.externalApiConnectionGET(
+                        "https://api.spoonacular.com/food/ingredients/" + id + "/information?amount=1",
+                        RecipesIngredientPojo.class).getNutrition().getNutrients();
 
-        ArrayList<NutritionNutrientPojo> nutrient = entity.getBody().getNutrition().getNutrients();
-        LOGGER.debug("List of nutritions"+ entity.getBody().getNutrition().getNutrients());
+        LOGGER.debug("List of nutritions"+ nutrients);
 
-        return nutrient;
+        return nutrients;
     }
 
     public void saveNutritionByIngredientId(Long id){
         LOGGER.info("Saved nutrition by ingredients id");
         LOGGER.debug("Ingredient id: "+id);
-        HttpEntity<String> httpEntity = new HttpEntity<>(httpHeaders);
 
-        ResponseEntity<RecipesIngredientPojo> entity = restTemplate
-                .exchange("https://api.spoonacular.com/food/ingredients/"+id+"/information?amount=1",
-                        HttpMethod.GET,
-                        httpEntity,
-                        RecipesIngredientPojo.class);
-
-        ArrayList<NutritionNutrientPojo> nutrient = entity.getBody().getNutrition().getNutrients();
+        ArrayList<NutritionNutrientPojo> nutrient =
+                Connection.externalApiConnectionGET(
+                        "https://api.spoonacular.com/food/ingredients/"+id+"/information?amount=1",
+                        RecipesIngredientPojo.class).getNutrition().getNutrients();
 
         for(int i=0; i<nutrient.size(); i++){
             Nutrition nutrition = Nutrition
