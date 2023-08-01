@@ -30,7 +30,7 @@ public class IngredientController {
     }
 
     //pobiera listę składników na podstawie card id
-    @GetMapping("/ingredient/card/{id}")
+    @GetMapping("/ingredient/basket/{id}")
     public List<Ingredient> getIngredientsByCardId(@PathVariable(value = "id")Integer id){
         return ingredientService.getIngredientsByCardId(id);
     }
