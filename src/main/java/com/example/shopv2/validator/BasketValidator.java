@@ -9,10 +9,6 @@ import java.util.Objects;
 public class BasketValidator {
 
     public void basketDataValidator(Integer id){
-        if(id.toString().equals("")){
-            throw new BasketException("Code 01", "Object is null");
-        }
-
         if(id <=0){
             throw new BasketException("Code 02", "Object is 0");
         }

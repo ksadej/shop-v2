@@ -1,7 +1,6 @@
 package com.example.shopv2.controller;
 
 import com.example.shopv2.controller.dto.BasketResponse;
-import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
@@ -45,15 +44,15 @@ public class BasketController {
         basketService.saveAllByRecipesId(id);
     }
 
-    //zapisuje wartości odzywcze na podstawie id przepisu
+    //zapisuje wartości odzywcze na podstawie id składniku
     @PostMapping(path = "/api/basket/nutrition/{id}")
-    public void saveNutritionByRecipesId(@PathVariable(value = "id")Integer id){
+    public void saveNutritionByIngredient(@PathVariable(value = "id")Integer id){
         basketService.saveNutritionByIngredientId(id);
     }
 
     @GetMapping(path = "/api/basket/recipes/{id}")
-    public List<RecipesPojo> getRecipiesList(@PathVariable(value = "id") Integer id){
-        return basketService.getListOfRecipesByBasketId(id);
+    public List<RecipesPojo> recipesListByUserId(@PathVariable(value = "id") Integer id){
+        return basketService.getListOfRecipesByUserId(id);
     }
 
     @GetMapping(path = "/api/basket/sumNutrition/{id}")

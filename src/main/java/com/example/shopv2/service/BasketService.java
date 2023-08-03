@@ -16,9 +16,7 @@ import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
-import com.example.shopv2.validator.enums.MonthsEnum;
 import com.example.shopv2.validator.BasketValidator;
-import com.example.shopv2.validator.enums.FilterParametersEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,14 +97,13 @@ public class BasketService {
         basketRepository.save(basket);
     }
 
-    // zapisuje Listę wartości odzywczych do tabeli Nutrition na podstawie id przepisu
+    // zapisuje Listę wartości odzywczych do tabeli Nutrition na podstawie id składników
     @Transactional
     public void saveNutritionByIngredientId(Integer id) {
         LOGGER.info("Saving nutrition by ingredient ID");
         basketValidator.basketDataValidator(id);
 
         ArrayList<NutritionNutrientPojo> nutritionList = nutritionService.getNutritionByIngredientId(Long.valueOf(id));
-        NutritionMapper nutritionMapper = new NutritionMapper();
         nutritionList
                 .stream()
                 .map(NutritionMapper -> nutritionMapper.requestToEntity(NutritionMapper))
@@ -229,25 +226,25 @@ public class BasketService {
         return ingredientArrayList;
     }
 
-    public List<RecipesPojo> getListOfRecipesByBasketId(Integer id){
+    @Transactional
+    public List<RecipesPojo> getListOfRecipesByUserId(Integer id){
         List<Basket> baskets = basketRepository.findAllByIdUser(Long.valueOf(id));
-        System.out.println(baskets);
 
         List<Integer> recipesIds = baskets.get(0).getRecipes()
                 .stream()
                 .map(x -> x.getIdRecipesAPI())
                 .collect(Collectors.toList());
-        System.out.println(recipesIds);
 
         List<RecipesPojo> recipesPojoList = new ArrayList<>();
         for(int i=0; i<recipesIds.size(); i++){
             recipesPojoList.add(recipesService.getRecipesById(recipesIds.get(i)));
         }
+
         return recipesPojoList;
     }
 
     public Double sumPriceByBasketId(Integer id){
-       Double recipesPojoList = this.getListOfRecipesByBasketId(id)
+       Double recipesPojoList = this.getListOfRecipesByUserId(id)
                .stream()
                .map(x->x.getPricePerServing())
                .mapToDouble(Double::doubleValue)
@@ -259,9 +256,7 @@ public class BasketService {
     public List<BasketResponse> filterBasketBetweenDate(String fromDate, String toDate){
 
         OffsetDateTime fData = OffsetDateTime.parse(fromDate,  DateTimeFormatter.ISO_DATE_TIME);
-        OffsetDateTime tDate = OffsetDateTime.parse(fromDate,  DateTimeFormatter.ISO_DATE_TIME);
-        System.out.println(fData);
-        System.out.println(tDate);
+        OffsetDateTime tDate = OffsetDateTime.parse(toDate,  DateTimeFormatter.ISO_DATE_TIME);
 
         List<BasketResponse> basketResponses = basketRepository.findAllByBetweenDate(fData, tDate)
                 .stream()

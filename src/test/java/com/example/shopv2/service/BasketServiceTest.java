@@ -1,11 +1,13 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.controller.dto.BasketResponse;
 import com.example.shopv2.exceptions.BasketException;
 import com.example.shopv2.mapper.BasketMapper;
 import com.example.shopv2.mapper.NutritionMapper;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
+import com.example.shopv2.model.Recipes;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import com.example.shopv2.pojo.RecipesPojo;
@@ -17,12 +19,17 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.*;
 
 class BasketServiceTest {
 
@@ -89,11 +96,12 @@ class BasketServiceTest {
     @Test
     void saveAllByRecipesId_saveObject_checkIfSaved(){
         //given
-        when(ingredientService.getIngredientByRecipesId(anyInt())).thenReturn(List.of(new RecipesIngredientPojo()));
-        when(recipesService.getRecipesById(anyInt())).thenReturn(new RecipesPojo());
+        ArrayList<NutritionNutrientPojo> nutritionNutrientPojos = new ArrayList<>();
+        when(ingredientService.getIngredientByRecipesId(22)).thenReturn(List.of(new RecipesIngredientPojo()));
+        when(nutritionService.getNutritionByIngredientId(22L)).thenReturn(nutritionNutrientPojos);
 
         //when
-        basketService.saveAllByRecipesId(anyInt());
+        basketService.saveAllByRecipesId(22);
 
         //then
         ArgumentCaptor<Basket> argumentCaptor1 = ArgumentCaptor.forClass(Basket.class);
@@ -101,27 +109,24 @@ class BasketServiceTest {
     }
 
     @Test
-    void saveNutritionByIngredientId_saveObject_checkIfSaved(){
+    void saveNutritionByIngredientId_shouldSaveIngredient(){
         //given
-        RecipesIngredientPojo recipesIngredientPojo = RecipesIngredientPojo
+        NutritionNutrientPojo data = NutritionNutrientPojo
                 .builder()
-                .name("name1")
-                .build();
-
-        List<RecipesIngredientPojo> recipesIngredientPojoList = new ArrayList<>();
-        recipesIngredientPojoList.add(recipesIngredientPojo);
-        RecipesPojo recipesPojo = new RecipesPojo();
+                .amount(23)
+                .build();;
+        ArrayList<NutritionNutrientPojo> expectedList = new ArrayList<>();
+        expectedList.add(data);
         Integer id = 22;
 
-        when(ingredientService.getIngredientByRecipesId(id)).thenReturn(recipesIngredientPojoList);
-        when(recipesService.getRecipesById(id)).thenReturn(recipesPojo);
+        when(nutritionService.getNutritionByIngredientId(Long.valueOf(id))).thenReturn(expectedList);
 
         //when
         basketService.saveNutritionByIngredientId(id);
 
         //then
-        ArgumentCaptor<Basket> argumentCaptor1 = ArgumentCaptor.forClass(Basket.class);
-        verify(basketRepository, times(1)).save(argumentCaptor1.capture());
+        ArgumentCaptor<Nutrition> argumentCaptor = ArgumentCaptor.forClass(Nutrition.class);
+        verify(nutritionRepository).save(argumentCaptor.capture());
     }
 
     @Test
@@ -133,5 +138,171 @@ class BasketServiceTest {
         assertThrows(BasketException.class, () -> basketService.saveNutritionByIngredientId(-32));
         assertThrows(BasketException.class, () -> basketService.saveRecipesAndIngredientsByRecipesId(0));
         assertThrows(BasketException.class, () -> basketService.saveRecipesAndIngredientsByRecipesId(-53));
+    }
+
+    @Test
+    void getCardByUserId_shouldReturnCardListByUserId(){
+        //given
+        Basket data = Basket
+                .builder()
+                .idUser(2222L)
+                .build();
+        ArrayList<Basket> expectedData = new ArrayList<>();
+        expectedData.add(data);
+
+        when(basketRepository.findAllByIdUser(22L)).thenReturn(expectedData);
+
+        //when
+        List<Basket> actualData = basketService.getCardByUserId(22L);
+
+        //then
+        assertThat(actualData).isEqualTo(expectedData);
+    }
+
+    @Test
+    void getCardByUserId_checkInvalidId_throwException(){
+        //given//when//then
+        assertThrows(BasketException.class, () -> basketService.getCardByUserId(0L));
+    }
+
+    @Test
+    void summingNutritionByBasket_shouldSumListOfNutrition() {
+        //given
+        Nutrition nutrition1 = Nutrition
+                .builder()
+                .name("name")
+                .amount(2)
+                .build();
+
+        Nutrition nutrition2 = Nutrition
+                .builder()
+                .name("name")
+                .amount(2)
+                .build();
+
+        ArrayList<Nutrition> nutritionList  = new ArrayList<>();
+        nutritionList.add(nutrition1);
+        nutritionList.add(nutrition2);
+        Basket basket1 = Basket
+                .builder()
+                .nutritionList(nutritionList)
+                .build();
+        ArrayList<Basket> data  = new ArrayList<>();
+        data.add(basket1);
+
+        when(basketRepository.findAllByIdUser(22L)).thenReturn(data);
+
+        Nutrition nutrition3 = Nutrition
+                .builder()
+                .name("name")
+                .amount(4)
+                .build();
+        ArrayList<Nutrition> expectedList  = new ArrayList<>();
+        expectedList.add(nutrition3);
+
+        //when
+        List<Nutrition> actualList = basketService.summingNutritionByBasket(22);
+
+        //then
+        assertThat(expectedList).isEqualTo(actualList);
+    }
+
+    @Test
+    void sumIngredientByBasketId_shouldSumIngredients(){
+        //given
+        Ingredient ingredient1 = Ingredient
+                .builder()
+                .name("name")
+                .amount(2)
+                .build();
+
+        Ingredient ingredient2 = Ingredient
+                .builder()
+                .name("name")
+                .amount(2)
+                .build();
+
+        ArrayList<Ingredient> ingredientList  = new ArrayList<>();
+        ingredientList.add(ingredient1);
+        ingredientList.add(ingredient2);
+        Basket basket1 = Basket
+                .builder()
+                .ingredients(ingredientList)
+                .build();
+        ArrayList<Basket> data  = new ArrayList<>();
+        data.add(basket1);
+
+        when(basketRepository.findAllByIdUser(22L)).thenReturn(data);
+
+        Ingredient ingredient3 = Ingredient
+                .builder()
+                .name("name")
+                .amount(4)
+                .build();
+        ArrayList<Ingredient> expectedList  = new ArrayList<>();
+        expectedList.add(ingredient3);
+
+        //when
+        List<Ingredient> actualList = basketService.sumIngredientByBasketId(22);
+
+        //then
+        assertThat(expectedList).isEqualTo(actualList);
+        assertAll(
+                () -> assertThat(actualList).hasSize(1),
+                ()-> assertThat(actualList.get(0).getName()).isEqualTo("name"),
+                ()-> assertThat(actualList.get(0).getAmount()).isEqualTo(4)
+        );
+    }
+
+    @Test
+    void getListOfRecipesByBasketId_shouldReturnListOfRecipes(){
+        //given
+
+        Recipes recipes1 = Recipes
+                .builder()
+                .idRecipesAPI(12)
+                .build();
+
+        ArrayList<Recipes> recipesList = new ArrayList<>();
+        recipesList.add(recipes1);
+
+        Basket basket = Basket
+                .builder()
+                .id(5L)
+                .idUser(2222L)
+                .recipes(recipesList)
+                .build();
+
+        ArrayList<Basket> basketList = new ArrayList<>();
+        basketList.add(basket);
+
+        when(basketRepository.findAllByIdUser(2222L)).thenReturn(basketList);
+
+        //when
+        List<RecipesPojo> actualData = basketService.getListOfRecipesByUserId(2222);
+
+        //then
+        assertThat(actualData).hasSize(1);
+    }
+
+    @Test
+    void filterBasketBetweenDate_shouldReturnFilteredByDate(){
+        //given
+        var fromDate = "2021-01-04T14:56:04+02:00";
+        var toDate = "2021-01-10T14:56:04+02:00";
+        Basket basket = Basket
+                .builder()
+                .dataAdded(OffsetDateTime.parse("2021-01-05T14:56:04+02:00",  DateTimeFormatter.ISO_DATE_TIME))
+                .build();
+        List<Basket> data = new ArrayList<>();
+        data.add(basket);
+        when(basketRepository.findAllByBetweenDate(OffsetDateTime.parse(fromDate), OffsetDateTime.parse(toDate))).thenReturn(data);
+
+        //when
+        List<BasketResponse> result = basketService.filterBasketBetweenDate(fromDate, toDate);
+
+        //then
+        assertThat(result).hasSize(1);
+        assertThat(result.get(0).getDataAdded()).isEqualTo("2021-01-05T14:56:04+02:00");
     }
 }
