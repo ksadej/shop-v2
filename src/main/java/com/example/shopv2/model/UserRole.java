@@ -23,5 +23,5 @@ public class UserRole {
     private String name;
 
     @ManyToMany(cascade = CascadeType.ALL, mappedBy = "userRole")
-    private List<User> user = new ArrayList<>();
+    private List<UserEntity> userEntity = new ArrayList<>();
 }

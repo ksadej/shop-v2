@@ -1,11 +1,11 @@
 package com.example.shopv2.repository;
 
-import com.example.shopv2.model.User;
+import com.example.shopv2.model.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<UserEntity, Long> {
 
-    public User findByUsername(String username);
+    public UserEntity findByUsername(String username);
 }
