@@ -25,4 +25,9 @@ public class AuthController {
         return authenticationService.createAuthenticationToken(userEntity);
     }
 
+    @PostMapping
+    public UserEntity setUserDetails(@RequestBody UserEntity userEntity) {
+        return userDetailsService.saveUser(userEntity);
+    }
+
 }

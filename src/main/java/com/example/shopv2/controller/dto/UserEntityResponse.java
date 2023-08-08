@@ -1,14 +1,17 @@
 package com.example.shopv2.controller.dto;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class JwtRequest {
+@Builder
+public class UserEntityResponse {
 
     private String username;
     private String password;
+    private boolean enabled;
 }
