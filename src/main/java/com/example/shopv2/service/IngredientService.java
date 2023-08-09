@@ -1,10 +1,11 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.exceptions.IngredientException;
 import com.example.shopv2.model.Ingredient;
+import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
+import com.example.shopv2.service.user.UserLogService;
 import com.example.shopv2.validator.IngredientValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +24,16 @@ public class IngredientService{
     private final BasketRepository basketRepository;
     private final IngredientRepository ingredientRepository;
     private final IngredientValidator ingredientValidator;
+    private final UserLogService userLogService;
 
     @Autowired
     public IngredientService(BasketRepository basketRepository,
                              IngredientRepository ingredientRepository,
-                             IngredientValidator ingredientValidator) {
+                             IngredientValidator ingredientValidator, UserLogService userLogService) {
         this.basketRepository = basketRepository;
         this.ingredientRepository = ingredientRepository;
         this.ingredientValidator = ingredientValidator;
+        this.userLogService = userLogService;
     }
 
     //pobiera składniki z przepisu na podstawie id przepisu
@@ -54,8 +57,8 @@ public class IngredientService{
     //lista id produktów pobrana na podstawie id user
     List<Long> listOfIdCards(Long id){
         ingredientValidator.valid(id);
-
-        return basketRepository.findByIdUser(id)
+        UserEntity user = userLogService.loggedUser();
+        return basketRepository.findAllByUserEntity(user)
                 .stream()
                 .map(x -> x.getId())
                 .collect(Collectors.toList());

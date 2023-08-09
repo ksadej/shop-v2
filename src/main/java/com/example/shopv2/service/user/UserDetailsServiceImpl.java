@@ -1,4 +1,4 @@
-package com.example.shopv2.service;
+package com.example.shopv2.service.user;
 
 import com.example.shopv2.mapper.UserMapper;
 import com.example.shopv2.model.UserEntity;

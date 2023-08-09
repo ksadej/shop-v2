@@ -27,7 +27,7 @@ class IngredientServiceTest {
     public void setup(){
         basketRepository = mock(BasketRepository.class);
         ingredientRepository = mock(IngredientRepository.class);
-        ingredientService = new IngredientService(basketRepository, ingredientRepository, ingredientValidator);
+        ingredientService = new IngredientService(basketRepository, ingredientRepository, ingredientValidator, null);
     }
 
     @Test

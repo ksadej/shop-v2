@@ -5,6 +5,7 @@ import com.example.shopv2.mapper.UserMapper;
 import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.repository.UserRepository;
 import com.example.shopv2.service.dto.UserEntityDTO;
+import com.example.shopv2.service.user.UserDetailsServiceImpl;
 import com.example.shopv2.validator.UserValidator;
 import com.example.shopv2.validator.enums.AuthenticationEnum;
 import org.junit.jupiter.api.BeforeEach;

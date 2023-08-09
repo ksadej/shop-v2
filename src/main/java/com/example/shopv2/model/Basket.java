@@ -36,6 +36,8 @@ public class Basket {
     private List<Nutrition> nutritionList = new ArrayList<>();
 
     private Long idUser;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private UserEntity userEntity;
     private OffsetDateTime dataAdded;
 
 }

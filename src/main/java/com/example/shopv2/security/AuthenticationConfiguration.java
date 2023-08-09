@@ -1,6 +1,6 @@
 package com.example.shopv2.security;
 
-import com.example.shopv2.service.UserDetailsServiceImpl;
+import com.example.shopv2.service.user.UserDetailsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

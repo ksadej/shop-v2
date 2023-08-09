@@ -27,7 +27,6 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -58,7 +57,7 @@ class BasketServiceTest {
                 nutritionRepository,
                 basketValidator,
                 nutritionMapper,
-                basketMapper, null);
+                basketMapper, null, null);
     }
 
     @Test
@@ -153,7 +152,7 @@ class BasketServiceTest {
         when(basketRepository.findAllByIdUser(22L)).thenReturn(expectedData);
 
         //when
-        List<Basket> actualData = basketService.getCardByUserId(22L);
+        List<Basket> actualData = basketService.getCardByUserId();
 
         //then
         assertThat(actualData).isEqualTo(expectedData);
@@ -162,7 +161,7 @@ class BasketServiceTest {
     @Test
     void getCardByUserId_checkInvalidId_throwException(){
         //given//when//then
-        assertThrows(BasketException.class, () -> basketService.getCardByUserId(0L));
+        assertThrows(BasketException.class, () -> basketService.getCardByUserId());
     }
 
     @Test

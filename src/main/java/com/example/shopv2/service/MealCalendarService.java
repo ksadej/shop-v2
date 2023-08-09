@@ -9,6 +9,7 @@ import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.repository.MealCalendarRepository;
+import com.example.shopv2.service.user.UserLogService;
 import com.example.shopv2.validator.MealCalendarValidator;
 import com.example.shopv2.validator.ParametersValidatorFactory.MealCalendarParametersValidator;
 import org.slf4j.Logger;
@@ -29,6 +30,7 @@ public class MealCalendarService {
     private final MealCalendarParametersValidator mealCalendarParametersValidator;
     private static final Logger LOGGER = LoggerFactory.getLogger(MealCalendarService.class.getName());
     private final FilterRangeAbstract<MealCalendar> filterRangeAbstract;
+
     @Autowired
     public MealCalendarService(MealCalendarRepository mealCalendarRepository,
                                MealCalendarMapper mealCalendarMapper,
@@ -40,6 +42,7 @@ public class MealCalendarService {
         this.mealCalendarValidator = mealCalendarValidator;
         this.mealCalendarParametersValidator = mealCalendarParametersValidator;
         this.filterRangeAbstract = mealCalendarFilterRange;
+
     }
 
     public MealCalendar saveMealCalendar(MealCalendarRequest mealCalendarRequest){

@@ -6,16 +6,14 @@ import com.example.shopv2.filters.FilterRangeAbstract;
 import com.example.shopv2.mapper.BasketMapper;
 import com.example.shopv2.mapper.IngredientMapper;
 import com.example.shopv2.mapper.NutritionMapper;
-import com.example.shopv2.model.Basket;
-import com.example.shopv2.model.Ingredient;
-import com.example.shopv2.model.Nutrition;
-import com.example.shopv2.model.Recipes;
+import com.example.shopv2.model.*;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
+import com.example.shopv2.service.user.UserLogService;
 import com.example.shopv2.validator.BasketValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +39,8 @@ public class BasketService {
     private final BasketValidator basketValidator;
     private final NutritionMapper nutritionMapper;
     private final BasketMapper basketMapper;
+    private final UserLogService userLogService;
+
     private final FilterRangeAbstract<Basket> filterRangeAbstract;
 
     @Autowired
@@ -53,7 +53,7 @@ public class BasketService {
                          BasketValidator basketValidator,
                          NutritionMapper nutritionMapper,
                          BasketMapper basketMapper,
-                         BasketFilterRange basketFilterRange) {
+                         UserLogService userLogService, BasketFilterRange basketFilterRange) {
         this.basketRepository = basketRepository;
         this.recipesService = recipesService;
         this.nutritionService = nutritionService;
@@ -63,6 +63,7 @@ public class BasketService {
         this.basketValidator = basketValidator;
         this.nutritionMapper = nutritionMapper;
         this.basketMapper = basketMapper;
+        this.userLogService = userLogService;
         this.filterRangeAbstract = basketFilterRange;
     }
 
@@ -116,6 +117,7 @@ public class BasketService {
     public void saveAllByRecipesId(Integer id) {
         LOGGER.info("Saving ingredients in basket by recipes ID");
         basketValidator.basketDataValidator(id);
+        UserEntity user = userLogService.loggedUser();
 
         Basket basket = new Basket();
 
@@ -156,15 +158,17 @@ public class BasketService {
         basket.setRecipes(List.of(ing));
         basket.setIngredients(ingredients);
         basket.setNutritionList(nutritions);
+        basket.setUserEntity(user);
+        basket.setDataAdded(OffsetDateTime.now());
         basketRepository.save(basket);
     }
 
     //pobiera kartę produktów na podstawie id użytkownika
-    public List<Basket> getCardByUserId(Long id){
+    public List<Basket> getCardByUserId(){
         LOGGER.info("Getting card by user ID");
-        basketValidator.basketDataValidator(Math.toIntExact(id));
+        UserEntity user = userLogService.loggedUser();
 
-        return basketRepository.findAllByIdUser(id);
+        return basketRepository.findAllByUserEntity(user);
     }
 
     //sumuje wartosci nutrition na podstawie basket id
