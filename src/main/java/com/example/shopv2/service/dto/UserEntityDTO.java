@@ -1,4 +1,4 @@
-package com.example.shopv2.controller.dto;
+package com.example.shopv2.service.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserEntityResponse {
+public class UserEntityDTO {
 
     private String username;
     private String password;

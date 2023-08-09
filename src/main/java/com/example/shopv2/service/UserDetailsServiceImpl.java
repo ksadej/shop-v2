@@ -1,10 +1,10 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.exceptions.UserException;
+import com.example.shopv2.mapper.UserMapper;
 import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.repository.UserRepository;
+import com.example.shopv2.service.dto.UserEntityDTO;
 import com.example.shopv2.validator.UserValidator;
-import com.example.shopv2.validator.enums.AuthenticationEnum;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +15,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.Objects;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
@@ -24,11 +23,13 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final UserValidator userValidator;
+    private final UserMapper userMapper;
 
     @Autowired
-    public UserDetailsServiceImpl(UserRepository userRepository, UserValidator userValidator) {
+    public UserDetailsServiceImpl(UserRepository userRepository, UserValidator userValidator, UserMapper userMapper) {
         this.userRepository = userRepository;
         this.userValidator = userValidator;
+        this.userMapper = userMapper;
     }
 
     @Override
@@ -38,7 +39,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         return new User(user.getUsername(), user.getPassword(), Collections.emptyList());
     }
 
-    public UserEntity saveUser(UserEntity userEntity){
+    public UserEntity saveUser(UserEntityDTO userEntityDTO){
+        UserEntity userEntity = userMapper.dtoToEntity(userEntityDTO);
         userValidator.checkIfUserExist(userEntity);
         UserEntity user = userRepository.save(userEntity);
         LOGGER.info("User saved: " + userEntity.getUsername());

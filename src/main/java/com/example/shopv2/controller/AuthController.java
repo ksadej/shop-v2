@@ -3,6 +3,7 @@ package com.example.shopv2.controller;
 import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.security.AuthenticationService;
 import com.example.shopv2.service.UserDetailsServiceImpl;
+import com.example.shopv2.service.dto.UserEntityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,7 +27,7 @@ public class AuthController {
     }
 
     @PostMapping
-    public UserEntity setUserDetails(@RequestBody UserEntity userEntity) {
+    public UserEntity setUserDetails(@RequestBody UserEntityDTO userEntity) {
         return userDetailsService.saveUser(userEntity);
     }
 

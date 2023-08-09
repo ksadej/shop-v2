@@ -1,17 +1,25 @@
 package com.example.shopv2.mapper;
 
-import com.example.shopv2.controller.dto.UserEntityResponse;
+import com.example.shopv2.service.dto.UserEntityDTO;
 import com.example.shopv2.model.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper{
 
-    UserEntityResponse entityToResponse(UserEntity userEntity) {
-        return null;
+    public UserEntity dtoToEntity(UserEntityDTO userEntityDTO) {
+        return UserEntity
+                .builder()
+                .username(userEntityDTO.getUsername())
+                .password(userEntityDTO.getPassword())
+                .build();
     }
 
-    UserEntity entityToResponse(UserEntityResponse userEntityResponse) {
-        return null;
+    public UserEntityDTO entityToDto(UserEntity userEntity){
+        return UserEntityDTO
+                .builder()
+                .username(userEntity.getUsername())
+                .password(userEntity.getPassword())
+                .build();
     }
 }
