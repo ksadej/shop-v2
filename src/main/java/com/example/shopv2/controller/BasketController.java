@@ -50,19 +50,19 @@ public class BasketController {
         basketService.saveNutritionByIngredientId(id);
     }
 
-    @GetMapping(path = "/api/basket/recipes/{id}")
-    public List<RecipesPojo> recipesListByUserId(@PathVariable(value = "id") Integer id){
-        return basketService.getListOfRecipesByUserId(id);
+    @GetMapping(path = "/api/basket/recipes")
+    public List<RecipesPojo> recipesListByUserId(){
+        return basketService.getListOfRecipesByUserId();
     }
 
-    @GetMapping(path = "/api/basket/sumNutrition/{id}")
-    public List<Nutrition> sumNutritionByBasketId(@PathVariable(value = "id") Integer id){
-        return basketService.summingNutritionByBasket(id);
+    @GetMapping(path = "/api/basket/sumNutrition")
+    public List<Nutrition> sumNutritionByBasketId(){
+        return basketService.summingNutritionByBasket();
     }
 
-    @GetMapping(path = "/api/basket/sumIngredient/{id}")
-    public List<Ingredient> sumIngredientByBasketId(@PathVariable(value = "id") Integer id){
-        return basketService.sumIngredientByBasketId(id);
+    @GetMapping(path = "/api/basket/sumIngredient")
+    public List<Ingredient> sumIngredientByBasketId(){
+        return basketService.sumIngredientByBasketId();
     }
 
     @GetMapping(path = "/api/basket/sumPrice/{id}")

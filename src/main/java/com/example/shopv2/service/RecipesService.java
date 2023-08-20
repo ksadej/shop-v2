@@ -2,9 +2,11 @@ package com.example.shopv2.service;
 
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Recipes;
+import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.pojo.ResultPojo;
 import com.example.shopv2.repository.BasketRepository;
+import com.example.shopv2.service.user.UserLogService;
 import com.example.shopv2.validator.RecipesValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,16 +29,19 @@ public class RecipesService {
     private final RestTemplate restTemplate;
     private final RecipesValidator recipesValidator;
     private final HttpHeaders httpHeaders;
+    private final UserLogService userLogService;
+
 
 
     @Autowired
     public RecipesService(BasketRepository basketRepository, RestTemplate restTemplate,
                           @Qualifier("recipesHeaders") HttpHeaders httpHeaders,
-                          RecipesValidator recipesValidator) {
+                          RecipesValidator recipesValidator, UserLogService userLogService) {
         this.basketRepository = basketRepository;
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
         this.recipesValidator = recipesValidator;
+        this.userLogService = userLogService;
     }
 
     public List<RecipesPojo> getRecipesByType(String type){
@@ -65,8 +70,9 @@ public class RecipesService {
         return rootResponses;
     }
 
-    public List<Recipes> getRecipesByUserId(Long id){
-        ArrayList<Basket> basketList = basketRepository.findAllByIdUser(id);
+    public List<Recipes> getRecipesByUserId(){
+        UserEntity user = userLogService.loggedUser();
+        List<Basket> basketList = basketRepository.findAllByUserEntity(user);
 
         List<Recipes> recipes = basketList
                 .stream()

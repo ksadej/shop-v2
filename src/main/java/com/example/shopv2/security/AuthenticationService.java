@@ -1,8 +1,13 @@
 package com.example.shopv2.security;
 
+import com.example.shopv2.exceptions.InvalidUsernameOrPasswordException;
+import com.example.shopv2.mapper.UserMapper;
 import com.example.shopv2.model.UserEntity;
+import com.example.shopv2.service.dto.UserEntityDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -24,12 +29,17 @@ public class AuthenticationService {
         this.authenticationManager = authenticationManager;
     }
 
-    public String createAuthenticationToken(UserEntity userEntity) {
+    public String createAuthenticationToken(UserEntityDTO userEntityDTO) {
 
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-                userEntity.getUsername(), userEntity.getPassword()));
+        try{
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                    userEntityDTO.getUsername(), userEntityDTO.getPassword()));
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userEntity.getUsername());
+        }catch (BadCredentialsException | InternalAuthenticationServiceException e){
+            throw new InvalidUsernameOrPasswordException();
+        }
+
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userEntityDTO.getUsername());
         String jwtToken = jwtService.generateToken(userDetails);
 
         return jwtToken;

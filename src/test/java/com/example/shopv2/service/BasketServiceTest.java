@@ -4,20 +4,21 @@ import com.example.shopv2.controller.dto.BasketResponse;
 import com.example.shopv2.exceptions.BasketException;
 import com.example.shopv2.mapper.BasketMapper;
 import com.example.shopv2.mapper.NutritionMapper;
-import com.example.shopv2.model.Basket;
-import com.example.shopv2.model.Ingredient;
-import com.example.shopv2.model.Nutrition;
-import com.example.shopv2.model.Recipes;
+import com.example.shopv2.model.*;
 import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.NutritionRepository;
+import com.example.shopv2.repository.UserRepository;
+import com.example.shopv2.service.user.UserLogService;
 import com.example.shopv2.validator.BasketValidator;
+import com.example.shopv2.validator.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Mock;
 import org.mockito.Mockito;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -40,8 +41,11 @@ class BasketServiceTest {
     private IngredientRepository ingredientRepository;
     private NutritionRepository nutritionRepository;
     private BasketValidator basketValidator = new BasketValidator();
+    @Mock
+    private UserRepository userRepository;
     private NutritionMapper nutritionMapper = new NutritionMapper();
     private BasketMapper basketMapper = new BasketMapper();
+    private UserLogService userLogService;
     @BeforeEach
     public void setup(){
         basketRepository = Mockito.mock(BasketRepository.class);
@@ -51,13 +55,10 @@ class BasketServiceTest {
         ingredientRepository = Mockito.mock(IngredientRepository.class);
         nutritionRepository = Mockito.mock(NutritionRepository.class);
 //        basketValidator = Mockito.mock(BasketValidator.class);
-        basketService = new BasketService(basketRepository, recipesService,
-                nutritionService, ingredientService,
-                ingredientRepository,
-                nutritionRepository,
-                basketValidator,
-                nutritionMapper,
-                basketMapper, null, null);
+        userLogService = mock(UserLogService.class);
+        basketService = new BasketService(basketRepository, recipesService, nutritionService, ingredientService,
+                ingredientRepository, nutritionRepository, basketValidator, null, nutritionMapper,
+                basketMapper, userLogService, null);
     }
 
     @Test
@@ -140,16 +141,18 @@ class BasketServiceTest {
     }
 
     @Test
-    void getCardByUserId_shouldReturnCardListByUserId(){
+    void getCardByUserId_shouldReturnCardListByUser(){
         //given
+        UserEntity user = initUser();
         Basket data = Basket
                 .builder()
-                .idUser(2222L)
+                .userEntity(user)
                 .build();
         ArrayList<Basket> expectedData = new ArrayList<>();
         expectedData.add(data);
 
-        when(basketRepository.findAllByIdUser(22L)).thenReturn(expectedData);
+        when(basketService.getCardByUserId()).thenReturn(expectedData);
+        when(basketRepository.findAllByUserEntity(user)).thenReturn(expectedData);
 
         //when
         List<Basket> actualData = basketService.getCardByUserId();
@@ -159,37 +162,19 @@ class BasketServiceTest {
     }
 
     @Test
-    void getCardByUserId_checkInvalidId_throwException(){
-        //given//when//then
-        assertThrows(BasketException.class, () -> basketService.getCardByUserId());
-    }
-
-    @Test
     void summingNutritionByBasket_shouldSumListOfNutrition() {
         //given
-        Nutrition nutrition1 = Nutrition
-                .builder()
-                .name("name")
-                .amount(2)
-                .build();
-
-        Nutrition nutrition2 = Nutrition
-                .builder()
-                .name("name")
-                .amount(2)
-                .build();
-
-        ArrayList<Nutrition> nutritionList  = new ArrayList<>();
-        nutritionList.add(nutrition1);
-        nutritionList.add(nutrition2);
-        Basket basket1 = Basket
+        when(userLogService.loggedUser()).thenReturn(initUser());
+        List<Nutrition> nutritionList = initNutritionData();
+        Basket basket = Basket
                 .builder()
                 .nutritionList(nutritionList)
+                .userEntity(initUser())
                 .build();
         ArrayList<Basket> data  = new ArrayList<>();
-        data.add(basket1);
+        data.add(basket);
 
-        when(basketRepository.findAllByIdUser(22L)).thenReturn(data);
+        when(basketRepository.findAllByUserEntity(initUser())).thenReturn(data);
 
         Nutrition nutrition3 = Nutrition
                 .builder()
@@ -200,7 +185,7 @@ class BasketServiceTest {
         expectedList.add(nutrition3);
 
         //when
-        List<Nutrition> actualList = basketService.summingNutritionByBasket(22);
+        List<Nutrition> actualList = basketService.summingNutritionByBasket();
 
         //then
         assertThat(expectedList).isEqualTo(actualList);
@@ -209,29 +194,14 @@ class BasketServiceTest {
     @Test
     void sumIngredientByBasketId_shouldSumIngredients(){
         //given
-        Ingredient ingredient1 = Ingredient
-                .builder()
-                .name("name")
-                .amount(2)
-                .build();
+        List<Ingredient> ingredientList = initIngredientData();
 
-        Ingredient ingredient2 = Ingredient
-                .builder()
-                .name("name")
-                .amount(2)
-                .build();
-
-        ArrayList<Ingredient> ingredientList  = new ArrayList<>();
-        ingredientList.add(ingredient1);
-        ingredientList.add(ingredient2);
         Basket basket1 = Basket
                 .builder()
                 .ingredients(ingredientList)
                 .build();
-        ArrayList<Basket> data  = new ArrayList<>();
-        data.add(basket1);
-
-        when(basketRepository.findAllByIdUser(22L)).thenReturn(data);
+        ArrayList<Basket> expectedData  = new ArrayList<>();
+        expectedData.add(basket1);
 
         Ingredient ingredient3 = Ingredient
                 .builder()
@@ -241,8 +211,12 @@ class BasketServiceTest {
         ArrayList<Ingredient> expectedList  = new ArrayList<>();
         expectedList.add(ingredient3);
 
+        UserEntity user = initUser();
+        when(basketService.sumIngredientByBasketId()).thenReturn(expectedList);
+        when(basketRepository.findAllByUserEntity(user)).thenReturn(expectedData);
+
         //when
-        List<Ingredient> actualList = basketService.sumIngredientByBasketId(22);
+        List<Ingredient> actualList = basketService.sumIngredientByBasketId();
 
         //then
         assertThat(expectedList).isEqualTo(actualList);
@@ -278,7 +252,7 @@ class BasketServiceTest {
         when(basketRepository.findAllByIdUser(2222L)).thenReturn(basketList);
 
         //when
-        List<RecipesPojo> actualData = basketService.getListOfRecipesByUserId(2222);
+        List<RecipesPojo> actualData = basketService.getListOfRecipesByUserId();
 
         //then
         assertThat(actualData).hasSize(1);
@@ -303,5 +277,51 @@ class BasketServiceTest {
         //then
         assertThat(result).hasSize(1);
         assertThat(result.get(0).getDataAdded()).isEqualTo("2021-01-05T14:56:04+02:00");
+    }
+
+    private List<Ingredient> initIngredientData(){
+        Ingredient ingredient1 = Ingredient
+                .builder()
+                .name("name")
+                .amount(2)
+                .build();
+
+        Ingredient ingredient2 = Ingredient
+                .builder()
+                .name("name")
+                .amount(2)
+                .build();
+
+        ArrayList<Ingredient> ingredientList  = new ArrayList<>();
+        ingredientList.add(ingredient1);
+        ingredientList.add(ingredient2);
+        return ingredientList;
+    }
+
+    private List<Nutrition> initNutritionData(){
+        Nutrition nutrition1 = Nutrition
+                .builder()
+                .name("name")
+                .amount(2)
+                .build();
+
+        Nutrition nutrition2 = Nutrition
+                .builder()
+                .name("name")
+                .amount(2)
+                .build();
+
+        ArrayList<Nutrition> nutritionList  = new ArrayList<>();
+        nutritionList.add(nutrition1);
+        nutritionList.add(nutrition2);
+        return nutritionList;
+    }
+
+    private UserEntity initUser(){
+        return UserEntity
+                .builder()
+                .username("test_name")
+                .password("test_pass")
+                .build();
     }
 }

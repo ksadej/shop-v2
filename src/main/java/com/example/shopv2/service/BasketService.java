@@ -15,6 +15,7 @@ import com.example.shopv2.pojo.NutritionNutrientPojo;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
 import com.example.shopv2.service.user.UserLogService;
 import com.example.shopv2.validator.BasketValidator;
+import com.example.shopv2.validator.UserValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ public class BasketService {
     private final IngredientRepository ingredientRepository;
     private final NutritionRepository nutritionRepository;
     private final BasketValidator basketValidator;
+    private final UserValidator userValidator;
     private final NutritionMapper nutritionMapper;
     private final BasketMapper basketMapper;
     private final UserLogService userLogService;
@@ -51,7 +53,7 @@ public class BasketService {
                          IngredientRepository ingredientRepository,
                          NutritionRepository nutritionRepository,
                          BasketValidator basketValidator,
-                         NutritionMapper nutritionMapper,
+                         UserValidator userValidator, NutritionMapper nutritionMapper,
                          BasketMapper basketMapper,
                          UserLogService userLogService, BasketFilterRange basketFilterRange) {
         this.basketRepository = basketRepository;
@@ -61,6 +63,7 @@ public class BasketService {
         this.ingredientRepository = ingredientRepository;
         this.nutritionRepository = nutritionRepository;
         this.basketValidator = basketValidator;
+        this.userValidator = userValidator;
         this.nutritionMapper = nutritionMapper;
         this.basketMapper = basketMapper;
         this.userLogService = userLogService;
@@ -172,8 +175,10 @@ public class BasketService {
     }
 
     //sumuje wartosci nutrition na podstawie basket id
-    public List<Nutrition> summingNutritionByBasket(Integer basketId){
-        List<Basket> baskets = basketRepository.findAllByIdUser(Long.valueOf(basketId));
+    public List<Nutrition> summingNutritionByBasket(){
+        UserEntity user = userLogService.loggedUser();
+        LOGGER.info("Summing nutrution by basket "+ user.getUsername());
+        List<Basket> baskets = basketRepository.findAllByUserEntity(user);
 
         List<Nutrition> nutritions = baskets.get(0).getNutritionList();
         Set<String> nutritionNames = nutritions
@@ -201,8 +206,10 @@ public class BasketService {
         return nutritionArrayList;
     }
 
-    public List<Ingredient> sumIngredientByBasketId(Integer id){
-        List<Basket> baskets = basketRepository.findAllByIdUser(Long.valueOf(id));
+    //sumuje składniki na podstawie koszyka właściciela
+    public List<Ingredient> sumIngredientByBasketId(){
+        UserEntity user = userLogService.loggedUser();
+        List<Basket> baskets = basketRepository.findAllByUserEntity(user);
 
         List<Ingredient> ingredients = baskets.get(0).getIngredients();
 
@@ -230,9 +237,11 @@ public class BasketService {
         return ingredientArrayList;
     }
 
+    //pobiera liste recept z koszyka na podstawie użytkownika
     @Transactional
-    public List<RecipesPojo> getListOfRecipesByUserId(Integer id){
-        List<Basket> baskets = basketRepository.findAllByIdUser(Long.valueOf(id));
+    public List<RecipesPojo> getListOfRecipesByUserId(){
+        UserEntity user = userLogService.loggedUser();
+        List<Basket> baskets = basketRepository.findAllByUserEntity(user);
 
         List<Integer> recipesIds = baskets.get(0).getRecipes()
                 .stream()
@@ -248,7 +257,7 @@ public class BasketService {
     }
 
     public Double sumPriceByBasketId(Integer id){
-       Double recipesPojoList = this.getListOfRecipesByUserId(id)
+       Double recipesPojoList = this.getListOfRecipesByUserId()
                .stream()
                .map(x->x.getPricePerServing())
                .mapToDouble(Double::doubleValue)

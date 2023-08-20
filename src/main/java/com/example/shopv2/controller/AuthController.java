@@ -22,8 +22,8 @@ public class AuthController {
     }
 
     @GetMapping
-    public String getAuthenticationToken(@RequestBody UserEntity userEntity) {
-        return authenticationService.createAuthenticationToken(userEntity);
+    public String getAuthenticationToken(@RequestBody UserEntityDTO userEntityDTO) {
+        return authenticationService.createAuthenticationToken(userEntityDTO);
     }
 
     @PostMapping

@@ -32,8 +32,8 @@ public class RecipesController {
     }
 
     //pobiera listę recept na podstawie user id z tabeli basket
-    @GetMapping(path = "/recipes/user/{id}")
-    public List<Recipes> getAllIngredientsByCardId(@PathVariable(value = "id")Long id){
-        return recipesService.getRecipesByUserId(id);
+    @GetMapping(path = "/recipes/user")
+    public List<Recipes> getAllIngredientsByCardId(){
+        return recipesService.getRecipesByUserId();
     }
 }
