@@ -150,11 +150,11 @@ class BasketServiceTest {
         ArrayList<Basket> expectedData = new ArrayList<>();
         expectedData.add(data);
 
-        when(basketService.getCardByUser()).thenReturn(expectedData);
+        when(basketService.getBasketByUser()).thenReturn(expectedData);
         when(basketRepository.findAllByUserEntity(user)).thenReturn(expectedData);
 
         //when
-        List<Basket> actualData = basketService.getCardByUser();
+        List<Basket> actualData = basketService.getBasketByUser();
 
         //then
         assertThat(actualData).isEqualTo(expectedData);

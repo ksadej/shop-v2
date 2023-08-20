@@ -2,55 +2,29 @@ package com.example.shopv2.service.download;
 
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.service.BasketService;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 @Service
 public class DownloadService {
 
+    private final BasketDownloadBuilder basketDownloadBuilder;
+    private final ResponseDownloadedService responseDownloadedService;
     private final BasketService basketService;
 
-    public DownloadService(BasketService basketService) {
+    public DownloadService(BasketDownloadBuilder basketDownloadBuilder,
+                           ResponseDownloadedService responseDownloadedService,
+                           BasketService basketService) {
+        this.basketDownloadBuilder = basketDownloadBuilder;
+        this.responseDownloadedService = responseDownloadedService;
         this.basketService = basketService;
     }
 
-    public void toResponse(HttpServletResponse response){
-        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        response.setHeader("Content-Disposition", "attachment;file=fileNameToDownload.csv");
-
-        List<Basket> cardByUserId = basketService.getCardByUser();
-
-        StringBuffer stringBuffer = new StringBuffer("Id\n");
-        cardByUserId.forEach(x -> stringBuffer
-                        .append(x.getId())
-                        .append("\n"));
-
-        try {
-            InputStream inputStream = new ByteArrayInputStream(stringBuffer.toString().getBytes("UTF-8"));
-            ServletOutputStream servletOutputStream = response.getOutputStream();
-
-            byte[] outputBytes = new byte[512];
-
-            while (inputStream.read(outputBytes, 0, 512) != -1) {
-                servletOutputStream.write(outputBytes, 0, 512);
-            }
-
-            inputStream.close();
-            servletOutputStream.flush();
-            servletOutputStream.close();
-
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public void fileToDownload(HttpServletResponse response){
+        List<Basket> cardByUser = basketService.getBasketByUser();
+        StringBuffer stringBuffer = basketDownloadBuilder.prepareBuffer(cardByUser);
+        responseDownloadedService.toResponse(response, stringBuffer);
     }
 }
