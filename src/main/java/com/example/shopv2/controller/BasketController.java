@@ -35,7 +35,7 @@ public class BasketController {
     //pobiera wszystkie składniki recepty na podstawie id użytkownika
     @GetMapping(path = "/api/basket/user")
     public List<Basket> getAllIngredientsByUserId(){
-        return basketService.getCardByUserId();
+        return basketService.getCardByUser();
     }
 
     //zapisuje składniki oraz wartości odzywcze na podstawie id przepisu

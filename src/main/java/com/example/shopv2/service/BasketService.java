@@ -167,7 +167,7 @@ public class BasketService {
     }
 
     //pobiera kartę produktów na podstawie id użytkownika
-    public List<Basket> getCardByUserId(){
+    public List<Basket> getCardByUser(){
         LOGGER.info("Getting card by user ID");
         UserEntity user = userLogService.loggedUser();
 
