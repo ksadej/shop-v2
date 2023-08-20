@@ -14,7 +14,6 @@ import com.example.shopv2.repository.NutritionRepository;
 import com.example.shopv2.repository.UserRepository;
 import com.example.shopv2.service.user.UserLogService;
 import com.example.shopv2.validator.BasketValidator;
-import com.example.shopv2.validator.UserValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -315,6 +314,17 @@ class BasketServiceTest {
         nutritionList.add(nutrition1);
         nutritionList.add(nutrition2);
         return nutritionList;
+    }
+
+    @Test
+    void deleteBasketByUser_deleteAllBasketsByUser(){
+        //given
+        when(userLogService.loggedUser()).thenReturn(initUser());
+        //when
+        basketService.deleteBasketByUser();
+
+        //when
+        verify(basketRepository).deleteAllByUserEntity(initUser());
     }
 
     private UserEntity initUser(){

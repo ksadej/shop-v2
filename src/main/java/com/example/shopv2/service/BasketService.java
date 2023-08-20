@@ -275,7 +275,6 @@ public class BasketService {
                 .stream()
                 .map(BasketMapper -> basketMapper.entityToResponse(BasketMapper))
                 .collect(Collectors.toList());
-        System.out.println(basketResponses);
         return basketResponses;
     }
 
@@ -285,6 +284,11 @@ public class BasketService {
                 .stream()
                 .map(BasketMapper -> basketMapper.entityToResponse(BasketMapper))
                 .collect(Collectors.toList());
+    }
+
+    public void deleteBasketByUser(){
+        UserEntity user = userLogService.loggedUser();
+        basketRepository.deleteAllByUserEntity(user);
     }
 
 

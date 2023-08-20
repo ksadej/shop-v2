@@ -79,4 +79,9 @@ public class BasketController {
     public List<BasketResponse> filterMealsDate(@RequestParam Map<String, String> filter){
         return basketService.getAllFilteredBasket(filter);
     }
+
+    @DeleteMapping(path = "/api/basket")
+    public void deleteBasket(){
+        basketService.deleteBasketByUser();
+    }
 }

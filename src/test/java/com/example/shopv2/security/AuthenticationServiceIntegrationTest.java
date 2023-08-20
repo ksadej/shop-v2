@@ -35,7 +35,7 @@ public class AuthenticationServiceIntegrationTest {
     @Test
     void createAuthenticationToken_throwExceptionWhenUsernameIsInvalid(){
         //given
-        initUserInDB();
+        initUserEntityDTOInDB();
 
         UserEntityDTO userEntityDTO = new UserEntityDTO();
         userEntityDTO.setUsername("test");
@@ -53,7 +53,7 @@ public class AuthenticationServiceIntegrationTest {
     @Test
     void createAuthenticationToken_throwExceptionWhenPasswordIsInvalid(){
         //given
-        initUserInDB();
+        initUserEntityDTOInDB();
 
         UserEntityDTO userEntityDTO = new UserEntityDTO();
         userEntityDTO.setUsername("testUser");
@@ -68,7 +68,7 @@ public class AuthenticationServiceIntegrationTest {
         assertThat(result.getMessage()).isEqualTo(AuthenticationEnum.INVALID_USERNAME_OR_PASSWORD.getMessage());
     }
 
-    private void initUserInDB(){
+    private void initUserEntityDTOInDB(){
         UserEntityDTO dto = new UserEntityDTO();
         dto.setUsername("testUser");
         dto.setPassword("testPass");
