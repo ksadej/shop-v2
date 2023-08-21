@@ -22,8 +22,14 @@ public class ResponseDownloadedService {
 
     public void toResponse(HttpServletResponse response, StringBuffer stringBuffer){
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
-        response.setHeader("Content-Disposition", "attachment;file=fileNameToDownload.csv");
+        response.setHeader("Content-Disposition", "attachment;filename=fileNameToDownload.csv");
 
+//        List<Basket> cardByUserId = basketService.getCardByUser();
+//
+//        StringBuffer stringBuffer = new StringBuffer("Id\n");
+//        cardByUserId.forEach(x -> stringBuffer
+//                .append(x.getId())
+//                .append("\n"));
         try {
             InputStream inputStream = new ByteArrayInputStream(stringBuffer.toString().getBytes("UTF-8"));
             ServletOutputStream servletOutputStream = response.getOutputStream();

@@ -1,7 +1,7 @@
 package com.example.shopv2.controller;
 
 import com.example.shopv2.service.download.DownloadService;
-import com.example.shopv2.service.download.ResponseDownloadedService;
+import com.example.shopv2.service.download.DownloadTypes;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +20,11 @@ public class DownloadController {
 
     @GetMapping("/download/basket")
     public void downloadBasket(HttpServletResponse response){
-        downloadService.fileToDownload(response);
+        downloadService.fileToDownload(response, DownloadTypes.BASKET);
+    }
+
+    @GetMapping("/download/calendar")
+    public void downloadCalendar(HttpServletResponse response){
+        downloadService.fileToDownload(response, DownloadTypes.MEALCALENDAR);
     }
 }
