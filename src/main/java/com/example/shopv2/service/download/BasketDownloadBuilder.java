@@ -1,5 +1,6 @@
 package com.example.shopv2.service.download;
 
+import com.example.shopv2.controller.dto.BasketResponse;
 import com.example.shopv2.model.Basket;
 import org.springframework.stereotype.Service;
 
@@ -9,7 +10,7 @@ import java.util.List;
 public class BasketDownloadBuilder {
 
     private final String SEPARATOR = ";";
-    public StringBuffer prepareBuffer(List<Basket> basketList){
+    public StringBuffer prepareBuffer(List<BasketResponse> basketList){
         StringBuffer stringBuffer = new StringBuffer("Id"+SEPARATOR+"Date added"+SEPARATOR+"Added By");
         basketList.forEach(x -> stringBuffer
                         .append("\n")
@@ -17,7 +18,7 @@ public class BasketDownloadBuilder {
                         .append(SEPARATOR)
                         .append(x.getDataAdded())
                         .append(SEPARATOR)
-                        .append(x.getIdUser())
+                        .append(x.getUserEntity())
         );
         return stringBuffer;
     }

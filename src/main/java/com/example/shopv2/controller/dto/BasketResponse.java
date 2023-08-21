@@ -3,6 +3,7 @@ package com.example.shopv2.controller.dto;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
 import com.example.shopv2.model.Recipes;
+import com.example.shopv2.model.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -24,4 +25,5 @@ public class BasketResponse {
     private List<Nutrition> nutritionList = new ArrayList<>();
     private Long idUser;
     private OffsetDateTime dataAdded;
+    private UserEntity userEntity;
 }
