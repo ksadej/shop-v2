@@ -34,11 +34,9 @@ public class UploadService {
                             .idRecipes(Integer.valueOf(array[2]))
                             .time(MealTime.valueOf(array[3]))
                             .build())
-                    .collect(Collectors.toList());
+                    .toList();
 
-            collect.stream()
-                    .forEach(x -> mealCalendarService.saveMealCalendar(x));
-
+            collect.forEach(x -> mealCalendarService.saveMealCalendar(x));
 
         } catch (IOException e) {
             e.printStackTrace();
