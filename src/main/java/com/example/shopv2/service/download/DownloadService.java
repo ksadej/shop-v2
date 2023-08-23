@@ -7,6 +7,8 @@ import com.example.shopv2.model.Basket;
 import com.example.shopv2.service.BasketService;
 import com.example.shopv2.service.MealCalendarService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class DownloadService {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(DownloadService.class.getName());
     private final BasketDownloadBuilder basketDownloadBuilder;
     private final ResponseDownloadedService responseDownloadedService;
     private final MealCalendarDownloadBuilder mealCalendarDownloadBuilder;
@@ -47,12 +50,17 @@ public class DownloadService {
 
     public List<BasketResponse> getBasket(Map<String, String> filter){
         if(Objects.isNull(filter)){
-            return basketService.getBasketByUser()
+            List<BasketResponse> collect = basketService.getBasketByUser()
                     .stream()
                     .map(BasketMapper -> basketMapper.entityToResponse(BasketMapper))
                     .collect(Collectors.toList());
+            LOGGER.info("Object is not null and returned: "+collect);
+
+            return collect;
         }
-        return basketService.getAllFilteredBasket(filter);
+        List<BasketResponse> allFilteredBasket = basketService.getAllFilteredBasket(filter);
+        LOGGER.info("Object is null and returned: "+allFilteredBasket);
+        return allFilteredBasket;
     }
 
     public void fileToDownloadForMealCalendar(HttpServletResponse response){

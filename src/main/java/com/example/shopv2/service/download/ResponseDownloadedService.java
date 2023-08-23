@@ -1,6 +1,7 @@
 package com.example.shopv2.service.download;
 
 import com.example.shopv2.service.BasketService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +14,6 @@ import java.io.UnsupportedEncodingException;
 
 @Service
 public class ResponseDownloadedService {
-
-    private final BasketService basketService;
-
-    public ResponseDownloadedService(BasketService basketService) {
-        this.basketService = basketService;
-    }
 
     public void toResponse(HttpServletResponse response, StringBuffer stringBuffer){
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
