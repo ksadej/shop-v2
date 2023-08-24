@@ -1,15 +1,12 @@
 package com.example.shopv2.validator;
 
-import com.example.shopv2.controller.dto.MealCalendarRequest;
-import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.exceptions.MealCalendarException;
 import com.example.shopv2.repository.MealCalendarRepository;
+import com.example.shopv2.service.dto.MealCalendarDTO;
 import com.example.shopv2.validator.mealcalendarchain.*;
-import com.example.shopv2.validator.enums.FilterParametersEnum;
 import com.example.shopv2.validator.enums.MealCalendarEnum;
 import org.springframework.stereotype.Component;
 
-import java.util.Map;
 import java.util.Objects;
 
 @Component
@@ -22,7 +19,7 @@ public class MealCalendarValidator {
         this.mealCalendarRepository = mealCalendarRepository;
     }
 
-    public void saveMealCalendarValidator(MealCalendarRequest mealCalendarRequest){
+    public void saveMealCalendarValidator(MealCalendarDTO mealCalendarDTO){
         Validator idRecipes = new IdRecipesValidator();
         Validator dayValidator = new DayValidator();
         Validator timeMeal = new TimeMealValidator();
@@ -31,10 +28,10 @@ public class MealCalendarValidator {
         dayValidator.setNext(timeMeal);
         timeMeal.setNext(dataMeal);
 
-        idRecipes.handler(mealCalendarRequest);
+        idRecipes.handler(mealCalendarDTO);
     }
 
-    public void getByDayAndTimeValidator(MealCalendarResponse mealCalendarResponse){
+    public void getByDayAndTimeValidator(com.example.shopv2.service.dto.MealCalendarDTO mealCalendarResponse){
 
         if(Objects.isNull(mealCalendarResponse.getDay()) || mealCalendarResponse.getDay().toString().equals("") ){
             throw new MealCalendarException(MealCalendarEnum.DAY.getMessage(), "Error code: 6");

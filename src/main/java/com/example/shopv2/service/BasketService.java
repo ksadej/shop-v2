@@ -1,6 +1,6 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.controller.dto.BasketResponse;
+import com.example.shopv2.service.dto.BasketDTO;
 import com.example.shopv2.filters.BasketFilterRange;
 import com.example.shopv2.filters.FilterRangeAbstract;
 import com.example.shopv2.mapper.BasketMapper;
@@ -266,19 +266,19 @@ public class BasketService {
         return recipesPojoList;
     }
 
-    public List<BasketResponse> filterBasketBetweenDate(String fromDate, String toDate){
+    public List<BasketDTO> filterBasketBetweenDate(String fromDate, String toDate){
 
         OffsetDateTime fData = OffsetDateTime.parse(fromDate,  DateTimeFormatter.ISO_DATE_TIME);
         OffsetDateTime tDate = OffsetDateTime.parse(toDate,  DateTimeFormatter.ISO_DATE_TIME);
 
-        List<BasketResponse> basketResponses = basketRepository.findAllByBetweenDate(fData, tDate)
+        List<BasketDTO> basketResponses = basketRepository.findAllByBetweenDate(fData, tDate)
                 .stream()
                 .map(BasketMapper -> basketMapper.entityToResponse(BasketMapper))
                 .collect(Collectors.toList());
         return basketResponses;
     }
 
-    public List<BasketResponse> getAllFilteredBasket(Map<String, String> filter){
+    public List<BasketDTO> getAllFilteredBasket(Map<String, String> filter){
 
         return filterRangeAbstract.getAllByFilters(filter)
                 .stream()

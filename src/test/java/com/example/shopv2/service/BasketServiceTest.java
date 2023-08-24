@@ -1,6 +1,6 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.controller.dto.BasketResponse;
+import com.example.shopv2.service.dto.BasketDTO;
 import com.example.shopv2.exceptions.BasketException;
 import com.example.shopv2.mapper.BasketMapper;
 import com.example.shopv2.mapper.NutritionMapper;
@@ -271,7 +271,7 @@ class BasketServiceTest {
         when(basketRepository.findAllByBetweenDate(OffsetDateTime.parse(fromDate), OffsetDateTime.parse(toDate))).thenReturn(data);
 
         //when
-        List<BasketResponse> result = basketService.filterBasketBetweenDate(fromDate, toDate);
+        List<BasketDTO> result = basketService.filterBasketBetweenDate(fromDate, toDate);
 
         //then
         assertThat(result).hasSize(1);

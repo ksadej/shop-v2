@@ -1,4 +1,4 @@
-package com.example.shopv2.controller.dto;
+package com.example.shopv2.service.dto;
 
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
@@ -10,10 +10,10 @@ import lombok.NoArgsConstructor;
 import java.time.OffsetDateTime;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class MealCalendarRequest {
+public class MealCalendarDTO {
 
     private Long id;
     private Integer idRecipes;
@@ -21,10 +21,15 @@ public class MealCalendarRequest {
     private MealTime time;
     private OffsetDateTime dataMeal;
 
-    public MealCalendarRequest(Integer idRecipes, Days day, MealTime time, OffsetDateTime dataMeal) {
+    public MealCalendarDTO(Integer idRecipes, Days day, MealTime time, OffsetDateTime dataMeal) {
         this.idRecipes = idRecipes;
         this.day = day;
         this.time = time;
         this.dataMeal = dataMeal;
+    }
+
+    public MealCalendarDTO(Days day, MealTime time) {
+        this.day = day;
+        this.time = time;
     }
 }

@@ -1,7 +1,5 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.controller.dto.MealCalendarRequest;
-import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.filters.FilterRangeAbstract;
 import com.example.shopv2.filters.MealCalendarFilterRange;
 import com.example.shopv2.mapper.MealCalendarMapper;
@@ -9,7 +7,7 @@ import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.repository.MealCalendarRepository;
-import com.example.shopv2.service.user.UserLogService;
+import com.example.shopv2.service.dto.MealCalendarDTO;
 import com.example.shopv2.validator.MealCalendarValidator;
 import com.example.shopv2.validator.ParametersValidatorFactory.MealCalendarParametersValidator;
 import org.slf4j.Logger;
@@ -45,18 +43,18 @@ public class MealCalendarService {
 
     }
 
-    public MealCalendar saveMealCalendar(MealCalendarRequest mealCalendarRequest){
+    public MealCalendar saveMealCalendar(MealCalendarDTO mealCalendarDTO){
         LOGGER.info("Saved MealCalendarRequest by MealCalendarService");
-        LOGGER.debug("MealCalendarRequest: "+mealCalendarRequest);
-        mealCalendarValidator.saveMealCalendarValidator(mealCalendarRequest);
+        LOGGER.debug("MealCalendarRequest: "+mealCalendarDTO);
+        mealCalendarValidator.saveMealCalendarValidator(mealCalendarDTO);
 
-        MealCalendar mealCalendar = mealCalendarMapper.requestToEntity(mealCalendarRequest);
+        MealCalendar mealCalendar = mealCalendarMapper.requestToEntity(mealCalendarDTO);
         LOGGER.debug("Data saved: "+mealCalendar);
         return mealCalendarRepository.save(mealCalendar);
     }
 
 
-    public List<MealCalendarResponse> getCalendar(){
+    public List<com.example.shopv2.service.dto.MealCalendarDTO> getCalendar(){
         LOGGER.info("Method getCalendar");
 
         return mealCalendarRepository.findAll()
@@ -72,10 +70,10 @@ public class MealCalendarService {
         mealCalendarRepository.deleteById(id);
     }
 
-    public List<MealCalendarResponse> filterByDayAndTime(Days day, MealTime time){
+    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterByDayAndTime(Days day, MealTime time){
         LOGGER.info("Method getByDayAndTime");
         LOGGER.debug("Days: "+day+" Meal time: "+time);
-        mealCalendarValidator.getByDayAndTimeValidator(new MealCalendarResponse(day, time));
+        mealCalendarValidator.getByDayAndTimeValidator(new com.example.shopv2.service.dto.MealCalendarDTO(day, time));
 
         return mealCalendarRepository.findByDayAndTime(day, time)
                 .stream()
@@ -83,25 +81,25 @@ public class MealCalendarService {
                 .collect(Collectors.toList());
     }
 
-    public List<MealCalendarResponse> filterByDays(String day){
+    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterByDays(String day){
         return  mealCalendarRepository.findAllByDay(Days.valueOf(day))
                 .stream()
                 .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
                 .collect(Collectors.toList());
     }
 
-    public List<MealCalendarResponse> filterByTimeOfDay(String mealTime){
+    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterByTimeOfDay(String mealTime){
         return mealCalendarRepository.findAllByTime(MealTime.valueOf(mealTime))
                 .stream()
                 .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
                 .collect(Collectors.toList());
     }
 
-    public List<MealCalendarResponse> filterByRecipesName(String name){
+    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterByRecipesName(String name){
         return null;
     }
 
-    public List<MealCalendarResponse> filterMealsBetweenDate(String fromDate, String toDate){
+    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterMealsBetweenDate(String fromDate, String toDate){
 
         final String dateSuffix = "T00:00:00.001Z";
         final OffsetDateTime fData = OffsetDateTime.parse(fromDate + dateSuffix);
@@ -113,7 +111,7 @@ public class MealCalendarService {
                 .collect(Collectors.toList());
     }
 
-    public List<MealCalendarResponse> getAllFilteredMeals(Map<String, String> filter){
+    public List<com.example.shopv2.service.dto.MealCalendarDTO> getAllFilteredMeals(Map<String, String> filter){
 
         return filterRangeAbstract.getAllByFilters(filter)
                 .stream()

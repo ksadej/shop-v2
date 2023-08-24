@@ -1,6 +1,6 @@
 package com.example.shopv2.controller;
 
-import com.example.shopv2.controller.dto.BasketResponse;
+import com.example.shopv2.service.dto.BasketDTO;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
@@ -71,12 +71,12 @@ public class BasketController {
     }
 
     @GetMapping(path = "/api/basket/filter")
-    public List<BasketResponse> filterMealsBetweenDate(@RequestParam String fromDate, @RequestParam String toDate){
+    public List<BasketDTO> filterMealsBetweenDate(@RequestParam String fromDate, @RequestParam String toDate){
         return basketService.filterBasketBetweenDate(fromDate, toDate);
     }
 
     @GetMapping(path = "/api/basket/filter/date")
-    public List<BasketResponse> filterMealsDate(@RequestParam Map<String, String> filter){
+    public List<BasketDTO> filterMealsDate(@RequestParam Map<String, String> filter){
         return basketService.getAllFilteredBasket(filter);
     }
 

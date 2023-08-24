@@ -1,6 +1,5 @@
 package com.example.shopv2.filters;
 
-import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.repository.MealCalendarRepository;
 import org.springframework.stereotype.Component;

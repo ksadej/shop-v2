@@ -1,30 +1,25 @@
 package com.example.shopv2.mapper;
 
-import com.example.shopv2.controller.dto.MealCalendarRequest;
-import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.model.enums.Days;
+import com.example.shopv2.service.dto.MealCalendarDTO;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
-public class MealCalendarMapper implements MealCalendarMapperImpl{
+public class MealCalendarMapper{
 
-    @Override
-    public MealCalendar requestToEntity(MealCalendarRequest mealCalendarRequest){
+    public MealCalendar requestToEntity(MealCalendarDTO mealCalendarDTO){
         return MealCalendar
                 .builder()
-                .idRecipes(mealCalendarRequest.getIdRecipes())
-                .day(Days.valueOf(mealCalendarRequest.getDay().name().toUpperCase()))
-                .time(mealCalendarRequest.getTime())
-                .dataMeal(mealCalendarRequest.getDataMeal())
+                .idRecipes(mealCalendarDTO.getIdRecipes())
+                .day(Days.valueOf(mealCalendarDTO.getDay().name().toUpperCase()))
+                .time(mealCalendarDTO.getTime())
+                .dataMeal(mealCalendarDTO.getDataMeal())
                 .build();
     }
 
-    @Override
-    public MealCalendarResponse entityToResponse(MealCalendar mealCalendar){
-        return MealCalendarResponse
+    public com.example.shopv2.service.dto.MealCalendarDTO entityToResponse(MealCalendar mealCalendar){
+        return com.example.shopv2.service.dto.MealCalendarDTO
                 .builder()
                 .id(mealCalendar.getId())
                 .idRecipes(mealCalendar.getIdRecipes())

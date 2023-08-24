@@ -1,13 +1,12 @@
 package com.example.shopv2.service;
 
-import com.example.shopv2.controller.dto.MealCalendarRequest;
-import com.example.shopv2.controller.dto.MealCalendarResponse;
 import com.example.shopv2.exceptions.MealCalendarException;
 import com.example.shopv2.mapper.MealCalendarMapper;
 import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.repository.MealCalendarRepository;
+import com.example.shopv2.service.dto.MealCalendarDTO;
 import com.example.shopv2.validator.MealCalendarValidator;
 import com.example.shopv2.validator.ParametersValidatorFactory.MealCalendarParametersValidator;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,11 +41,11 @@ class MealCalendarServiceTest {
     @Test
     void saveMealCalendar_saveObject_saved() {
         //given
-        MealCalendarRequest mealCalendarRequest =
-                new MealCalendarRequest(12, Days.FRIDAY, MealTime.EVENING, OffsetDateTime.now().plusHours(1));
+        MealCalendarDTO mealCalendarDTO =
+                new MealCalendarDTO(12, Days.FRIDAY, MealTime.EVENING, OffsetDateTime.now().plusHours(1));
 
         //when
-        mealCalendarService.saveMealCalendar(mealCalendarRequest);
+        mealCalendarService.saveMealCalendar(mealCalendarDTO);
 
         //then
         ArgumentCaptor<MealCalendar> argumentCaptor = ArgumentCaptor.forClass(MealCalendar.class);
@@ -56,10 +55,10 @@ class MealCalendarServiceTest {
     @Test
     void saveMealCalendar_whenOneOfTheValueIsNull_mealCalendarException(){
         //given
-        MealCalendarRequest mealCalendarRequest1 = new MealCalendarRequest(null, Days.FRIDAY, MealTime.EVENING, OffsetDateTime.now());
-        MealCalendarRequest mealCalendarRequest2 = new MealCalendarRequest(12, null, MealTime.EVENING, OffsetDateTime.now());
-        MealCalendarRequest mealCalendarRequest3 = new MealCalendarRequest(12, Days.FRIDAY, null, OffsetDateTime.now());
-        MealCalendarRequest mealCalendarRequest4 = new MealCalendarRequest(12, Days.FRIDAY, MealTime.EVENING, null);
+        MealCalendarDTO mealCalendarRequest1 = new MealCalendarDTO(null, Days.FRIDAY, MealTime.EVENING, OffsetDateTime.now());
+        MealCalendarDTO mealCalendarRequest2 = new MealCalendarDTO(12, null, MealTime.EVENING, OffsetDateTime.now());
+        MealCalendarDTO mealCalendarRequest3 = new MealCalendarDTO(12, Days.FRIDAY, null, OffsetDateTime.now());
+        MealCalendarDTO mealCalendarRequest4 = new MealCalendarDTO(12, Days.FRIDAY, MealTime.EVENING, null);
 
         //when//then
         assertThrows(MealCalendarException.class, () -> mealCalendarService.saveMealCalendar(mealCalendarRequest1));
@@ -71,7 +70,7 @@ class MealCalendarServiceTest {
     @Test
     void saveMealCalendar_whenTheValuesAreNull_mealCalendarException(){
         //given
-        MealCalendarRequest mealCalendarRequest = new MealCalendarRequest();
+        MealCalendarDTO mealCalendarRequest = new MealCalendarDTO();
 
         //when//then
         assertThrows(MealCalendarException.class, () -> mealCalendarService.saveMealCalendar(mealCalendarRequest));
@@ -147,7 +146,7 @@ class MealCalendarServiceTest {
         when(mealCalendarRepository.findAll()).thenReturn(calendarResponses);
 
         //when
-        List<MealCalendarResponse> result = mealCalendarService.getCalendar();
+        List<com.example.shopv2.service.dto.MealCalendarDTO> result = mealCalendarService.getCalendar();
 
         //then
        assertThat(result)

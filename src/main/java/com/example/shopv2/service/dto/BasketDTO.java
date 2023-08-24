@@ -1,4 +1,4 @@
-package com.example.shopv2.controller.dto;
+package com.example.shopv2.service.dto;
 
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
@@ -17,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class BasketResponse {
+public class BasketDTO {
 
     private Long id;
     private List<Ingredient> ingredients = new ArrayList<>();

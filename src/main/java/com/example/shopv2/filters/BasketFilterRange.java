@@ -1,8 +1,6 @@
 package com.example.shopv2.filters;
 
-import com.example.shopv2.controller.dto.BasketResponse;
 import com.example.shopv2.model.Basket;
-import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.repository.BasketRepository;
 import org.springframework.stereotype.Component;
 

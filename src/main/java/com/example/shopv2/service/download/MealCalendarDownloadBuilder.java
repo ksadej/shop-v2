@@ -1,8 +1,6 @@
 package com.example.shopv2.service.download;
 
-import com.example.shopv2.controller.dto.MealCalendarResponse;
-import com.example.shopv2.model.Basket;
-import com.example.shopv2.model.MealCalendar;
+import com.example.shopv2.service.dto.MealCalendarDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,7 +9,7 @@ import java.util.List;
 public class MealCalendarDownloadBuilder {
 
     private final String SEPARATOR = ";";
-    public StringBuffer prepareBuffer(List<MealCalendarResponse> basketList){
+    public StringBuffer prepareBuffer(List<MealCalendarDTO> basketList){
         StringBuffer stringBuffer =
                 new StringBuffer("Id"+SEPARATOR+"Recipes id"+SEPARATOR+"Time"+SEPARATOR+"Day"+SEPARATOR+"Meal date");
         basketList.forEach(x -> stringBuffer

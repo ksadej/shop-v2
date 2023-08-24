@@ -1,10 +1,9 @@
 package com.example.shopv2.service.upload;
 
-import com.example.shopv2.controller.dto.MealCalendarRequest;
-import com.example.shopv2.model.MealCalendar;
 import com.example.shopv2.model.enums.Days;
 import com.example.shopv2.model.enums.MealTime;
 import com.example.shopv2.service.MealCalendarService;
+import com.example.shopv2.service.dto.MealCalendarDTO;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,9 +25,9 @@ public class UploadService {
             List<String> listOfStrings = reader.lines().collect(Collectors.toList());
             in.close();
             listOfStrings.remove(0);
-            List<MealCalendarRequest> collect = listOfStrings.stream()
+            List<MealCalendarDTO> collect = listOfStrings.stream()
                     .map(data -> data.split(";"))
-                    .map(array -> MealCalendarRequest.builder()
+                    .map(array -> MealCalendarDTO.builder()
                             .dataMeal(OffsetDateTime.parse(array[0]))
                             .day(Days.valueOf(array[1]))
                             .idRecipes(Integer.valueOf(array[2]))

@@ -1,9 +1,8 @@
 package com.example.shopv2.service.download;
 
-import com.example.shopv2.controller.dto.BasketResponse;
-import com.example.shopv2.controller.dto.MealCalendarResponse;
+import com.example.shopv2.service.dto.BasketDTO;
+import com.example.shopv2.service.dto.MealCalendarDTO;
 import com.example.shopv2.mapper.BasketMapper;
-import com.example.shopv2.model.Basket;
 import com.example.shopv2.service.BasketService;
 import com.example.shopv2.service.MealCalendarService;
 import lombok.AllArgsConstructor;
@@ -12,7 +11,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,14 +41,14 @@ public class DownloadService {
     }
 
     public void fileToDownloadForBasket(HttpServletResponse response, Map<String, String> filter){
-        List<BasketResponse> cardByUser = getBasket(filter);
+        List<BasketDTO> cardByUser = getBasket(filter);
         StringBuffer stringBuffer = basketDownloadBuilder.prepareBuffer(cardByUser);
         responseDownloadedService.toResponse(response, stringBuffer);
     }
 
-    public List<BasketResponse> getBasket(Map<String, String> filter){
+    public List<BasketDTO> getBasket(Map<String, String> filter){
         if(Objects.isNull(filter)){
-            List<BasketResponse> collect = basketService.getBasketByUser()
+            List<BasketDTO> collect = basketService.getBasketByUser()
                     .stream()
                     .map(BasketMapper -> basketMapper.entityToResponse(BasketMapper))
                     .collect(Collectors.toList());
@@ -58,13 +56,13 @@ public class DownloadService {
 
             return collect;
         }
-        List<BasketResponse> allFilteredBasket = basketService.getAllFilteredBasket(filter);
+        List<BasketDTO> allFilteredBasket = basketService.getAllFilteredBasket(filter);
         LOGGER.info("Object is null and returned: "+allFilteredBasket);
         return allFilteredBasket;
     }
 
     public void fileToDownloadForMealCalendar(HttpServletResponse response){
-        List<MealCalendarResponse> calendar = mealCalendarService.getCalendar();
+        List<MealCalendarDTO> calendar = mealCalendarService.getCalendar();
         StringBuffer stringBuffer = mealCalendarDownloadBuilder.prepareBuffer(calendar);
         responseDownloadedService.toResponse(response, stringBuffer);
     }

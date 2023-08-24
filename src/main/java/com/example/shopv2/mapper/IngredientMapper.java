@@ -7,9 +7,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class IngredientMapper implements IngredientMapperImpl{
+public class IngredientMapper{
 
-    @Override
     public Ingredient requestToEntity(RecipesIngredientPojo recipesIngredientPojo) {
         return Ingredient
                 .builder()
