@@ -20,4 +20,5 @@ public class IngredientDTO {
     public Object originalName;
     public double amount;
     public String unit;
+    private Integer idIngredientAPI;
 }

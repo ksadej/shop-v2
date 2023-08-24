@@ -1,10 +1,12 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.mapper.IngredientMapper;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
+import com.example.shopv2.service.dto.IngredientDTO;
 import com.example.shopv2.service.user.UserLogService;
 import com.example.shopv2.validator.IngredientValidator;
 import org.slf4j.Logger;
@@ -25,15 +27,17 @@ public class IngredientService{
     private final IngredientRepository ingredientRepository;
     private final IngredientValidator ingredientValidator;
     private final UserLogService userLogService;
+    private final IngredientMapper ingredientMapper;
 
     @Autowired
     public IngredientService(BasketRepository basketRepository,
                              IngredientRepository ingredientRepository,
-                             IngredientValidator ingredientValidator, UserLogService userLogService) {
+                             IngredientValidator ingredientValidator, UserLogService userLogService, IngredientMapper ingredientMapper) {
         this.basketRepository = basketRepository;
         this.ingredientRepository = ingredientRepository;
         this.ingredientValidator = ingredientValidator;
         this.userLogService = userLogService;
+        this.ingredientMapper = ingredientMapper;
     }
 
     //pobiera składniki z przepisu na podstawie id przepisu
@@ -49,9 +53,14 @@ public class IngredientService{
     }
 
     //pobiera listę wszystkich składkików
-    public List<Ingredient> getIngredientsByCardId(Integer id){
+    public List<IngredientDTO> getIngredientsByCardId(Integer id){
         ingredientValidator.valid(Long.valueOf(id));
-        return ingredientRepository.findAllByBasketId(Long.valueOf(id));
+        ArrayList<Ingredient> allByBasketId = ingredientRepository.findAllByBasketId(Long.valueOf(id));
+        List<IngredientDTO> ingredientDTOS = allByBasketId
+                .stream()
+                .map(x -> ingredientMapper.entityToDto(x))
+                .collect(Collectors.toList());
+        return ingredientDTOS;
     }
 
     //lista id produktów pobrana na podstawie id user
@@ -97,13 +106,14 @@ public class IngredientService{
 
 
     //funkcja do podsumowania ilości produktów które mamy zakupić
-    public List<Ingredient> sumAllIngredientsByUserId(Long id){
+    public List<IngredientDTO> sumAllIngredientsByUserId(){
 
+        UserEntity user = userLogService.loggedUser();
         // lista card id
         LOGGER.info("Sum ingredients by USER id");
-        LOGGER.debug("USER id: "+id);
+        LOGGER.debug("USER id: "+user.getUsername());
         //lista id produktów pobrana na podstawie id user
-        List<Long> longList = this.listOfIdCards(id);
+        List<Long> longList = this.listOfIdCards(user.getId());
 
         //lista składników pobranych na podstawie card id
         List<Ingredient> ingredients = this.listOfIngredientsByCardId((ArrayList<Long>) longList);
@@ -112,7 +122,12 @@ public class IngredientService{
         List<String> ingredientNames = this.distinctNames(ingredients);
 
         //lista do której zapisuję nowe zbudowane obiekty
-        return sumIngredients(ingredientNames, ingredients);
+        List<Ingredient> newIngredients = sumIngredients(ingredientNames, ingredients);
+        List<IngredientDTO> ingredientDtos = newIngredients
+                .stream()
+                .map(ingredientMapper::entityToDto)
+                .toList();
+        return ingredientDtos;
     }
 
     //filtry: po cenie produktu od najmniejszego do największego

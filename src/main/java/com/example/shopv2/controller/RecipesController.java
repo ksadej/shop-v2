@@ -3,6 +3,7 @@ package com.example.shopv2.controller;
 import com.example.shopv2.model.Recipes;
 import com.example.shopv2.service.RecipesService;
 import com.example.shopv2.pojo.RecipesPojo;
+import com.example.shopv2.service.dto.RecipesDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,9 +32,9 @@ public class RecipesController {
         return recipesService.getRecipesById(id);
     }
 
-    //pobiera listę recept na podstawie user id z tabeli basket
+    //pobiera listę recept na podstawie user z tabeli basket
     @GetMapping(path = "/recipes/user")
-    public List<Recipes> getAllIngredientsByCardId(){
+    public List<RecipesDTO> getAllIngredientsByCardId(){
         return recipesService.getRecipesByUserId();
     }
 }

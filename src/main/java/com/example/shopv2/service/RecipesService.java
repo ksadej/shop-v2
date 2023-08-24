@@ -1,11 +1,13 @@
 package com.example.shopv2.service;
 
+import com.example.shopv2.mapper.RecipesMapper;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Recipes;
 import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.pojo.RecipesPojo;
 import com.example.shopv2.pojo.ResultPojo;
 import com.example.shopv2.repository.BasketRepository;
+import com.example.shopv2.service.dto.RecipesDTO;
 import com.example.shopv2.service.user.UserLogService;
 import com.example.shopv2.validator.RecipesValidator;
 import org.slf4j.Logger;
@@ -30,18 +32,19 @@ public class RecipesService {
     private final RecipesValidator recipesValidator;
     private final HttpHeaders httpHeaders;
     private final UserLogService userLogService;
-
+    private final RecipesMapper recipesMapper;
 
 
     @Autowired
     public RecipesService(BasketRepository basketRepository, RestTemplate restTemplate,
                           @Qualifier("recipesHeaders") HttpHeaders httpHeaders,
-                          RecipesValidator recipesValidator, UserLogService userLogService) {
+                          RecipesValidator recipesValidator, UserLogService userLogService, RecipesMapper recipesMapper) {
         this.basketRepository = basketRepository;
         this.restTemplate = restTemplate;
         this.httpHeaders = httpHeaders;
         this.recipesValidator = recipesValidator;
         this.userLogService = userLogService;
+        this.recipesMapper = recipesMapper;
     }
 
     public List<RecipesPojo> getRecipesByType(String type){
@@ -70,7 +73,7 @@ public class RecipesService {
         return rootResponses;
     }
 
-    public List<Recipes> getRecipesByUserId(){
+    public List<RecipesDTO> getRecipesByUserId(){
         UserEntity user = userLogService.loggedUser();
         List<Basket> basketList = basketRepository.findAllByUserEntity(user);
 
@@ -79,7 +82,12 @@ public class RecipesService {
                 .flatMap(x -> x.getRecipes().stream())
                 .collect(Collectors.toList());
 
-        return recipes;
+        List<RecipesDTO> recipesDTO = recipes
+                .stream()
+                .map(x -> recipesMapper.entityToDto(x))
+                .collect(Collectors.toList());
+
+        return recipesDTO;
     }
 
     //filtry: wyszukiwanie po ingredient, po nutrition, wyszukiwanie recepty o podobnych skladnikach

@@ -81,25 +81,25 @@ public class MealCalendarService {
                 .collect(Collectors.toList());
     }
 
-    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterByDays(String day){
+    public List<MealCalendarDTO> filterByDays(String day){
         return  mealCalendarRepository.findAllByDay(Days.valueOf(day))
                 .stream()
                 .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
                 .collect(Collectors.toList());
     }
 
-    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterByTimeOfDay(String mealTime){
+    public List<MealCalendarDTO> filterByTimeOfDay(String mealTime){
         return mealCalendarRepository.findAllByTime(MealTime.valueOf(mealTime))
                 .stream()
                 .map(MealCalendarMapper -> mealCalendarMapper.entityToResponse(MealCalendarMapper))
                 .collect(Collectors.toList());
     }
 
-    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterByRecipesName(String name){
+    public List<MealCalendarDTO> filterByRecipesName(String name){
         return null;
     }
 
-    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterMealsBetweenDate(String fromDate, String toDate){
+    public List<MealCalendarDTO> filterMealsBetweenDate(String fromDate, String toDate){
 
         final String dateSuffix = "T00:00:00.001Z";
         final OffsetDateTime fData = OffsetDateTime.parse(fromDate + dateSuffix);

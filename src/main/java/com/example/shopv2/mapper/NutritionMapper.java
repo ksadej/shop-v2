@@ -21,13 +21,4 @@ public class NutritionMapper {
                 .build();
     }
 
-    public Nutrition requestToEntity(Basket basket){
-        return Nutrition
-                .builder()
-                .name(basket.getNutritionList().stream().map(x->x.getName()).toString())
-                .amount(basket.getNutritionList().stream().map(x->x.getAmount()).mapToDouble(Double::doubleValue).sum())
-                .percentOfDailyNeeds(basket.getNutritionList().stream().map(x->x.getPercentOfDailyNeeds()).mapToDouble(Double::doubleValue).sum())
-                .unit(basket.getNutritionList().stream().map(x->x.getUnit()).toString())
-                .build();
-    }
 }

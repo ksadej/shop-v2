@@ -4,6 +4,7 @@ import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.service.IngredientService;
 import com.example.shopv2.pojo.RecipesIngredientPojo;
+import com.example.shopv2.service.dto.IngredientDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,21 +30,15 @@ public class IngredientController {
         return ingredientService.getIngredientByRecipesId(id);
     }
 
-    //pobiera listę składników na podstawie card id
+    //pobiera listę składników na podstawie basket id
     @GetMapping("/ingredient/basket/{id}")
-    public List<Ingredient> getIngredientsByCardId(@PathVariable(value = "id")Integer id){
+    public List<IngredientDTO> getIngredientsByCardId(@PathVariable(value = "id")Integer id){
         return ingredientService.getIngredientsByCardId(id);
     }
 
-    //pobiera listę wszystkich składników z tabeli
-    @GetMapping("/ingredient/all")
-    public List<Ingredient> getAll(){
-        return ingredientRepository.findAll();
-    }
-
     //sumuje wszytskie skladniki na podstawie id użytkownika
-    @GetMapping("/ingredient/user/{id}")
-    public List<Ingredient> sumIngredientsByUserId(@PathVariable(value = "id")Long id){
-        return ingredientService.sumAllIngredientsByUserId(id);
+    @GetMapping("/ingredient/user")
+    public List<IngredientDTO> sumIngredientsByUserId(){
+        return ingredientService.sumAllIngredientsByUserId();
     }
 }
