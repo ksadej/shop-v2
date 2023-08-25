@@ -3,6 +3,7 @@ package com.example.shopv2.service;
 import com.example.shopv2.exceptions.IngredientException;
 import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
+import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.repository.BasketRepository;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.validator.IngredientValidator;
@@ -27,29 +28,28 @@ class IngredientServiceTest {
     public void setup(){
         basketRepository = mock(BasketRepository.class);
         ingredientRepository = mock(IngredientRepository.class);
-        ingredientService = new IngredientService(basketRepository, ingredientRepository, ingredientValidator, null, null);
-    }
-
-    @Test
-    void listOfIdCards_checkIfIdExists_throwException() {
-        //given//when//then
-        assertThrows(IngredientException.class, () -> ingredientService.listOfIdCards(0L));
-        assertThrows(IngredientException.class, () -> ingredientService.listOfIdCards(null));
-        assertThrows(IngredientException.class, () -> ingredientService.listOfIdCards(-1L));
+        ingredientService = new IngredientService(ingredientRepository,
+                ingredientValidator, null, null,basketRepository);
     }
 
     @Test
     void listOfIdCards_shouldReturnListOfLongs() {
         //given
-        List<Long> expected = new ArrayList<>();
-        ArrayList<Basket> objects = new ArrayList<>();
-        when(basketRepository.findAllByIdUser(2222L)).thenReturn(objects);
+        UserEntity user = initUser();
+        Basket basket = Basket
+                .builder()
+                .id(22L)
+                .userEntity(user)
+                .build();
+        ArrayList<Basket> baskets = new ArrayList<>();
+        baskets.add(basket);
+        when(basketRepository.findAllByUserEntity(user)).thenReturn(baskets);
 
         // when
-        List<Long> actual = ingredientService.listOfIdCards(2222L);
+        List<Long> actual = ingredientService.listOfIdCards(user);
 
         // then
-        assertThat(expected).isEqualTo(actual);
+        assertThat(actual).contains(basket.getId());
     }
     @Test
     void listOfIngredientsByCardId_ifListOfIdsInEmpty_throwException(){
@@ -139,5 +139,13 @@ class IngredientServiceTest {
         //then
 //        assertThat(actualList).hasSize(1).isEqualTo(expectedList);
 
+    }
+
+    private UserEntity initUser(){
+        return UserEntity
+                .builder()
+                .username("test_name")
+                .password("test_pass")
+                .build();
     }
 }

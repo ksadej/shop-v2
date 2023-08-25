@@ -52,7 +52,7 @@ public class BasketController {
 
     @GetMapping(path = "/api/basket/recipes")
     public List<RecipesPojo> recipesListByUserId(){
-        return basketService.getListOfRecipesByUserId();
+        return basketService.getListOfRecipesByUser();
     }
 
     @GetMapping(path = "/api/basket/sumNutrition")

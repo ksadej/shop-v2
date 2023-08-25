@@ -54,7 +54,7 @@ public class MealCalendarService {
     }
 
 
-    public List<com.example.shopv2.service.dto.MealCalendarDTO> getCalendar(){
+    public List<MealCalendarDTO> getCalendar(){
         LOGGER.info("Method getCalendar");
 
         return mealCalendarRepository.findAll()
@@ -70,7 +70,7 @@ public class MealCalendarService {
         mealCalendarRepository.deleteById(id);
     }
 
-    public List<com.example.shopv2.service.dto.MealCalendarDTO> filterByDayAndTime(Days day, MealTime time){
+    public List<MealCalendarDTO> filterByDayAndTime(Days day, MealTime time){
         LOGGER.info("Method getByDayAndTime");
         LOGGER.debug("Days: "+day+" Meal time: "+time);
         mealCalendarValidator.getByDayAndTimeValidator(new com.example.shopv2.service.dto.MealCalendarDTO(day, time));
@@ -95,10 +95,6 @@ public class MealCalendarService {
                 .collect(Collectors.toList());
     }
 
-    public List<MealCalendarDTO> filterByRecipesName(String name){
-        return null;
-    }
-
     public List<MealCalendarDTO> filterMealsBetweenDate(String fromDate, String toDate){
 
         final String dateSuffix = "T00:00:00.001Z";
@@ -111,7 +107,7 @@ public class MealCalendarService {
                 .collect(Collectors.toList());
     }
 
-    public List<com.example.shopv2.service.dto.MealCalendarDTO> getAllFilteredMeals(Map<String, String> filter){
+    public List<MealCalendarDTO> getAllFilteredMeals(Map<String, String> filter){
 
         return filterRangeAbstract.getAllByFilters(filter)
                 .stream()

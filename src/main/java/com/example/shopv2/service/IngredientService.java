@@ -23,21 +23,21 @@ public class IngredientService{
 
     private static final Logger LOGGER = LoggerFactory.getLogger(IngredientService.class.getName());
 
-    private final BasketRepository basketRepository;
     private final IngredientRepository ingredientRepository;
     private final IngredientValidator ingredientValidator;
     private final UserLogService userLogService;
     private final IngredientMapper ingredientMapper;
+    private final BasketRepository basketRepository;
 
     @Autowired
-    public IngredientService(BasketRepository basketRepository,
-                             IngredientRepository ingredientRepository,
-                             IngredientValidator ingredientValidator, UserLogService userLogService, IngredientMapper ingredientMapper) {
-        this.basketRepository = basketRepository;
+    public IngredientService(IngredientRepository ingredientRepository,
+                             IngredientValidator ingredientValidator, UserLogService userLogService,
+                             IngredientMapper ingredientMapper, BasketRepository basketRepository) {
         this.ingredientRepository = ingredientRepository;
         this.ingredientValidator = ingredientValidator;
         this.userLogService = userLogService;
         this.ingredientMapper = ingredientMapper;
+        this.basketRepository = basketRepository;
     }
 
     //pobiera składniki z przepisu na podstawie id przepisu
@@ -61,16 +61,6 @@ public class IngredientService{
                 .map(x -> ingredientMapper.entityToDto(x))
                 .collect(Collectors.toList());
         return ingredientDTOS;
-    }
-
-    //lista id produktów pobrana na podstawie id user
-    List<Long> listOfIdCards(Long id){
-        ingredientValidator.valid(id);
-        UserEntity user = userLogService.loggedUser();
-        return basketRepository.findAllByUserEntity(user)
-                .stream()
-                .map(x -> x.getId())
-                .collect(Collectors.toList());
     }
 
     //lista składników pobranych na podstawie card id
@@ -104,6 +94,13 @@ public class IngredientService{
         return newIngredients;
     }
 
+    //lista id produktów pobrana na podstawie zalogowanego usera
+    List<Long> listOfIdCards(UserEntity user){
+        return basketRepository.findAllByUserEntity(user)
+                .stream()
+                .map(x -> x.getId())
+                .collect(Collectors.toList());
+    }
 
     //funkcja do podsumowania ilości produktów które mamy zakupić
     public List<IngredientDTO> sumAllIngredientsByUserId(){
@@ -113,7 +110,7 @@ public class IngredientService{
         LOGGER.info("Sum ingredients by USER id");
         LOGGER.debug("USER id: "+user.getUsername());
         //lista id produktów pobrana na podstawie id user
-        List<Long> longList = this.listOfIdCards(user.getId());
+        List<Long> longList = this.listOfIdCards(user);
 
         //lista składników pobranych na podstawie card id
         List<Ingredient> ingredients = this.listOfIngredientsByCardId((ArrayList<Long>) longList);

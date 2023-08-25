@@ -22,11 +22,14 @@ public abstract class FilterRangeAbstract<T> {
 
     public List<T> getAllByFilters(Map<String, String> filter){
 
-        if(MealCalendarFilterRange.class.getName().equals("MealCalendarFilterRange")){
+        //klasa która implementuję metodę getFilterName() będzie zwracała odpowiedni string MealCalendar lub BasketFilter
+        //dzięki tym metodom klasa która je implementuje będdzie infomowała jakim jest filtrem
+        //dzięki temu zostanie wywołany odpowiedni validator
+        if("MealCalendar".equals(getFilterName())){
             mealCalendarParametersValidator.validateFilter(filter);
         }
 
-        if(BasketFilterRange.class.getName().equals("BasketFilterRange")){
+        if("BasketFilter".equals(getFilterName())){
             basketParametersValidator.validateFilter(filter);
         }
 
@@ -42,6 +45,8 @@ public abstract class FilterRangeAbstract<T> {
         }
         return Collections.emptyList();
     }
+
+    protected abstract String getFilterName();
 
     private boolean isFilterForFromToDate(Map<String, String> filter) {
         return filter.containsKey(FilterParametersEnum.FROM_DATE.getKey())

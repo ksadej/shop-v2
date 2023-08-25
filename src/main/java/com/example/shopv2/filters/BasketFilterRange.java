@@ -17,6 +17,11 @@ public class BasketFilterRange extends FilterRangeAbstract{
     }
 
     @Override
+    protected String getFilterName() {
+        return "BasketFilter";
+    }
+
+    @Override
     protected List<Basket> getAllEntityBetweenDate(OffsetDateTime fromDate, OffsetDateTime toDate) {
         return basketRepository.findAllByBetweenDate(fromDate, toDate);
     }

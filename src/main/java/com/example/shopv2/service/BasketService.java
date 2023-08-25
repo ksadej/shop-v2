@@ -239,7 +239,7 @@ public class BasketService {
 
     //pobiera liste recept z koszyka na podstawie użytkownika
     @Transactional
-    public List<RecipesPojo> getListOfRecipesByUserId(){
+    public List<RecipesPojo> getListOfRecipesByUser(){
         UserEntity user = userLogService.loggedUser();
         List<Basket> baskets = basketRepository.findAllByUserEntity(user);
 
@@ -257,7 +257,7 @@ public class BasketService {
     }
 
     public Double sumPriceByBasketId(Integer id){
-       Double recipesPojoList = this.getListOfRecipesByUserId()
+       Double recipesPojoList = this.getListOfRecipesByUser()
                .stream()
                .map(x->x.getPricePerServing())
                .mapToDouble(Double::doubleValue)
@@ -290,7 +290,6 @@ public class BasketService {
         UserEntity user = userLogService.loggedUser();
         basketRepository.deleteAllByUserEntity(user);
     }
-
 
     //metoda naliczania rabatów na całość zakupów i na konkretne przepisy
     //metoda do pobierania proponowanych przepisów na podstawie produktów

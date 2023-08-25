@@ -17,6 +17,11 @@ public class MealCalendarFilterRange extends FilterRangeAbstract{
     }
 
     @Override
+    protected String getFilterName() {
+        return "MealCalendar";
+    }
+
+    @Override
     protected List<MealCalendar> getAllEntityBetweenDate(OffsetDateTime fromDate, OffsetDateTime toDate) {
         return mealCalendarRepository.findAllByBetweenDate(fromDate, toDate);
     }

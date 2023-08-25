@@ -229,30 +229,29 @@ class BasketServiceTest {
     @Test
     void getListOfRecipesByBasketId_shouldReturnListOfRecipes(){
         //given
-
-        Recipes recipes1 = Recipes
+        UserEntity user = initUser();
+        Recipes recipes = Recipes
                 .builder()
                 .idRecipesAPI(12)
                 .build();
-
         ArrayList<Recipes> recipesList = new ArrayList<>();
-        recipesList.add(recipes1);
+        recipesList.add(recipes);
 
         Basket basket = Basket
                 .builder()
-                .id(5L)
-                .idUser(2222L)
                 .recipes(recipesList)
+                .userEntity(user)
                 .build();
 
         ArrayList<Basket> basketList = new ArrayList<>();
         basketList.add(basket);
 
-        when(basketRepository.findAllByIdUser(2222L)).thenReturn(basketList);
+        when(userLogService.loggedUser()).thenReturn(user);
+        when(basketRepository.findAllByUserEntity(user)).thenReturn(basketList);
 
         //when
-        List<RecipesPojo> actualData = basketService.getListOfRecipesByUserId();
-
+        List<RecipesPojo> actualData = basketService.getListOfRecipesByUser();
+        System.out.println(actualData);
         //then
         assertThat(actualData).hasSize(1);
     }
@@ -278,6 +277,37 @@ class BasketServiceTest {
         assertThat(result.get(0).getDataAdded()).isEqualTo("2021-01-05T14:56:04+02:00");
     }
 
+    @Test
+    void deleteBasketByUser_deleteAllBasketsByUser(){
+        //given
+        when(userLogService.loggedUser()).thenReturn(initUser());
+        //when
+        basketService.deleteBasketByUser();
+
+        //when
+        verify(basketRepository).deleteAllByUserEntity(initUser());
+    }
+
+    @Test
+    void listOfIdCards_shouldReturnListOfLongs() {
+        //given
+        UserEntity user = initUser();
+        Basket basket = Basket
+                .builder()
+                .id(22L)
+                .userEntity(user)
+                .build();
+        ArrayList<Basket> baskets = new ArrayList<>();
+        baskets.add(basket);
+        when(basketRepository.findAllByUserEntity(user)).thenReturn(baskets);
+
+        // when
+//        List<Long> actual = basketService.listOfIdCards(user);
+
+        // then
+//        assertThat(actual).contains(basket.getId());
+    }
+
     private List<Ingredient> initIngredientData(){
         Ingredient ingredient1 = Ingredient
                 .builder()
@@ -297,6 +327,8 @@ class BasketServiceTest {
         return ingredientList;
     }
 
+
+
     private List<Nutrition> initNutritionData(){
         Nutrition nutrition1 = Nutrition
                 .builder()
@@ -314,17 +346,6 @@ class BasketServiceTest {
         nutritionList.add(nutrition1);
         nutritionList.add(nutrition2);
         return nutritionList;
-    }
-
-    @Test
-    void deleteBasketByUser_deleteAllBasketsByUser(){
-        //given
-        when(userLogService.loggedUser()).thenReturn(initUser());
-        //when
-        basketService.deleteBasketByUser();
-
-        //when
-        verify(basketRepository).deleteAllByUserEntity(initUser());
     }
 
     private UserEntity initUser(){
