@@ -1,0 +1,13 @@
+<table class="table" xmlns:th="http://www.w3.org/1999/xhtml">
+    <thead>
+    <tr>
+        <th>Name</th>
+    </tr>
+
+    </thead>
+    <tbody>
+    <tr th:each="basket : ${basketss}">
+        <td th:text="${basket.idUser}"></td>
+    </tr>
+    </tbody>
+</table>

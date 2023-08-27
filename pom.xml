@@ -92,6 +92,20 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!--		iText-->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>html2pdf</artifactId>
+			<version>2.1.2</version>
+		</dependency>
+		<!--	end	iText-->
+
+		<!--		thymeleaf-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-thymeleaf</artifactId>
+		</dependency>
+		<!--	end	thymeleaf-->
 	</dependencies>
 
 	<build>

@@ -1,11 +1,7 @@
 package com.example.shopv2;
 
-import com.example.shopv2.repository.RecipesRepository;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
-
-import java.util.ArrayList;
 
 @SpringBootApplication
 public class ShopV2Application{
