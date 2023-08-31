@@ -143,18 +143,25 @@ class BasketServiceTest {
     void getCardByUserId_shouldReturnCardListByUser(){
         //given
         UserEntity user = initUser();
-        Basket data = Basket
+        BasketDTO data = BasketDTO
                 .builder()
                 .userEntity(user)
                 .build();
-        ArrayList<Basket> expectedData = new ArrayList<>();
+        ArrayList<BasketDTO> expectedData = new ArrayList<>();
         expectedData.add(data);
 
+        Basket data2 = Basket
+                .builder()
+                .userEntity(user)
+                .build();
+        ArrayList<Basket> expectedData2 = new ArrayList<>();
+        expectedData2.add(data2);
+
+        when(basketRepository.findAllByUserEntity(user)).thenReturn(expectedData2);
         when(basketService.getBasketByUser()).thenReturn(expectedData);
-        when(basketRepository.findAllByUserEntity(user)).thenReturn(expectedData);
 
         //when
-        List<Basket> actualData = basketService.getBasketByUser();
+        List<BasketDTO> actualData = basketService.getBasketByUser();
 
         //then
         assertThat(actualData).isEqualTo(expectedData);

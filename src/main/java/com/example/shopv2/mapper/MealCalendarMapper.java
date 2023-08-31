@@ -18,8 +18,8 @@ public class MealCalendarMapper{
                 .build();
     }
 
-    public com.example.shopv2.service.dto.MealCalendarDTO entityToResponse(MealCalendar mealCalendar){
-        return com.example.shopv2.service.dto.MealCalendarDTO
+    public MealCalendarDTO entityToResponse(MealCalendar mealCalendar){
+        return MealCalendarDTO
                 .builder()
                 .id(mealCalendar.getId())
                 .idRecipes(mealCalendar.getIdRecipes())

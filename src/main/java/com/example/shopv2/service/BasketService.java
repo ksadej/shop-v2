@@ -167,11 +167,14 @@ public class BasketService {
     }
 
     //pobiera kartę produktów na podstawie id użytkownika
-    public List<Basket> getBasketByUser(){
+    public List<BasketDTO> getBasketByUser(){
         LOGGER.info("Getting card by user ID");
         UserEntity user = userLogService.loggedUser();
-
-        return basketRepository.findAllByUserEntity(user);
+        List<BasketDTO> collect = basketRepository.findAllByUserEntity(user)
+                .stream()
+                .map(x -> basketMapper.entityToResponse(x))
+                .collect(Collectors.toList());
+        return collect;
     }
 
     //sumuje wartosci nutrition na podstawie basket id

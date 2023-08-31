@@ -48,10 +48,7 @@ public class DownloadService {
 
     public List<BasketDTO> getBasket(Map<String, String> filter){
         if(Objects.isNull(filter)){
-            List<BasketDTO> collect = basketService.getBasketByUser()
-                    .stream()
-                    .map(BasketMapper -> basketMapper.entityToResponse(BasketMapper))
-                    .collect(Collectors.toList());
+            List<BasketDTO> collect = basketService.getBasketByUser();
             LOGGER.info("Object is not null and returned: "+collect);
 
             return collect;

@@ -2,7 +2,7 @@ package com.example.shopv2.controller;
 
 import com.example.shopv2.service.download.DownloadService;
 import com.example.shopv2.service.download.DownloadTypes;
-import com.example.shopv2.service.download.PdfGenerator;
+import com.example.shopv2.service.download.pdf.PdfGenerator;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
