@@ -3,10 +3,7 @@ package com.example.shopv2.model;
 import com.example.shopv2.model.enums.OderStatus;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.OffsetDateTime;
 
 @ToString
@@ -19,11 +16,14 @@ import java.time.OffsetDateTime;
 @Table(name = "ORDER")
 public class Order {
 
+    @Id
+    @Column(name = "ORDER_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private OffsetDateTime dataAdded;
     private OderStatus oderStatus;
+    private Long basketId;
     @ManyToOne
     @JoinColumn(name = "USER_ENTITY_ID")
     private UserEntity userEntity;
-    private Long basketId;
 }
