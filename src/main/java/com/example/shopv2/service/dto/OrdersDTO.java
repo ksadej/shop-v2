@@ -1,5 +1,6 @@
 package com.example.shopv2.service.dto;
 
+import com.example.shopv2.model.enums.OrdersStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +11,11 @@ import java.time.OffsetDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderDTO {
+public class OrdersDTO {
 
     private Long id;
     private OffsetDateTime dataAdded;
-    private String oderStatus;
+    private OrdersStatus ordersStatus;
     private Long userId;
     private Long basketId;
 }

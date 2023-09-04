@@ -2,11 +2,14 @@
 
 --changeset ksadej:100
 
-create table order (
-    id bigint not null auto_increment PRIMARY KEY,
-    data_added datetime not null,
-    order_status varchar(32) not null,
-    basket_id bigint not null,
-    user_id bigint not null
-    constraint fk_order_user_id foreign key (user_id) references 'user'(id)
+CREATE TABLE `orders` (
+	`id` bigint NOT NULL AUTO_INCREMENT,
+    `data_added` datetime NOT NULL,
+    `order_status` varchar(255) NOT NULL,
+    `basket_id` BIGINT NOT NULL,
+    `user_id` BIGINT NOT NULL,
+    PRIMARY KEY (`id`)
 );
+
+ALTER TABLE orders add constraint fk_user_entity_id_order_id foreign key (user_entity_id) references user (user_id);
+

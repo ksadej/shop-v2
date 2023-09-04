@@ -31,6 +31,9 @@ public class UserEntity {
     @JoinColumn(name = "ROLE_ID")
     private List<UserRole> userRole = new ArrayList<>();
 
+//    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
+//    private List<Orders> orders;
+
     @Override
     public String toString() {
         return "UserEntity{" +
