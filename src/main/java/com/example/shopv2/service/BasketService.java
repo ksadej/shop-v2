@@ -259,7 +259,7 @@ public class BasketService {
         return recipesPojoList;
     }
 
-    public Double sumPriceByBasketId(Integer id){
+    public Double sumPrice(){
        Double recipesPojoList = this.getListOfRecipesByUser()
                .stream()
                .map(x->x.getPricePerServing())
@@ -267,6 +267,28 @@ public class BasketService {
                .sum();
 
         return recipesPojoList;
+    }
+
+    @Transactional
+    public Double sumPriceByBasketId(List<Long> ids){
+        List<Basket> baskets = basketRepository.findAllById(ids);
+
+        List<Integer> recipesIds = baskets.get(0).getRecipes()
+                .stream()
+                .map(x -> x.getIdRecipesAPI())
+                .collect(Collectors.toList());
+
+        List<RecipesPojo> recipesPojoList = new ArrayList<>();
+        for(int i=0; i<recipesIds.size(); i++){
+            recipesPojoList.add(recipesService.getRecipesById(recipesIds.get(i)));
+        }
+
+        Double sum = recipesPojoList
+                .stream()
+                .map(x -> x.getPricePerServing())
+                .mapToDouble(Double::doubleValue)
+                .sum();
+        return sum;
     }
 
     public List<BasketDTO> filterBasketBetweenDate(String fromDate, String toDate){

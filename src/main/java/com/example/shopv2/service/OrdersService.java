@@ -17,12 +17,14 @@ public class OrdersService {
 
     private final OrdersRepository ordersRepository;
     private final UserLogService userLogService;
+    private final BasketService basketService;
     private OrdersMapper ordersMapper = new OrdersMapper();
 
     @Autowired
-    public OrdersService(OrdersRepository orderRepository, UserLogService userLogService) {
+    public OrdersService(OrdersRepository orderRepository, UserLogService userLogService, BasketService basketService) {
         this.ordersRepository = orderRepository;
         this.userLogService = userLogService;
+        this.basketService = basketService;
     }
 
     public void saveOrder(OrdersDTO ordersDTO){
@@ -43,5 +45,20 @@ public class OrdersService {
         return allByUserEntity.stream()
                 .map(x -> ordersMapper.entityToResponse(x))
                 .collect(Collectors.toList());
+    }
+
+    public Double summaryOrder(){
+        UserEntity user = userLogService.loggedUser();
+        List<Long> collect = ordersRepository.findAllByUserEntity(user)
+                .stream()
+                .map(x -> x.getBasketId())
+                .collect(Collectors.toList());
+
+        Double aDouble = basketService.sumPriceByBasketId(collect);
+        return aDouble;
+    }
+
+    public Double priceDiscount(){
+        return null;
     }
 }

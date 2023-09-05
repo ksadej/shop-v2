@@ -1,7 +1,6 @@
 package com.example.shopv2.controller;
 
 import com.example.shopv2.service.dto.BasketDTO;
-import com.example.shopv2.model.Basket;
 import com.example.shopv2.model.Ingredient;
 import com.example.shopv2.model.Nutrition;
 import com.example.shopv2.pojo.RecipesPojo;
@@ -65,9 +64,9 @@ public class BasketController {
         return basketService.sumIngredientByBasketId();
     }
 
-    @GetMapping(path = "/api/basket/sumPrice/{id}")
-    public Double sumPriceByBasketId(@PathVariable(value = "id") Integer id){
-        return basketService.sumPriceByBasketId(id);
+    @GetMapping(path = "/api/basket/sum/price")
+    public Double sumPriceByBasketId(){
+        return basketService.sumPrice();
     }
 
     @GetMapping(path = "/api/basket/filter")
