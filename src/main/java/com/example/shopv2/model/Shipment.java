@@ -1,13 +1,12 @@
 package com.example.shopv2.model;
 
-import com.example.shopv2.model.enums.ShimpentType;
+import com.example.shopv2.model.enums.ShipmentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -18,12 +17,11 @@ import java.math.BigDecimal;
 public class Shipment {
 
     @Id
-    @Column(name = "RECIPES_ID")
+    @Column(name = "SHIPMENT_ID")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     private String name;
-    private BigDecimal price;
+    private Double price;
     @Enumerated(EnumType.STRING)
-    private ShimpentType type;
+    private ShipmentType shipmentType;
 }

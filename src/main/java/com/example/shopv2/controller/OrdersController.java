@@ -1,6 +1,5 @@
 package com.example.shopv2.controller;
 
-import com.example.shopv2.model.Orders;
 import com.example.shopv2.service.OrdersService;
 import com.example.shopv2.service.dto.OrdersDTO;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +19,6 @@ public class OrdersController {
 
     @PostMapping("/order/save")
     public void saveOrder(@RequestBody OrdersDTO orders){
-        ordersService.saveOrder(orders);
+        ordersService.createSummary(orders);
     }
 }

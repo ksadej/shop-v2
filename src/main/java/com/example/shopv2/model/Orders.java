@@ -1,6 +1,7 @@
 package com.example.shopv2.model;
 
 import com.example.shopv2.model.enums.OrdersStatus;
+import com.example.shopv2.model.enums.ShipmentType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -27,4 +28,8 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "USER_ENTITY_ID")
     private UserEntity userEntity;
+    @Enumerated(EnumType.STRING)
+    private ShipmentType shipmentType;
+    private Double totalValue;
+
 }

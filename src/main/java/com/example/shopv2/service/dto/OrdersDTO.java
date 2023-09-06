@@ -1,6 +1,8 @@
 package com.example.shopv2.service.dto;
 
+import com.example.shopv2.model.Shipment;
 import com.example.shopv2.model.enums.OrdersStatus;
+import com.example.shopv2.model.enums.ShipmentType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,4 +20,7 @@ public class OrdersDTO {
     private OrdersStatus ordersStatus;
     private Long userId;
     private Long basketId;
+    private String shipmentType;
+    private Double totalValue;
+
 }
