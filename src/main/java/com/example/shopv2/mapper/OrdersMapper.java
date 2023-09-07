@@ -1,6 +1,7 @@
 package com.example.shopv2.mapper;
 
 import com.example.shopv2.model.Orders;
+import com.example.shopv2.model.OrdersList;
 import com.example.shopv2.model.Shipment;
 import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.model.enums.OrdersStatus;
@@ -26,7 +27,6 @@ public class OrdersMapper {
                 .ordersStatus(OrdersStatus.NEW)
                 .shipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType().toUpperCase()))
                 .userEntity(userEntity)
-                .totalValue(ordersDTO.getTotalValue())
                 .build();
     }
 

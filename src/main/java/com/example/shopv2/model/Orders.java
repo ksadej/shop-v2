@@ -2,10 +2,13 @@ package com.example.shopv2.model;
 
 import com.example.shopv2.model.enums.OrdersStatus;
 import com.example.shopv2.model.enums.ShipmentType;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @AllArgsConstructor
@@ -31,5 +34,7 @@ public class Orders {
     @Enumerated(EnumType.STRING)
     private ShipmentType shipmentType;
     private Double totalValue;
-
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="ORDER_LIST_ID_ORDER_ID")
+    private List<OrdersList> ordersLists;
 }
