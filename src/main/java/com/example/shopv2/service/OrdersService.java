@@ -4,19 +4,22 @@ import com.example.shopv2.mapper.OrdersListMapper;
 import com.example.shopv2.mapper.OrdersMapper;
 import com.example.shopv2.model.Orders;
 import com.example.shopv2.model.OrdersList;
+import com.example.shopv2.model.Shipment;
 import com.example.shopv2.model.UserEntity;
+import com.example.shopv2.model.enums.ShipmentType;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.OrdersListRepository;
 import com.example.shopv2.repository.OrdersRepository;
 import com.example.shopv2.repository.ShipmentRepository;
 import com.example.shopv2.service.dto.OrdersDTO;
 import com.example.shopv2.service.dto.OrdersListDTO;
+import com.example.shopv2.service.dto.OrdersSummaryDTO;
 import com.example.shopv2.service.user.UserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -78,25 +81,25 @@ public class OrdersService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<Double> sumTotalValue(){
-        List<OrdersList> ordersLists = ordersLists();
-        List<Long> collect = ordersLists
-                .stream()
+    public Double sumTotalValue(Shipment shipment){
+        List<Long> ordersLists = ordersLists().stream()
                 .map(x -> x.getIngredientId())
-                .collect(Collectors.toList());
+                .toList();
 
-        return collect
+        Double reduce = ordersLists
                 .stream()
                 .flatMap(IngredientRepository -> ingredientRepository.findById(IngredientRepository)
                         .stream()
                         .map(x -> x.getAmount()))
-                .reduce((x1, x2) -> x1 + x2);
+                .reduce(Double::sum).get();
+
+        return reduce + shipment.getPrice();
     }
 
-    public void createSummary(OrdersDTO ordersDTO){
+    public OrdersSummaryDTO createSummary(OrdersDTO ordersDTO){
         UserEntity user = userLogService.loggedUser();
-
         Orders orders = ordersMapper.requestToEntity(ordersDTO, user);
+
         List<OrdersList> orderRow = ordersDTO.getOrdersLists()
                 .stream()
                 .map(OrdersListMapper::mapToRow2)
@@ -104,10 +107,19 @@ public class OrdersService {
 
         orders.setOrdersLists(orderRow);
 
-        ordersRepository.save(orders);
-    }
+        Orders newOrder = ordersRepository.save(orders);
+        Shipment shipmentType = shipmentRepository.findByShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
 
-    //summary order
+        OrdersSummaryDTO ordersSummaryDTO = OrdersSummaryDTO
+                .builder()
+                .shipmentType(String.valueOf(newOrder.getShipmentType()))
+                .ordersStatus(String.valueOf(newOrder.getOrdersStatus()))
+                .placeDate(OffsetDateTime.now())
+                .totalValue(sumTotalValue(shipmentType))
+                .build();
+
+        return ordersSummaryDTO;
+    }
 
     public Double priceDiscount(){
         return null;

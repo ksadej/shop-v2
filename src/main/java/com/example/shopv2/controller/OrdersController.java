@@ -4,6 +4,7 @@ import com.example.shopv2.model.Orders;
 import com.example.shopv2.service.OrdersService;
 import com.example.shopv2.service.dto.OrdersDTO;
 import com.example.shopv2.service.dto.OrdersListDTO;
+import com.example.shopv2.service.dto.OrdersSummaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,8 +25,8 @@ public class OrdersController {
     }
 
     @PostMapping("/order/save")
-    public void saveOrder(@RequestBody OrdersDTO orders){
-        ordersService.createSummary(orders);
+    public OrdersSummaryDTO saveOrder2(@RequestBody OrdersDTO orders){
+        return ordersService.createSummary(orders);
     }
 
     @GetMapping("/order/get")
@@ -36,10 +37,5 @@ public class OrdersController {
     @GetMapping("/order/list")
     public List<OrdersListDTO> getOrdersList(){
         return ordersService.getOrdersList();
-    }
-
-    @GetMapping("/order/double")
-    public Optional<Double> getgetOrdersList(){
-        return ordersService.sumTotalValue();
     }
 }
