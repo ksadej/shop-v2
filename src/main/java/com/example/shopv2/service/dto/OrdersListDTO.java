@@ -16,7 +16,6 @@ public class OrdersListDTO {
 
     private Long id;
     private OffsetDateTime dataAdded;
-    private Long orderId;
-    private Long productId;
+    private Long ingredientId;
     private Long recipesApiId;
 }

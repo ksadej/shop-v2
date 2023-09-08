@@ -7,12 +7,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class OrdersListMapper {
 
-    public static OrdersList mapToRow(OrdersList ordersList){
+    public static OrdersListDTO entityToRequest(OrdersList ordersList){
+        return OrdersListDTO
+                .builder()
+                .dataAdded(ordersList.getDataAdded())
+                .ingredientId(ordersList.getIngredientId())
+                .recipesApiId(ordersList.getRecipesApiId())
+                .build();
+    }
+
+    public OrdersList mapToRow(OrdersList ordersList){
         return OrdersList
                 .builder()
                 .dataAdded(ordersList.getDataAdded())
-                .orderId(ordersList.getOrderId())
-                .productId(ordersList.getProductId())
+                .ingredientId(ordersList.getIngredientId())
                 .recipesApiId(ordersList.getRecipesApiId())
                 .build();
     }
@@ -21,8 +29,7 @@ public class OrdersListMapper {
         return OrdersList
                 .builder()
                 .dataAdded(ordersListDTO.getDataAdded())
-                .orderId(ordersListDTO.getOrderId())
-                .productId(ordersListDTO.getProductId())
+                .ingredientId(ordersListDTO.getIngredientId())
                 .recipesApiId(ordersListDTO.getRecipesApiId())
                 .build();
     }

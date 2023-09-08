@@ -5,6 +5,7 @@ import com.example.shopv2.mapper.OrdersMapper;
 import com.example.shopv2.model.Orders;
 import com.example.shopv2.model.OrdersList;
 import com.example.shopv2.model.UserEntity;
+import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.OrdersListRepository;
 import com.example.shopv2.repository.OrdersRepository;
 import com.example.shopv2.repository.ShipmentRepository;
@@ -14,10 +15,9 @@ import com.example.shopv2.service.user.UserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class OrdersService {
@@ -27,18 +27,20 @@ public class OrdersService {
     private final BasketService basketService;
     private final ShipmentRepository shipmentRepository;
     private final OrdersListRepository ordersListRepository;
+    private final IngredientRepository ingredientRepository;
     private OrdersMapper ordersMapper = new OrdersMapper();
 
     @Autowired
     public OrdersService(OrdersRepository orderRepository, UserLogService userLogService,
                          BasketService basketService, ShipmentRepository shipmentRepository,
-                         OrdersListRepository ordersListRepository) {
+                         OrdersListRepository ordersListRepository, IngredientRepository ingredientRepository) {
         this.ordersRepository = orderRepository;
         this.userLogService = userLogService;
         this.basketService = basketService;
         this.shipmentRepository = shipmentRepository;
 
         this.ordersListRepository = ordersListRepository;
+        this.ingredientRepository = ingredientRepository;
     }
 
 //    private void clearOrderCart(OrdersDTO ordersDTO){
@@ -59,24 +61,40 @@ public class OrdersService {
         return ordersRepository.findAllByUserEntity(user);
     }
 
-    public Double sumTotalValue(){
+    public List<OrdersList> ordersLists(){
         UserEntity user = userLogService.loggedUser();
-        List<Long> collect = ordersRepository.findAllByUserEntity(user)
-                .stream()
-                .map(x -> x.getBasketId())
-                .collect(Collectors.toList());
 
-        Double basketTotal = basketService.sumPriceByBasketId(collect);
-        return basketTotal;
+        return ordersRepository
+                .findAllByUserEntity(user)
+                .stream()
+                .flatMap(x ->x.getOrdersLists().stream())
+                .toList();
     }
 
-    public Double sumTotalValue2(){
-        return null;
+    public List<OrdersListDTO> getOrdersList(){
+        return ordersLists()
+                .stream()
+                .map(OrdersListMapper::entityToRequest)
+                .collect(Collectors.toList());
+    }
+
+    public Optional<Double> sumTotalValue(){
+        List<OrdersList> ordersLists = ordersLists();
+        List<Long> collect = ordersLists
+                .stream()
+                .map(x -> x.getIngredientId())
+                .collect(Collectors.toList());
+
+        return collect
+                .stream()
+                .flatMap(IngredientRepository -> ingredientRepository.findById(IngredientRepository)
+                        .stream()
+                        .map(x -> x.getAmount()))
+                .reduce((x1, x2) -> x1 + x2);
     }
 
     public void createSummary(OrdersDTO ordersDTO){
         UserEntity user = userLogService.loggedUser();
-        System.out.println(ordersDTO);
 
         Orders orders = ordersMapper.requestToEntity(ordersDTO, user);
         List<OrdersList> orderRow = ordersDTO.getOrdersLists()
@@ -88,6 +106,8 @@ public class OrdersService {
 
         ordersRepository.save(orders);
     }
+
+    //summary order
 
     public Double priceDiscount(){
         return null;
