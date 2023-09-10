@@ -1,13 +1,11 @@
 package com.example.shopv2.model;
 
-import com.example.shopv2.model.enums.OrdersStatus;
+import com.example.shopv2.model.enums.OrderStatusType;
 import com.example.shopv2.model.enums.ShipmentType;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 
 import javax.persistence.*;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -26,7 +24,7 @@ public class Orders {
     private Long id;
     private OffsetDateTime dataAdded;
     @Enumerated(EnumType.STRING)
-    private OrdersStatus ordersStatus;
+    private OrderStatusType ordersStatus;
     private Long basketId;
     @ManyToOne
     @JoinColumn(name = "USER_ENTITY_ID")

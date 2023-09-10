@@ -1,6 +1,6 @@
 package com.example.shopv2.model.enums;
 
-public enum OrdersStatus {
+public enum OrderStatusType {
     NEW,
     PAID,
     PROCESSING,

@@ -4,17 +4,15 @@ import com.example.shopv2.model.Orders;
 import com.example.shopv2.model.OrdersList;
 import com.example.shopv2.model.Shipment;
 import com.example.shopv2.model.UserEntity;
-import com.example.shopv2.model.enums.OrdersStatus;
+import com.example.shopv2.model.enums.OrderStatusType;
 import com.example.shopv2.model.enums.ShipmentType;
-import com.example.shopv2.repository.OrdersRepository;
-import com.example.shopv2.service.BasketService;
+import com.example.shopv2.service.OrdersService;
 import com.example.shopv2.service.dto.OrdersDTO;
-import com.example.shopv2.service.user.UserLogService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.shopv2.service.dto.OrdersSummaryDTO;
 import org.springframework.stereotype.Component;
 
+import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class OrdersMapper {
@@ -24,16 +22,21 @@ public class OrdersMapper {
                 .builder()
                 .basketId(ordersDTO.getBasketId())
                 .dataAdded(ordersDTO.getDataAdded())
-                .ordersStatus(OrdersStatus.NEW)
+                .ordersStatus(OrderStatusType.NEW)
                 .shipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType().toUpperCase()))
                 .userEntity(userEntity)
                 .build();
     }
 
-    public OrdersDTO entityToResponse(Orders orders){
-        return OrdersDTO
+    public OrdersSummaryDTO totalSummaryOrder(Orders newOrder){
+        return OrdersSummaryDTO
                 .builder()
+                .shipmentType(String.valueOf(newOrder.getShipmentType()))
+                .ordersStatus(String.valueOf(newOrder.getOrdersStatus()))
+                .placeDate(OffsetDateTime.now())
                 .build();
     }
+
+
 
 }

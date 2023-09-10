@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class OrdersController {
@@ -25,8 +24,13 @@ public class OrdersController {
     }
 
     @PostMapping("/order/save")
-    public OrdersSummaryDTO saveOrder2(@RequestBody OrdersDTO orders){
+    public OrdersSummaryDTO saveOrder(@RequestBody OrdersDTO orders){
         return ordersService.createSummary(orders);
+    }
+
+    @PostMapping("/order/save/total")
+    public OrdersSummaryDTO saveTotalOrder(@RequestBody OrdersDTO orders){
+        return ordersService.finalSummary(orders);
     }
 
     @GetMapping("/order/get")
@@ -38,4 +42,5 @@ public class OrdersController {
     public List<OrdersListDTO> getOrdersList(){
         return ordersService.getOrdersList();
     }
+
 }

@@ -1,9 +1,6 @@
 package com.example.shopv2.service.dto;
 
-import com.example.shopv2.model.OrdersList;
-import com.example.shopv2.model.Shipment;
-import com.example.shopv2.model.enums.OrdersStatus;
-import com.example.shopv2.model.enums.ShipmentType;
+import com.example.shopv2.model.enums.OrderStatusType;
 import lombok.*;
 
 import java.time.OffsetDateTime;
@@ -18,7 +15,7 @@ public class OrdersDTO {
 
     private Long id;
     private OffsetDateTime dataAdded;
-    private OrdersStatus ordersStatus;
+    private OrderStatusType ordersStatus;
     private Long userId;
     private Long basketId;
     private String shipmentType;

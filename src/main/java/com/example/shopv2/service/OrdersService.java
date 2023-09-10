@@ -6,6 +6,7 @@ import com.example.shopv2.model.Orders;
 import com.example.shopv2.model.OrdersList;
 import com.example.shopv2.model.Shipment;
 import com.example.shopv2.model.UserEntity;
+import com.example.shopv2.model.enums.OrderStatusType;
 import com.example.shopv2.model.enums.ShipmentType;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.OrdersListRepository;
@@ -17,8 +18,8 @@ import com.example.shopv2.service.dto.OrdersSummaryDTO;
 import com.example.shopv2.service.user.UserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,14 +51,6 @@ public class OrdersService {
 //        Orders orders = ordersMapper.requestToEntity(ordersDTO);
 //        ordersRepository.deleteById(orders.getId());
 //    }
-
-    public List<OrdersDTO> getOrdersByUser(){
-        UserEntity user = userLogService.loggedUser();
-        List<Orders> allByUserEntity = ordersRepository.findAllByUserEntity(user);
-        return allByUserEntity.stream()
-                .map(x -> ordersMapper.entityToResponse(x))
-                .collect(Collectors.toList());
-    }
 
     public List<Orders> getAll(){
         UserEntity user = userLogService.loggedUser();
@@ -96,7 +89,46 @@ public class OrdersService {
         return reduce + shipment.getPrice();
     }
 
+    public List<OrdersList> orderRow(OrdersDTO ordersDTO){
+        return ordersDTO.getOrdersLists()
+                .stream()
+                .map(OrdersListMapper::mapToRow2)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
     public OrdersSummaryDTO createSummary(OrdersDTO ordersDTO){
+        UserEntity user = userLogService.loggedUser();
+
+        List<Orders> existingOrder = ordersRepository.findAllByUserEntityAndOrdersStatus(user, OrderStatusType.NEW);
+        if(!existingOrder.isEmpty()){
+            Orders orders = existingOrder.get(0);
+            orders.getOrdersLists().addAll(orderRow(ordersDTO));
+            Orders save = ordersRepository.save(orders);
+
+            Shipment shipmentType = shipmentRepository.findByShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
+            System.out.println("XXXX "+shipmentType.getPrice());
+            OrdersSummaryDTO ordersSummary = ordersMapper.totalSummaryOrder(save);
+            ordersSummary.setTotalValue(sumTotalValue(shipmentType));
+
+            return ordersSummary;
+        }
+        else{
+            Orders orders = ordersMapper.requestToEntity(ordersDTO, user);
+            orders.setOrdersLists(orderRow(ordersDTO));
+            Orders save = ordersRepository.save(orders);
+
+            Shipment shipmentType = shipmentRepository.findByShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
+            OrdersSummaryDTO ordersSummary = ordersMapper.totalSummaryOrder(save);
+            ordersSummary.setTotalValue(sumTotalValue(shipmentType));
+
+            return ordersSummary;
+        }
+    }
+
+    //aktualizacja jednego zamówienia w tabeli order a nie dodawania kolejnych
+    @Transactional
+    public OrdersSummaryDTO finalSummary(OrdersDTO ordersDTO){
         UserEntity user = userLogService.loggedUser();
         Orders orders = ordersMapper.requestToEntity(ordersDTO, user);
 
@@ -110,16 +142,15 @@ public class OrdersService {
         Orders newOrder = ordersRepository.save(orders);
         Shipment shipmentType = shipmentRepository.findByShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
 
-        OrdersSummaryDTO ordersSummaryDTO = OrdersSummaryDTO
-                .builder()
-                .shipmentType(String.valueOf(newOrder.getShipmentType()))
-                .ordersStatus(String.valueOf(newOrder.getOrdersStatus()))
-                .placeDate(OffsetDateTime.now())
-                .totalValue(sumTotalValue(shipmentType))
-                .build();
-
-        return ordersSummaryDTO;
+        OrdersSummaryDTO ordersSummary = ordersMapper.totalSummaryOrder(newOrder);
+        return ordersSummary;
     }
+
+    //chain of responsibility with orders
+    //create order
+    //summary
+    //payment
+    //pdf
 
     public Double priceDiscount(){
         return null;
