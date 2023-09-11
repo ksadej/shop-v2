@@ -18,4 +18,8 @@ public class OrdersSummaryDTO {
     private Double totalValue;
     private String ordersStatus;
     private String shipmentType;
+    private String shipmentBy;
+    private String payment;
+    private String destination;
+    private String order;
 }

@@ -14,7 +14,7 @@ import java.io.UnsupportedEncodingException;
 
 @Service
 public class ResponseDownloadedService {
-
+//Metoda szablonowa jako wzorzec do wykorzystania
     public void toResponse(HttpServletResponse response, StringBuffer stringBuffer){
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
         response.setHeader("Content-Disposition", "attachment;filename=fileNameToDownload.csv");

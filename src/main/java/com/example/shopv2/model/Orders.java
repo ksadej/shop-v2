@@ -25,13 +25,15 @@ public class Orders {
     private OffsetDateTime dataAdded;
     @Enumerated(EnumType.STRING)
     private OrderStatusType ordersStatus;
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name="ORDER_STATUS_ID_ORDER_ID")
+    private List<OrdersStatus> ordersStatusList;
     private Long basketId;
     @ManyToOne
     @JoinColumn(name = "USER_ENTITY_ID")
     private UserEntity userEntity;
     @Enumerated(EnumType.STRING)
     private ShipmentType shipmentType;
-    private Double totalValue;
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="ORDER_LIST_ID_ORDER_ID")
     private List<OrdersList> ordersLists;

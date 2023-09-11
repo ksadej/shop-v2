@@ -1,12 +1,15 @@
 package com.example.shopv2.model.enums;
 
 public enum OrderStatusType {
-    NEW,
-    PAID,
-    PROCESSING,
-    WAITING_FOR_DELIVERY,
-    COMPLETED,
-    CANCELED,
-    REFUND;
 
+    NEW,
+    PROCESSING,
+    PAID,
+    IN_PREPARATION,
+    COMPLETED,
+    WAITING_FOR_DELIVERY,
+    DELIVERED,
+    RETURNED,
+    REFUND,
+    CANCELED;
 }

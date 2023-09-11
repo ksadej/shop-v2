@@ -1,4 +1,4 @@
-package com.example.shopv2.service;
+package com.example.shopv2.service.order;
 
 import com.example.shopv2.mapper.OrdersListMapper;
 import com.example.shopv2.mapper.OrdersMapper;
@@ -12,8 +12,8 @@ import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.OrdersListRepository;
 import com.example.shopv2.repository.OrdersRepository;
 import com.example.shopv2.repository.ShipmentRepository;
+import com.example.shopv2.service.BasketService;
 import com.example.shopv2.service.dto.OrdersDTO;
-import com.example.shopv2.service.dto.OrdersListDTO;
 import com.example.shopv2.service.dto.OrdersSummaryDTO;
 import com.example.shopv2.service.user.UserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,6 @@ public class OrdersService {
         this.userLogService = userLogService;
         this.basketService = basketService;
         this.shipmentRepository = shipmentRepository;
-
         this.ordersListRepository = ordersListRepository;
         this.ingredientRepository = ingredientRepository;
     }
@@ -51,11 +50,6 @@ public class OrdersService {
 //        Orders orders = ordersMapper.requestToEntity(ordersDTO);
 //        ordersRepository.deleteById(orders.getId());
 //    }
-
-    public List<Orders> getAll(){
-        UserEntity user = userLogService.loggedUser();
-        return ordersRepository.findAllByUserEntity(user);
-    }
 
     public List<OrdersList> ordersLists(){
         UserEntity user = userLogService.loggedUser();
@@ -67,10 +61,12 @@ public class OrdersService {
                 .toList();
     }
 
-    public List<OrdersListDTO> getOrdersList(){
-        return ordersLists()
+    public List<OrdersDTO> getOrders(){
+        UserEntity user = userLogService.loggedUser();
+
+        return ordersRepository.findAllByUserEntityAndOrdersStatus(user, OrderStatusType.NEW)
                 .stream()
-                .map(OrdersListMapper::entityToRequest)
+                .map(OrdersMapper -> ordersMapper.entityToRequest(OrdersMapper, user))
                 .collect(Collectors.toList());
     }
 
@@ -96,6 +92,13 @@ public class OrdersService {
                 .collect(Collectors.toList());
     }
 
+    public OrdersSummaryDTO createSummaryHelper(OrdersDTO ordersDTO, Orders orders){
+        Shipment shipmentType = shipmentRepository.findByShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
+        OrdersSummaryDTO ordersSummary = ordersMapper.totalSummaryOrder(orders);
+        ordersSummary.setTotalValue(sumTotalValue(shipmentType));
+        return ordersSummary;
+    }
+
     @Transactional
     public OrdersSummaryDTO createSummary(OrdersDTO ordersDTO){
         UserEntity user = userLogService.loggedUser();
@@ -104,25 +107,16 @@ public class OrdersService {
         if(!existingOrder.isEmpty()){
             Orders orders = existingOrder.get(0);
             orders.getOrdersLists().addAll(orderRow(ordersDTO));
-            Orders save = ordersRepository.save(orders);
+            Orders newOrder = ordersRepository.save(orders);
 
-            Shipment shipmentType = shipmentRepository.findByShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
-            System.out.println("XXXX "+shipmentType.getPrice());
-            OrdersSummaryDTO ordersSummary = ordersMapper.totalSummaryOrder(save);
-            ordersSummary.setTotalValue(sumTotalValue(shipmentType));
-
-            return ordersSummary;
+            return createSummaryHelper(ordersDTO, newOrder);
         }
         else{
             Orders orders = ordersMapper.requestToEntity(ordersDTO, user);
             orders.setOrdersLists(orderRow(ordersDTO));
-            Orders save = ordersRepository.save(orders);
+            Orders newOrder = ordersRepository.save(orders);
 
-            Shipment shipmentType = shipmentRepository.findByShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
-            OrdersSummaryDTO ordersSummary = ordersMapper.totalSummaryOrder(save);
-            ordersSummary.setTotalValue(sumTotalValue(shipmentType));
-
-            return ordersSummary;
+            return createSummaryHelper(ordersDTO, newOrder);
         }
     }
 
@@ -130,20 +124,17 @@ public class OrdersService {
     @Transactional
     public OrdersSummaryDTO finalSummary(OrdersDTO ordersDTO){
         UserEntity user = userLogService.loggedUser();
-        Orders orders = ordersMapper.requestToEntity(ordersDTO, user);
+        List<Orders> existingOrder = ordersRepository.findAllByUserEntityAndOrdersStatus(user, OrderStatusType.NEW);
+        Orders orders = existingOrder.get(0);
 
         List<OrdersList> orderRow = ordersDTO.getOrdersLists()
                 .stream()
                 .map(OrdersListMapper::mapToRow2)
                 .collect(Collectors.toList());
-
         orders.setOrdersLists(orderRow);
-
         Orders newOrder = ordersRepository.save(orders);
-        Shipment shipmentType = shipmentRepository.findByShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
 
-        OrdersSummaryDTO ordersSummary = ordersMapper.totalSummaryOrder(newOrder);
-        return ordersSummary;
+        return createSummaryHelper(ordersDTO, newOrder);
     }
 
     //chain of responsibility with orders

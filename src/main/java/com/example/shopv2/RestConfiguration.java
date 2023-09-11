@@ -21,7 +21,7 @@ public class RestConfiguration {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
         httpHeaders.setContentType(MediaType.APPLICATION_JSON);
-        httpHeaders.set("x-api-key", "3e99f6ad8b6d4dc4bc9f2ae7fdaff783");
+        httpHeaders.set("x-api-key", "a2a1c3482a2f45819ef4c1dbb4e1300f");
         return httpHeaders;
     }
 }

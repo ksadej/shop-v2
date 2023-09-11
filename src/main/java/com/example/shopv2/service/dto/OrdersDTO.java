@@ -1,5 +1,6 @@
 package com.example.shopv2.service.dto;
 
+import com.example.shopv2.model.OrdersStatus;
 import com.example.shopv2.model.enums.OrderStatusType;
 import lombok.*;
 
@@ -15,10 +16,9 @@ public class OrdersDTO {
 
     private Long id;
     private OffsetDateTime dataAdded;
-    private OrderStatusType ordersStatus;
+    private List<OrdersStatusDTO> ordersStatusList;
     private Long userId;
     private Long basketId;
     private String shipmentType;
-    private Double totalValue;
     private List<OrdersListDTO> ordersLists;
 }

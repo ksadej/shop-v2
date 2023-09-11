@@ -16,6 +16,16 @@ public class OrdersListMapper {
                 .build();
     }
 
+    public static OrdersList requestToEntity(OrdersListDTO ordersListDTO){
+        return OrdersList
+                .builder()
+                .dataAdded(ordersListDTO.getDataAdded())
+                .ingredientId(ordersListDTO.getIngredientId())
+                .recipesApiId(ordersListDTO.getRecipesApiId())
+                .build();
+    }
+
+
     public OrdersList mapToRow(OrdersList ordersList){
         return OrdersList
                 .builder()

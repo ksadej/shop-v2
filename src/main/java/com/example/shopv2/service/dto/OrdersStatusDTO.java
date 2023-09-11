@@ -1,23 +1,21 @@
-package com.example.shopv2.model;
+package com.example.shopv2.service.dto;
 
 import com.example.shopv2.model.enums.OrderStatusType;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.time.OffsetDateTime;
 
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
-@Entity
 @Builder
-@Table(name = "ORDERS_STATUS")
-public class OrdersStatus {
+public class OrdersStatusDTO {
 
-    @Id
-    @Column(name = "ORDER_STATUS_ID")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private OffsetDateTime statusAddedAt;
     @Enumerated(EnumType.STRING)

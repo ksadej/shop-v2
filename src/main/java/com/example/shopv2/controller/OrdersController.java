@@ -1,9 +1,7 @@
 package com.example.shopv2.controller;
 
-import com.example.shopv2.model.Orders;
-import com.example.shopv2.service.OrdersService;
+import com.example.shopv2.service.order.OrdersService;
 import com.example.shopv2.service.dto.OrdersDTO;
-import com.example.shopv2.service.dto.OrdersListDTO;
 import com.example.shopv2.service.dto.OrdersSummaryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,14 +31,8 @@ public class OrdersController {
         return ordersService.finalSummary(orders);
     }
 
-    @GetMapping("/order/get")
-    public List<Orders> get(){
-        return ordersService.getAll();
-    }
-
     @GetMapping("/order/list")
-    public List<OrdersListDTO> getOrdersList(){
-        return ordersService.getOrdersList();
+    public List<OrdersDTO> getOrdersList(){
+        return ordersService.getOrders();
     }
-
 }
