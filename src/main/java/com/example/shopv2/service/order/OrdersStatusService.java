@@ -27,20 +27,8 @@ public class OrdersStatusService {
         this.userLogService = userLogService;
         this.ordersRepository = ordersRepository;
     }
-    //validator do możliwości aktualizowania zamówienia według
-    //    NEW,
-    //    PROCESSING,
-    //    PAID,
-    //    IN_PREPARATION,
-    //    COMPLETED,
-    //    WAITING_FOR_DELIVERY,
-    //    DELIVERED,
-    //    RETURNED,
-    //    REFUND,
-    //    CANCELED;
 
-    //funkcja do pobierania zamówienia na podstawie statusu NEW do realizacji
-    public List<OrdersDTO> listOfOrdersToDo(){
+    public List<OrdersDTO> orderStatus(){
         UserEntity user = userLogService.loggedUser();
         return ordersRepository.findAllByUserEntity(user)
                 .stream()
@@ -48,12 +36,10 @@ public class OrdersStatusService {
                 .collect(Collectors.toList());
     }
 
-    public List<Orders> getAll(){
-        return ordersRepository.findAll();
+    public Orders saveOrderStatusForOrder(Orders orders){
+        Orders order = ordersRepository.findById(orders.getId()).get();
+        order.getOrdersStatusList().addAll(orders.getOrdersStatusList());
+        return ordersRepository.save(order);
     }
 
-    //function for adding new status for order
-    //zmiana statusu na podstawie realizacji zadania osoby z jakąś konkretną rolą
-    //wykorzystać łańcuch zoobowiązań lub iterator do tego
-    //wzorzec kompozyt pasuje najleiej do zamówienia
 }

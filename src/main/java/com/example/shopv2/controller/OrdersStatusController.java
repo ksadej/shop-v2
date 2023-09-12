@@ -5,6 +5,8 @@ import com.example.shopv2.service.dto.OrdersDTO;
 import com.example.shopv2.service.order.OrdersStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -21,11 +23,12 @@ public class OrdersStatusController {
 
     @GetMapping("/status/list")
     public List<OrdersDTO> getOrdersList(){
-        return ordersStatusService.listOfOrdersToDo();
+        return ordersStatusService.orderStatus();
     }
 
-    @GetMapping("/status/list/tst")
-    public List<Orders> getOrdersList2(){
-        return ordersStatusService.getAll();
+    @PostMapping("/status/save")
+    public Orders saveTotalOrder(@RequestBody Orders orders){
+        return ordersStatusService.saveOrderStatusForOrder(orders);
     }
+
 }

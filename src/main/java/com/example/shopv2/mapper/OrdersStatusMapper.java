@@ -15,4 +15,13 @@ public class OrdersStatusMapper {
                 .ordersStatus(ordersStatus.getOrdersStatus())
                 .build();
     }
+
+    public static OrdersStatus requestToEntity(OrdersStatusDTO ordersStatusDTO){
+        return OrdersStatus
+                .builder()
+                .addedBy(ordersStatusDTO.getAddedBy())
+                .statusAddedAt(ordersStatusDTO.getStatusAddedAt())
+                .ordersStatus(ordersStatusDTO.getOrdersStatus())
+                .build();
+    }
 }
