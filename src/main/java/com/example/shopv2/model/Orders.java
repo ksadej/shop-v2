@@ -37,5 +37,7 @@ public class Orders {
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="ORDER_LIST_ID_ORDER_ID")
     private List<OrdersList> ordersLists;
+
+    @OneToOne
     private Payment payment;
 }

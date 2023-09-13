@@ -6,36 +6,32 @@ import com.example.shopv2.model.enums.OrderStatusType;
 import com.example.shopv2.repository.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 
 import java.time.OffsetDateTime;
 
 @Service
-public class PaymentService extends StatusValidator{
+public class PreparationService extends StatusValidator{
 
     private final OrdersRepository ordersRepository;
-    private StatusValidator next;
 
     @Autowired
-    public PaymentService(OrdersRepository ordersRepository) {
+    public PreparationService(OrdersRepository ordersRepository) {
         this.ordersRepository = ordersRepository;
     }
 
-    //dostajemy polecenie z frontu wykonania polecenia zapłaty na podstawie przesłanego obiektu
     @Override
     public Orders sendStatus(Orders orders) {
 
-        boolean contains = orders.getOrdersStatusList().contains(OrderStatusType.NEW);
+        boolean contains = orders.getOrdersStatusList().contains(OrderStatusType.PAID);
         if(contains){
-            //post order payment
+            //send info about order preparation
         }
 
         OrdersStatus newStatus = OrdersStatus
                 .builder()
                 .addedBy("System")
                 .statusAddedAt(OffsetDateTime.now())
-                .ordersStatus(OrderStatusType.PROCESSING)
+                .ordersStatus(OrderStatusType.IN_PREPARATION)
                 .build();
 
         Orders order = ordersRepository.findById(orders.getId()).get();
@@ -45,24 +41,22 @@ public class PaymentService extends StatusValidator{
     }
 
     @Override
-    @Transactional
     public Orders confirmStatus(Orders orders) {
-        //post verification payment
-
-
-        boolean contains = orders.getOrdersStatusList().contains(OrderStatusType.PROCESSING);
+        boolean contains = orders.getOrdersStatusList().contains(OrderStatusType.IN_PREPARATION);
         if(contains){
-            OrdersStatus newStatus = OrdersStatus
-                    .builder()
-                    .addedBy("System")
-                    .statusAddedAt(OffsetDateTime.now())
-                    .ordersStatus(OrderStatusType.PAID)
-                    .build();
-
-            Orders order = ordersRepository.findById(orders.getId()).get();
-            order.getOrdersStatusList().add(newStatus);
-            ordersRepository.save(order);
+            //send info about order preparation
         }
+
+        OrdersStatus newStatus = OrdersStatus
+                .builder()
+                .addedBy("System")
+                .statusAddedAt(OffsetDateTime.now())
+                .ordersStatus(OrderStatusType.DELIVERED)
+                .build();
+
+        Orders order = ordersRepository.findById(orders.getId()).get();
+        order.getOrdersStatusList().add(newStatus);
+        ordersRepository.save(order);
         next.confirmStatus(orders);
         return orders;
     }
