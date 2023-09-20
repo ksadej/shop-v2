@@ -6,10 +6,6 @@ import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.repository.OrdersRepository;
 import com.example.shopv2.repository.OrdersStatusRepository;
 import com.example.shopv2.service.dto.OrdersDTO;
-import com.example.shopv2.service.order.orderstatus.DeliveryService;
-import com.example.shopv2.service.order.orderstatus.PaymentService;
-import com.example.shopv2.service.order.orderstatus.PreparationService;
-import com.example.shopv2.service.order.orderstatus.StatusValidator;
 import com.example.shopv2.service.user.UserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -41,12 +37,7 @@ public class OrdersStatusService {
     }
 
     public void orderingProcessStarter(Orders orders){
-        StatusValidator payment = new PaymentService(ordersRepository);
-        StatusValidator preparation = new PreparationService(ordersRepository);
-        StatusValidator delivery = new DeliveryService(ordersRepository);
-        payment.setNext(preparation);
-        preparation.setNext(delivery);
 
-        payment.confirmStatus(orders);
     }
+
 }
