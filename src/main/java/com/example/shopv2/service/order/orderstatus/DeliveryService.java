@@ -5,11 +5,12 @@ import com.example.shopv2.model.OrdersStatus;
 import com.example.shopv2.model.enums.OrderStatusType;
 import com.example.shopv2.repository.OrdersRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
 
-@Service
+@Component
 public class DeliveryService extends StatusValidator{
     private final OrdersRepository ordersRepository;
 
@@ -19,7 +20,7 @@ public class DeliveryService extends StatusValidator{
     }
 
     @Override
-    public Orders sendStatus(Orders orders) {
+    public void sendStatus(Orders orders) {
 
         boolean contains = orders.getOrdersStatusList().contains(OrderStatusType.COMPLETED);
         if(contains){
@@ -36,11 +37,11 @@ public class DeliveryService extends StatusValidator{
         Orders order = ordersRepository.findById(orders.getId()).get();
         order.getOrdersStatusList().add(newStatus);
         ordersRepository.save(order);
-        return orders;
+
     }
 
     @Override
-    public Orders confirmStatus(Orders orders) {
+    public void confirmStatus(Orders orders) {
         boolean contains = orders.getOrdersStatusList().contains(OrderStatusType.WAITING_FOR_DELIVERY);
         if(contains){
             //send info about order preparation
@@ -57,6 +58,6 @@ public class DeliveryService extends StatusValidator{
         order.getOrdersStatusList().add(newStatus);
         ordersRepository.save(order);
         next.confirmStatus(orders);
-        return orders;
+
     }
 }
