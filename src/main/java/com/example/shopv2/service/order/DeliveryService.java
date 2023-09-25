@@ -1,4 +1,4 @@
-package com.example.shopv2.service.order.orderstatus;
+package com.example.shopv2.service.order;
 
 import com.example.shopv2.model.Orders;
 import com.example.shopv2.model.OrdersStatus;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.OffsetDateTime;
 
 @Component
-public class DeliveryService extends StatusValidator{
+public class DeliveryService  {
     private final OrdersRepository ordersRepository;
 
     @Autowired
@@ -19,7 +19,6 @@ public class DeliveryService extends StatusValidator{
         this.ordersRepository = ordersRepository;
     }
 
-    @Override
     public void sendStatus(Orders orders) {
 
         boolean contains = orders.getOrdersStatusList().contains(OrderStatusType.COMPLETED);
@@ -40,7 +39,6 @@ public class DeliveryService extends StatusValidator{
 
     }
 
-    @Override
     public void confirmStatus(Orders orders) {
         boolean contains = orders.getOrdersStatusList().contains(OrderStatusType.WAITING_FOR_DELIVERY);
         if(contains){
@@ -57,7 +55,6 @@ public class DeliveryService extends StatusValidator{
         Orders order = ordersRepository.findById(orders.getId()).get();
         order.getOrdersStatusList().add(newStatus);
         ordersRepository.save(order);
-        next.confirmStatus(orders);
 
     }
 }
