@@ -1,4 +1,4 @@
-package com.example.shopv2.service.order;
+package com.example.shopv2.service.order.delivery;
 
 import com.example.shopv2.model.Orders;
 import com.example.shopv2.model.OrdersStatus;

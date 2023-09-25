@@ -1,6 +1,7 @@
 package com.example.shopv2.model;
 
 import com.example.shopv2.model.enums.OrderStatusType;
+import com.example.shopv2.model.enums.PaymentType;
 import com.example.shopv2.model.enums.ShipmentType;
 import lombok.*;
 
@@ -37,7 +38,5 @@ public class Orders {
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="ORDER_LIST_ID_ORDER_ID")
     private List<OrdersList> ordersLists;
-
-    @OneToOne
-    private Payment payment;
+    private PaymentType paymentType;
 }

@@ -7,6 +7,7 @@ import com.example.shopv2.model.OrdersList;
 import com.example.shopv2.model.Shipment;
 import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.model.enums.OrderStatusType;
+import com.example.shopv2.model.enums.PaymentType;
 import com.example.shopv2.model.enums.ShipmentType;
 import com.example.shopv2.repository.IngredientRepository;
 import com.example.shopv2.repository.OrdersListRepository;
@@ -15,6 +16,7 @@ import com.example.shopv2.repository.ShipmentRepository;
 import com.example.shopv2.service.BasketService;
 import com.example.shopv2.service.dto.OrdersDTO;
 import com.example.shopv2.service.dto.OrdersSummaryDTO;
+import com.example.shopv2.service.order.payment.PaypalService;
 import com.example.shopv2.service.user.UserLogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,18 +34,21 @@ public class OrdersService {
     private final ShipmentRepository shipmentRepository;
     private final OrdersListRepository ordersListRepository;
     private final IngredientRepository ingredientRepository;
+    private final PaypalService paypalService;
     private OrdersMapper ordersMapper = new OrdersMapper();
 
     @Autowired
     public OrdersService(OrdersRepository orderRepository, UserLogService userLogService,
                          BasketService basketService, ShipmentRepository shipmentRepository,
-                         OrdersListRepository ordersListRepository, IngredientRepository ingredientRepository) {
+                         OrdersListRepository ordersListRepository, IngredientRepository ingredientRepository,
+                         PaypalService paypalService) {
         this.ordersRepository = orderRepository;
         this.userLogService = userLogService;
         this.basketService = basketService;
         this.shipmentRepository = shipmentRepository;
         this.ordersListRepository = ordersListRepository;
         this.ingredientRepository = ingredientRepository;
+        this.paypalService = paypalService;
     }
 
 //    private void clearOrderCart(OrdersDTO ordersDTO){
@@ -132,9 +137,18 @@ public class OrdersService {
                 .map(OrdersListMapper::mapToRow2)
                 .collect(Collectors.toList());
         orders.setOrdersLists(orderRow);
-        Orders newOrder = ordersRepository.save(orders);
+        OrdersSummaryDTO summaryHelper = createSummaryHelper(ordersDTO, orders);
 
-        return createSummaryHelper(ordersDTO, newOrder);
+        if(ordersDTO.getPaymentType().equals(PaymentType.PAYPAL)){
+            paypalService.createOrder(summaryHelper.getTotalValue(), orders.getId());
+        }
+        if(ordersDTO.getPaymentType().equals(PaymentType.BLIK)){
+
+        }
+        if(ordersDTO.getPaymentType().equals(PaymentType.BANK_TRANSFER)){
+
+        }
+        return summaryHelper;
     }
 
     //chain of responsibility with orders

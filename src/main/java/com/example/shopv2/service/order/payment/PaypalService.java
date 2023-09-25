@@ -1,9 +1,10 @@
 package com.example.shopv2.service.order.payment;
 
 import com.example.shopv2.model.Orders;
-import com.paypal.api.payments.*;
-import com.paypal.base.rest.APIContext;
-import com.paypal.base.rest.PayPalRESTException;
+import com.example.shopv2.model.OrdersStatus;
+import com.example.shopv2.model.enums.OrderStatusType;
+import com.example.shopv2.repository.OrdersRepository;
+import com.example.shopv2.repository.OrdersStatusRepository;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,9 +12,9 @@ import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +31,16 @@ public class PaypalService {
     private String APP_SECRET;
     @Autowired
     private RestTemplate restTemplate;
+    private final OrdersStatusRepository ordersStatusRepository;
+    private final OrdersRepository ordersRepository;
     private final static Logger LOGGER =  Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+
+    @Autowired
+    public PaypalService(OrdersStatusRepository ordersStatusRepository, OrdersRepository ordersRepository) {
+        this.ordersStatusRepository = ordersStatusRepository;
+        this.ordersRepository = ordersRepository;
+    }
+
 
     private String getAuth(String client_id, String app_secret) {
         String auth = client_id + ":" + app_secret;
@@ -102,7 +112,46 @@ public class PaypalService {
         }
     }
 
-    //finalizacja tranzakcji po potwierdzeniu płatności (wywołania metody createOrder())
+    public Object createOrder(Double value, Long orderId) {
+        String accessToken = generateAccessToken();
+        Double d = 1.0;
+        String requestJson = "{\"intent\":\"CAPTURE\",\"purchase_units\":[{\"amount\":{\"currency_code\":\"PLN\",\"value\":\"" + value + "\"}}]}";
+
+        HttpEntity<String> entity = new HttpEntity<String>(requestJson, payPalHeader(accessToken));
+
+        ResponseEntity<Object> response = restTemplate.exchange(
+                BASE + "/v2/checkout/orders",
+                HttpMethod.POST,
+                entity,
+                Object.class
+        );
+
+        if (response.getStatusCode() == HttpStatus.CREATED) {
+            LOGGER.log(Level.INFO, "ORDER CREATED");
+            OrdersStatus ordersStatus = OrdersStatus
+                    .builder()
+                    .ordersStatus(OrderStatusType.PROCESSING)
+                    .statusAddedAt(OffsetDateTime.now())
+                    .addedBy("SYSTEM")
+                    .build();
+            Optional<Orders> byId = ordersRepository.findById(orderId);
+            Orders orders = byId.get();
+            orders.getOrdersStatusList().add(ordersStatus);
+            ordersRepository.save(orders);
+            return response.getBody();
+        } else {
+            LOGGER.log(Level.INFO, "FAILED CAPTURING ORDER");
+            OrdersStatus ordersStatus = OrdersStatus
+                    .builder()
+                    .ordersStatus(OrderStatusType.CANCELED)
+                    .statusAddedAt(OffsetDateTime.now())
+                    .build();
+            ordersStatusRepository.save(ordersStatus);
+            return "Unavailable to CREATE ORDER, STATUS CODE " + response.getStatusCode();
+        }
+    }
+
+    //finalizacja tranzakcji po potwierdzeniu płatności (po wywołaniu metody createOrder())
     public Object capturePayment(String orderId) {
         String accessToken = generateAccessToken();
 

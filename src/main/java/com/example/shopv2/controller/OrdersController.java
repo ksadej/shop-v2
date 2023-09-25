@@ -21,8 +21,8 @@ public class OrdersController {
         this.ordersService = ordersService;
     }
 
-    @PostMapping("/order/save")
-    public OrdersSummaryDTO saveOrder(@RequestBody OrdersDTO orders){
+    @PostMapping("/order/add")
+    public OrdersSummaryDTO addOrder(@RequestBody OrdersDTO orders){
         return ordersService.createSummary(orders);
     }
 

@@ -1,18 +1,12 @@
-package com.example.shopv2.service.order;
+package com.example.shopv2.service.order.orderpreparation;
 
 import com.example.shopv2.model.Orders;
-import com.example.shopv2.model.OrdersStatus;
-import com.example.shopv2.model.enums.OrderStatusType;
 import com.example.shopv2.repository.OrdersRepository;
-import com.example.shopv2.service.order.orderstatus.StatusValidator;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import java.time.OffsetDateTime;
-import java.util.Arrays;
 
 @Service
 public class PreparationService{

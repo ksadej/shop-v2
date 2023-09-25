@@ -22,6 +22,5 @@ public class Payment {
     private String name;
     @Enumerated(EnumType.STRING)
     private PaymentType type;
-    private boolean defaultPayment;
     private String note;
 }

@@ -21,4 +21,5 @@ public class OrdersDTO {
     private Long basketId;
     private String shipmentType;
     private List<OrdersListDTO> ordersLists;
+    private String paymentType;
 }

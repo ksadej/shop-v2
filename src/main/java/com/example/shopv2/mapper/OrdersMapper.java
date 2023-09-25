@@ -4,6 +4,7 @@ import com.example.shopv2.model.Orders;
 import com.example.shopv2.model.OrdersStatus;
 import com.example.shopv2.model.UserEntity;
 import com.example.shopv2.model.enums.OrderStatusType;
+import com.example.shopv2.model.enums.PaymentType;
 import com.example.shopv2.model.enums.ShipmentType;
 import com.example.shopv2.service.dto.OrdersDTO;
 import com.example.shopv2.service.dto.OrdersStatusDTO;
@@ -21,6 +22,7 @@ public class OrdersMapper {
                 .builder()
                 .basketId(ordersDTO.getBasketId())
                 .dataAdded(ordersDTO.getDataAdded())
+                .paymentType(PaymentType.valueOf(ordersDTO.getPaymentType()))
                 .ordersStatus(OrderStatusType.NEW)
                 .shipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType().toUpperCase()))
                 .userEntity(userEntity)
@@ -32,6 +34,7 @@ public class OrdersMapper {
                 .builder()
                 .basketId(orders.getBasketId())
                 .dataAdded(orders.getDataAdded())
+                .paymentType(String.valueOf(orders.getPaymentType()))
                 .ordersStatusList(orders.getOrdersStatusList()
                         .stream()
                         .map(OrdersStatusMapper::entityToRequest)
@@ -49,12 +52,12 @@ public class OrdersMapper {
         return OrdersSummaryDTO
                 .builder()
                 .shipmentType(String.valueOf(newOrder.getShipmentType()))
-                .shipmentBy("PLUG")
+                .payment(String.valueOf(newOrder.getPaymentType()))
                 .ordersStatus(String.valueOf(newOrder.getOrdersStatus()))
                 .placeDate(OffsetDateTime.now())
-                .order("PLUG")
-                .destination("PLUG")
-                .payment("PLUG")
+                .shipmentBy(null)
+                .order(null)
+                .destination(null)
                 .build();
     }
 
