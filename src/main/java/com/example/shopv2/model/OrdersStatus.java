@@ -23,4 +23,5 @@ public class OrdersStatus {
     @Enumerated(EnumType.STRING)
     private OrderStatusType ordersStatus;
     private String addedBy;
+    private String transactionId;
 }

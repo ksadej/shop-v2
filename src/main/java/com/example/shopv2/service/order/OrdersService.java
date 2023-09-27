@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,7 +128,7 @@ public class OrdersService {
 
     //aktualizacja jednego zamówienia w tabeli order a nie dodawania kolejnych
     @Transactional
-    public OrdersSummaryDTO finalSummary(OrdersDTO ordersDTO){
+    public OrdersSummaryDTO finalSummary(OrdersDTO ordersDTO) throws IOException {
         UserEntity user = userLogService.loggedUser();
         List<Orders> existingOrder = ordersRepository.findAllByUserEntityAndOrdersStatus(user, OrderStatusType.NEW);
         Orders orders = existingOrder.get(0);
@@ -139,23 +140,19 @@ public class OrdersService {
         orders.setOrdersLists(orderRow);
         OrdersSummaryDTO summaryHelper = createSummaryHelper(ordersDTO, orders);
 
-        if(ordersDTO.getPaymentType().equals(PaymentType.PAYPAL)){
+        PaymentType paymentType = PaymentType.valueOf(ordersDTO.getPaymentType());
+
+        if(paymentType.equals(PaymentType.PAYPAL)){
             paypalService.createOrder(summaryHelper.getTotalValue(), orders.getId());
         }
-        if(ordersDTO.getPaymentType().equals(PaymentType.BLIK)){
+        if(paymentType.equals(PaymentType.BLIK)){
 
         }
-        if(ordersDTO.getPaymentType().equals(PaymentType.BANK_TRANSFER)){
+        if(paymentType.equals(PaymentType.BANK_TRANSFER)){
 
         }
         return summaryHelper;
     }
-
-    //chain of responsibility with orders
-    //create order
-    //summary
-    //payment
-    //pdf
 
     public Double priceDiscount(){
         return null;

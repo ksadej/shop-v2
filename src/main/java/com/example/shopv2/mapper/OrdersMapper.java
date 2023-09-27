@@ -61,4 +61,16 @@ public class OrdersMapper {
                 .build();
     }
 
+    public OrdersDTO orderForWarehouse(Orders orders){
+        return OrdersDTO
+                .builder()
+                .shipmentType(String.valueOf(orders.getShipmentType()))
+                .ordersLists(orders.getOrdersLists()
+                        .stream()
+                        .map(OrdersListMapper::entityToRequest)
+                        .collect(Collectors.toList()))
+                .userId(orders.getId())
+                .build();
+    }
+
 }
