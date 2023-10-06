@@ -36,8 +36,4 @@ public class OrdersStatusService {
                 .collect(Collectors.toList());
     }
 
-    public void orderingProcessStarter(Orders orders){
-
-    }
-
 }

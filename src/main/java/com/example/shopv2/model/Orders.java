@@ -33,7 +33,6 @@ public class Orders {
     @ManyToOne
     @JoinColumn(name = "USER_ENTITY_ID")
     private UserEntity userEntity;
-    @Enumerated(EnumType.STRING)
     private ShipmentType shipmentType;
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name="ORDER_LIST_ID_ORDER_ID")

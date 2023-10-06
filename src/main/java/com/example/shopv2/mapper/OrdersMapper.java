@@ -22,9 +22,7 @@ public class OrdersMapper {
                 .builder()
                 .basketId(ordersDTO.getBasketId())
                 .dataAdded(ordersDTO.getDataAdded())
-                .paymentType(PaymentType.valueOf(ordersDTO.getPaymentType()))
                 .ordersStatus(OrderStatusType.NEW)
-                .shipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType().toUpperCase()))
                 .userEntity(userEntity)
                 .build();
     }
@@ -34,13 +32,22 @@ public class OrdersMapper {
                 .builder()
                 .basketId(orders.getBasketId())
                 .dataAdded(orders.getDataAdded())
-                .paymentType(String.valueOf(orders.getPaymentType()))
-                .ordersStatusList(orders.getOrdersStatusList()
-                        .stream()
-                        .map(OrdersStatusMapper::entityToRequest)
-                        .collect(Collectors.toList()))
-                .shipmentType(String.valueOf(orders.getShipmentType()))
                 .userId(userEntity.getId())
+                .ordersLists(orders.getOrdersLists()
+                        .stream()
+                        .map(OrdersListMapper::entityToRequest)
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    public OrdersDTO entityToRequest2(Orders orders, UserEntity userEntity){
+        return OrdersDTO
+                .builder()
+                .basketId(orders.getBasketId())
+                .dataAdded(orders.getDataAdded())
+                .userId(userEntity.getId())
+                .shipmentType(String.valueOf(orders.getShipmentType()))
+                .paymentType(String.valueOf(orders.getPaymentType()))
                 .ordersLists(orders.getOrdersLists()
                         .stream()
                         .map(OrdersListMapper::entityToRequest)

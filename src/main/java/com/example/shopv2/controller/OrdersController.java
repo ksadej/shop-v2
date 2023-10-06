@@ -1,5 +1,6 @@
 package com.example.shopv2.controller;
 
+import com.example.shopv2.model.Orders;
 import com.example.shopv2.service.order.OrdersService;
 import com.example.shopv2.service.dto.OrdersDTO;
 import com.example.shopv2.service.dto.OrdersSummaryDTO;
@@ -23,8 +24,13 @@ public class OrdersController {
     }
 
     @PostMapping("/order/add")
-    public OrdersSummaryDTO addOrder(@RequestBody OrdersDTO orders){
-        return ordersService.createSummary(orders);
+    public OrdersDTO addOrder(@RequestBody OrdersDTO orders){
+        return ordersService.addProductToOrderList(orders);
+    }
+
+    @PostMapping("/order/data")
+    public OrdersDTO addShipmentAndPayment(@RequestBody OrdersDTO orders){
+        return ordersService.setPaymentAndShipment(orders);
     }
 
     @PostMapping("/order/save/total")

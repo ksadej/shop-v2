@@ -105,8 +105,9 @@ public class OrdersService {
         return ordersSummary;
     }
 
+    //zapisuje do bazy danych produkt, typ wysyłki, typ płatności
     @Transactional
-    public OrdersSummaryDTO createSummary(OrdersDTO ordersDTO){
+    public OrdersDTO addProductToOrderList(OrdersDTO ordersDTO){
         UserEntity user = userLogService.loggedUser();
 
         List<Orders> existingOrder = ordersRepository.findAllByUserEntityAndOrdersStatus(user, OrderStatusType.NEW);
@@ -114,17 +115,29 @@ public class OrdersService {
             Orders orders = existingOrder.get(0);
             orders.getOrdersLists().addAll(orderRow(ordersDTO));
             Orders newOrder = ordersRepository.save(orders);
-
-            return createSummaryHelper(ordersDTO, newOrder);
+            return ordersMapper.entityToRequest(newOrder, user);
         }
         else{
             Orders orders = ordersMapper.requestToEntity(ordersDTO, user);
             orders.setOrdersLists(orderRow(ordersDTO));
             Orders newOrder = ordersRepository.save(orders);
-
-            return createSummaryHelper(ordersDTO, newOrder);
+            return ordersMapper.entityToRequest(newOrder, user);
         }
     }
+
+    @Transactional
+    public OrdersDTO setPaymentAndShipment(OrdersDTO ordersDTO){
+        UserEntity user = userLogService.loggedUser();
+
+        List<Orders> existingOrder = ordersRepository.findAllByUserEntityAndOrdersStatus(user, OrderStatusType.NEW);
+        Orders orders = existingOrder.get(0);
+        orders.setPaymentType(PaymentType.valueOf(ordersDTO.getPaymentType()));
+        orders.setShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
+        Orders newOrder = ordersRepository.save(orders);
+        return ordersMapper.entityToRequest(newOrder, user);
+    }
+
+
 
     //aktualizacja jednego zamówienia w tabeli order a nie dodawania kolejnych
     @Transactional
@@ -141,7 +154,12 @@ public class OrdersService {
         OrdersSummaryDTO summaryHelper = createSummaryHelper(ordersDTO, orders);
 
         PaymentType paymentType = PaymentType.valueOf(ordersDTO.getPaymentType());
+        initPayment(paymentType, summaryHelper, orders);
+        initShipment();
+        return summaryHelper;
+    }
 
+    public void initPayment(PaymentType paymentType,  OrdersSummaryDTO summaryHelper, Orders orders) throws IOException {
         if(paymentType.equals(PaymentType.PAYPAL)){
             paypalService.createOrder(summaryHelper.getTotalValue(), orders.getId());
         }
@@ -151,7 +169,13 @@ public class OrdersService {
         if(paymentType.equals(PaymentType.BANK_TRANSFER)){
 
         }
-        return summaryHelper;
+    }
+    public void initShipment(){
+
+    }
+
+    public void sumAll(){
+
     }
 
     public Double priceDiscount(){
