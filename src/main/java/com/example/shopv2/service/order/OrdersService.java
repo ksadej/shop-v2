@@ -105,6 +105,11 @@ public class OrdersService {
         return ordersSummary;
     }
 
+    OrdersDTO saveOrder(Orders newOrders, UserEntity user){
+        Orders newOrder = ordersRepository.save(newOrders);
+        return ordersMapper.entityToRequest(newOrder, user);
+    }
+
     //zapisuje do bazy danych produkt, typ wysyłki, typ płatności
     @Transactional
     public OrdersDTO addProductToOrderList(OrdersDTO ordersDTO){
@@ -114,16 +119,15 @@ public class OrdersService {
         if(!existingOrder.isEmpty()){
             Orders orders = existingOrder.get(0);
             orders.getOrdersLists().addAll(orderRow(ordersDTO));
-            Orders newOrder = ordersRepository.save(orders);
-            return ordersMapper.entityToRequest(newOrder, user);
+            return saveOrder(orders, user);
         }
         else{
             Orders orders = ordersMapper.requestToEntity(ordersDTO, user);
             orders.setOrdersLists(orderRow(ordersDTO));
-            Orders newOrder = ordersRepository.save(orders);
-            return ordersMapper.entityToRequest(newOrder, user);
+            return saveOrder(orders, user);
         }
     }
+
 
     @Transactional
     public OrdersDTO setPaymentAndShipment(OrdersDTO ordersDTO){
@@ -133,11 +137,8 @@ public class OrdersService {
         Orders orders = existingOrder.get(0);
         orders.setPaymentType(PaymentType.valueOf(ordersDTO.getPaymentType()));
         orders.setShipmentType(ShipmentType.valueOf(ordersDTO.getShipmentType()));
-        Orders newOrder = ordersRepository.save(orders);
-        return ordersMapper.entityToRequest(newOrder, user);
+        return saveOrder(orders, user);
     }
-
-
 
     //aktualizacja jednego zamówienia w tabeli order a nie dodawania kolejnych
     @Transactional

@@ -37,6 +37,8 @@ public class OrdersMapper {
                         .stream()
                         .map(OrdersListMapper::entityToRequest)
                         .collect(Collectors.toList()))
+                .shipmentType(String.valueOf(orders.getShipmentType()))
+                .paymentType(String.valueOf(orders.getPaymentType()))
                 .build();
     }
 
